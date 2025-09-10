@@ -38,3 +38,17 @@ body.tag-tag1-sternbild .progress{
   background:#0f1a13;
   border-color:#2a3a2a;
 }
+
+input.choice, 
+.riddle-form input {
+  color: #f1f5e1;         /* Textfarbe */
+  background: #0f1a13;    /* dunkler Hintergrund */
+  border: 1px solid #2a3a2a;
+}
+
+input.choice::placeholder, 
+.riddle-form input::placeholder {
+  color: #a3b99c;         /* Platzhalter etwas heller/graugrün */
+  opacity: 0.8;
+}
+

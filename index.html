@@ -20,6 +20,7 @@
 
     <div class="countdown" aria-live="polite">
       <span>Countdown bis zum 37.: </span>
+      <br>
       <strong id="countdown">–</strong>
     </div>
 
@@ -78,5 +79,34 @@
 
   <!-- Kernlogik (ES-Module) -->
   <script type="module" src="core/main.js"></script>
+
+  <script>
+  if ("serviceWorker" in navigator) {
+    // Basis-URL ermitteln (funktioniert auch in Unterordnern/Pages)
+    const base = location.pathname.replace(/\/index\.html$/, "/");
+    const swUrl = base + "sw.js";
+
+    navigator.serviceWorker.register(swUrl).then((reg) => {
+      // Countdown auf neue Version: wenn neuer SW installiert ist und ein Controller existiert
+      reg.addEventListener("updatefound", () => {
+        const nw = reg.installing;
+        nw?.addEventListener("statechange", () => {
+          if (nw.state === "installed" && navigator.serviceWorker.controller) {
+            // sanfter Reload: du kannst hier auch ein „Update verfügbar“-Banner zeigen
+            // navigator.serviceWorker.controller.postMessage("SKIP_WAITING");
+            // location.reload(); // <- automatischer Reload (optional)
+            console.log("Neue Version installiert. Reload für Update.");
+          }
+        });
+      });
+    }).catch((err) => console.warn("SW-Registrierung fehlgeschlagen:", err));
+
+    // Wenn der aktive Controller wechselt (nach skipWaiting), Seite aktualisieren
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      // location.reload(); // optional: automatischer Reload
+    });
+  }
+</script>
+
 </body>
 </html>

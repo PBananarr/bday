@@ -77,9 +77,9 @@ export function build(root, api){
       <label>Rang:
         <select data-key="${item.key}">
           <option value="">–</option>
-          <option value="1">3</option>
-          <option value="2">1</option>
-          <option value="3">2</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
           <option value="4">4</option>
         </select>
       </label>
@@ -100,11 +100,11 @@ export function build(root, api){
       $("#fbA").textContent="Bitte alle Ränge setzen (1–4).";
       return;
     }
-    // Prüfen: 1→air, 2→shelter, 3→water, 4→food
+    // Prüfen: 1→fire, 2→shelter, 3→water, 4→food
     const correct =
-      chosen["1"]==="air" &&
-      chosen["2"]==="shelter" &&
-      chosen["3"]==="water" &&
+      chosen["3"]==="fire" &&
+      chosen["1"]==="shelter" &&
+      chosen["2"]==="water" &&
       chosen["4"]==="food";
 
     markDone($("#stepA"), correct);

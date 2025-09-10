@@ -73,3 +73,28 @@ body.tag-tag1-sternbild .riddle.solved::after{
   pointer-events:none;
 }
 
+#out {
+  margin-top: 1rem;     /* Abstand nach oben */
+}
+
+#out.success {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.6rem 0.9rem;
+  border-radius: 10px;
+  background: rgba(16, 185, 129, 0.15);  /* leicht grünlich */
+  border: 1px solid #10b981;
+  color: #d1fae5;                        /* hellgrün-weiß */
+  font-weight: 600;
+  font-size: 1rem;
+  text-align: center;
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.25);
+  animation: popIn 0.4s ease;
+}
+
+@keyframes popIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+

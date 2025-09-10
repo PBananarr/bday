@@ -52,6 +52,7 @@ export function build(root, api){
     const ok = ACCEPT.some(a => normalize(a) === val);
     if(ok){
       out.textContent = "Richtig! Monstera „Thai Constellation“. ✨🪴";
+      out.classList.add("success");
       riddleBox.classList.add("solved");   // <— NEU: Bild aktivieren
       api.solved();
     } else {

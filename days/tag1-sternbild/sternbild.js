@@ -1,10 +1,5 @@
 import { ACCEPT, HINTS } from "./sternbild_data.js";
 
-/**
- * Build-Funktion für Tag 1 – „Das Sternbild im Wohnzimmer“
- * root:  Container-Element
- * api:   { solved: Function } → unbedingt aufrufen, wenn gelöst
- */
 export function build(root, api){
   root.innerHTML = `
     <section class="card">
@@ -34,12 +29,18 @@ export function build(root, api){
     </section>
   `;
 
-  const riddleBox = root.querySelector(".riddle");
+  const riddleBox = root.querySelector(".riddle");   // <— NEU
   const out = root.querySelector("#out");
   const hintBox = root.querySelector("#hints");
   const form = root.querySelector("#f");
   const hintBtn = root.querySelector("#hintBtn");
   let hintIdx = 0;
+
+  // Falls der Tag bereits früher gelöst wurde: Hintergrund gleich setzen
+  try {
+    const st = JSON.parse(localStorage.getItem("bdayModState") || "{}");
+    if (st["tag1-sternbild"]) riddleBox.classList.add("solved");   // <— NEU
+  } catch {}
 
   const normalize = s => (s||"").toLowerCase()
     .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
@@ -51,6 +52,7 @@ export function build(root, api){
     const ok = ACCEPT.some(a => normalize(a) === val);
     if(ok){
       out.textContent = "Richtig! Monstera „Thai Constellation“. ✨🪴";
+      riddleBox.classList.add("solved");   // <— NEU: Bild aktivieren
       api.solved();
     } else {
       out.textContent = "Noch nicht. Nutze den Hinweis oder probier’s erneut.";
@@ -65,6 +67,5 @@ export function build(root, api){
     }
   });
 
-  // Optional: Cleanup-Funktion zurückgeben (für Timer/Listener o. ä.)
   return () => {};
 }

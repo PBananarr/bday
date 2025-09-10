@@ -1,5 +1,4 @@
 /* Tag 2 – Theme: Erde · Moosgrün · Signalorange */
-
 body.tag-tag2-survival{
   --bg:#0d1410;         /* dunkles Waldgrün-Schwarz */
   --card:#111b14;       /* tiefes Moosgrün */
@@ -7,7 +6,7 @@ body.tag-tag2-survival{
   --text:#e9f6e7;       /* sehr helles Grün/Off-White */
   --muted:#a7c2ac;      /* graugrün */
   --accent:#fb923c;     /* Signalorange */
-  --ok:#22c55e;         /* grün ok */
+  --ok:#22c55e;
   --warn:#f59e0b;
   --err:#ef4444;
 }
@@ -30,30 +29,124 @@ body.tag-tag2-survival .progress{
   background: linear-gradient(90deg, #fb923c, #f59e0b);
 }
 
-.surv-wrap{ display:grid; gap:12px; }
-.step{
-  border:1px solid var(--border); border-radius:14px; padding:12px;
-  background: rgba(255,255,255,0.02);
-}
-.step h3{ margin:.15rem 0 .35rem; font-size:1.05rem; color:var(--accent); text-align:left; }
-.step .hint{ color:var(--muted) }
+/* ---- Layout Container ---- */
+.sv-wrap{ display:grid; gap:12px; }
+.sv-stage{ border:1px solid var(--border); border-radius:14px; padding:12px; background: rgba(255,255,255,0.02); }
+.sv-stage h3{ margin:.15rem 0 .5rem; font-size:1.05rem; color:var(--accent); }
 
-.selector{ display:grid; gap:8px }
-.selector .choice{
-  display:flex; align-items:center; gap:.55rem;
-  background:#0e170f; border-color:#2b3c2f; border-radius:10px;
+/* ---- Event 1: Angeln ---- */
+.fish-area{
+  position:relative; height:260px; border-radius:12px; overflow:hidden;
+  background: radial-gradient(120% 100% at 50% 10%, #1a3a2a 0%, #0d1410 60%);
+  border:1px solid var(--border);
 }
-.selector input[type="checkbox"],
-.selector input[type="radio"]{ transform: scale(1.2); }
+.pond{
+  position:absolute; left:10px; right:10px; bottom:10px; top:60px;
+  background: radial-gradient(60% 80% at 60% 30%, #1f6f75 0%, #124c55 40%, #0a3037 100%);
+  border:1px solid #0b2d31; border-radius:50% / 18%;
+  box-shadow: inset 0 0 40px rgba(0,0,0,.5);
+}
+.rod{
+  position:absolute; left:12px; top:10px; width:110px; height:18px; border-radius:12px;
+  background: linear-gradient(90deg, #3f2f1d, #1f160f);
+  border:1px solid #4a3a26; display:flex; align-items:center; justify-content:center;
+  color:#f0e7dc; font-weight:700; font-size:.9rem; cursor:pointer; user-select:none;
+  box-shadow:0 6px 16px rgba(0,0,0,.35);
+}
+.rod.active{ outline:2px dashed #fb923c; outline-offset:2px }
+.line{
+  position:absolute; width:2px; background:#cbd5e1; top:28px; left:64px; height:0; transition:height .2s ease;
+}
+.hook{
+  position:absolute; width:14px; height:14px; border:2px solid #cbd5e1; border-bottom-color:transparent;
+  border-left-color:transparent; transform:rotate(45deg); border-radius:0 8px 0 0;
+  top:28px; left:58px; opacity:.9;
+}
 
-.order-list{ display:grid; gap:8px; }
-.order-item{
-  display:flex; align-items:center; gap:8px;
-  background:#0e170f; border:1px solid #2b3c2f; border-radius:10px; padding:8px;
+.fish{
+  position:absolute; width:36px; height:20px; border-radius:10px 12px 12px 10px;
+  background: linear-gradient(180deg, #9bdad3, #438b86);
+  box-shadow: inset 0 -4px 10px rgba(0,0,0,.25);
+  left:60%; top:60%; transform:translate(-50%,-50%);
+  display:none;
 }
-.order-item select{
-  appearance:none; border:1px solid #2b3c2f; background:#0f1a13; color:var(--text);
-  padding:.45rem .6rem; border-radius:10px;
+.fish::after{ /* Flosse */
+  content:""; position:absolute; right:-8px; top:5px; width:12px; height:10px; border-radius:0 10px 10px 0;
+  background:#6fb7b1; transform:skewX(-20deg);
+}
+.fish.show{ display:block; animation: swim 4s infinite linear; }
+@keyframes swim {
+  0%   { transform:translate(-50%,-50%) }
+  50%  { transform:translate(calc(-50% + 30px), calc(-50% - 8px)) }
+  100% { transform:translate(-50%,-50%) }
+}
+.catch-banner{
+  margin-top:.5rem; color:var(--muted);
+}
+
+/* ---- Event 2: Lager ---- */
+.camp{
+  position:relative; height:300px; border-radius:12px; background:#0f1712; border:1px solid var(--border);
+  display:grid; grid-template-columns: 1fr 1fr; gap:8px; padding:8px;
+}
+.inv{
+  border:1px dashed #2b3c2f; border-radius:12px; padding:8px; min-height:0; display:grid; gap:8px; align-content:start;
+}
+.inv h4{ margin:.2rem 0 .4rem; color:var(--muted); font-size:.95rem; }
+.inv-row{ display:flex; gap:8px; flex-wrap:wrap; }
+
+.draggable{
+  touch-action:none; user-select:none; cursor:grab;
+  display:inline-flex; align-items:center; justify-content:center;
+  padding:.4rem .6rem; border-radius:10px; border:1px solid #2b3c2f; background:#0f1a13; color:var(--text);
+  min-width:44px; min-height:36px;
+}
+.draggable:active{ cursor:grabbing }
+
+.firezone{
+  border:2px dashed #3b4d3f; border-radius:999px; width:160px; height:160px; place-self:center; position:relative;
+  display:grid; place-items:center; color:#a7c2ac; text-align:center; padding:6px;
+}
+.firezone.complete{ border-color:#22c55e; color:#d1fadf; }
+
+.tinderzone{
+  border:2px dashed #3b4d3f; border-radius:16px; height:100px; place-self:center; width:min(90%,260px);
+  display:grid; place-items:center; color:#a7c2ac; text-align:center; padding:6px;
+}
+.tinderzone.complete{ border-color:#22c55e; color:#d1fadf; }
+
+.match-hint{ color:var(--muted); text-align:center; }
+
+.flame{
+  display:none; position:absolute; inset:0; place-items:center;
+}
+.flame.show{ display:grid; }
+.flame .emoji{ font-size:2.2rem }
+
+/* ---- Event 3: Grill ---- */
+.grill{
+  position:relative; height:260px; border-radius:12px; border:1px solid var(--border);
+  background: radial-gradient(80% 90% at 50% 20%, #2b1b0f 0%, #0f0b08 70%);
+  display:grid; place-items:center;
+}
+.firepit{
+  width:180px; height:120px; border-radius:0 0 100px 100px / 0 0 80px 80px;
+  background: radial-gradient(70% 100% at 50% 10%, #ffb74d 0%, #e85d04 40%, rgba(0,0,0,0) 70%);
+  box-shadow: 0 0 30px rgba(232,93,4,.5), inset 0 -20px 40px rgba(0,0,0,.5);
+  position:relative; border:1px solid #3b2a1b;
+}
+.fish-raw, .fish-cooked{
+  position:absolute; bottom:70px; left:50%; transform:translateX(-50%);
+  padding:.3rem .5rem; border-radius:8px; border:1px solid #2b3c2f; background:#0f1a13;
+  display:none;
+}
+.fish-cooked.done{ display:block; animation:popIn .25s ease }
+.fish-raw.dragging{ opacity:.8 }
+.finish-note{ margin-top:.5rem; text-align:center; color:var(--muted) }
+
+@keyframes popIn {
+  from { transform:translateX(-50%) scale(0.95); opacity:0; }
+  to   { transform:translateX(-50%) scale(1); opacity:1; }
 }
 
 .feedback{
@@ -61,27 +154,3 @@ body.tag-tag2-survival .progress{
 }
 .feedback.ok{ border-color:#22c55e; background: rgba(34,197,94,.12); color:#d1fadf; }
 .feedback.err{ border-color:#ef4444; background: rgba(239,68,68,.12); color:#fee2e2; }
-
-#surv-success{
-  display:none; text-align:center; margin-top:.6rem;
-}
-#surv-success.show{
-  display:block;
-}
-#surv-success .badge{
-  padding:.4rem .6rem; border-radius:999px; border:1px solid var(--border);
-  background:#0f1a13; font-size:.95rem; display:inline-block; margin:.15rem;
-}
-
-/* Inputs */
-input.choice, .choice input, .order-item select{
-  color: var(--text);
-}
-.riddle-input::placeholder{ color: var(--muted); opacity:.85; }
-
-/* micro animation */
-@keyframes popIn {
-  from { transform: scale(.98); opacity: 0; }
-  to   { transform: scale(1);   opacity: 1; }
-}
-.step.done{ outline:2px solid var(--ok); outline-offset:2px; animation: popIn .25s ease }

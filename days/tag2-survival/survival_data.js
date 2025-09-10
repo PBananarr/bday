@@ -7,7 +7,7 @@ export const RULE_OF_THREE = [
 ];
 
 // Korrekte Reihenfolge der Keys (dringend → weniger dringend)
-export const RULE_OF_THREE_ORDER = ["shelter", "water", "fire", "food"];
+export const RULE_OF_THREE_ORDER = ["fire", "shelter", "water", "food"];
 
 // Teil B — Zunderwahl (Mehrfachauswahl; genau 2 sind korrekt)
 export const TINDER_OPTIONS = [

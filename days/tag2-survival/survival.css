@@ -1,0 +1,87 @@
+/* Tag 2 – Theme: Erde · Moosgrün · Signalorange */
+
+body.tag-tag2-survival{
+  --bg:#0d1410;         /* dunkles Waldgrün-Schwarz */
+  --card:#111b14;       /* tiefes Moosgrün */
+  --border:#2b3c2f;     /* Moosrand */
+  --text:#e9f6e7;       /* sehr helles Grün/Off-White */
+  --muted:#a7c2ac;      /* graugrün */
+  --accent:#fb923c;     /* Signalorange */
+  --ok:#22c55e;         /* grün ok */
+  --warn:#f59e0b;
+  --err:#ef4444;
+}
+
+body.tag-tag2-survival .card{
+  background: linear-gradient(180deg, rgba(17,27,20,.98), rgba(12,20,15,.92));
+  box-shadow: 0 10px 28px rgba(0,0,0,.5);
+  border-radius: 18px;
+}
+
+body.tag-tag2-survival .btn.primary{
+  background: linear-gradient(180deg,#fb923c,#ea580c);
+  border-color:#b45309; color:#1a130c;
+}
+body.tag-tag2-survival .btn.ghostbtn{
+  border-color:#384a3c; color:#fb923c;
+}
+
+body.tag-tag2-survival .progress{
+  background: linear-gradient(90deg, #fb923c, #f59e0b);
+}
+
+.surv-wrap{ display:grid; gap:12px; }
+.step{
+  border:1px solid var(--border); border-radius:14px; padding:12px;
+  background: rgba(255,255,255,0.02);
+}
+.step h3{ margin:.15rem 0 .35rem; font-size:1.05rem; color:var(--accent); text-align:left; }
+.step .hint{ color:var(--muted) }
+
+.selector{ display:grid; gap:8px }
+.selector .choice{
+  display:flex; align-items:center; gap:.55rem;
+  background:#0e170f; border-color:#2b3c2f; border-radius:10px;
+}
+.selector input[type="checkbox"],
+.selector input[type="radio"]{ transform: scale(1.2); }
+
+.order-list{ display:grid; gap:8px; }
+.order-item{
+  display:flex; align-items:center; gap:8px;
+  background:#0e170f; border:1px solid #2b3c2f; border-radius:10px; padding:8px;
+}
+.order-item select{
+  appearance:none; border:1px solid #2b3c2f; background:#0f1a13; color:var(--text);
+  padding:.45rem .6rem; border-radius:10px;
+}
+
+.feedback{
+  margin-top:.6rem; padding:.55rem .8rem; border-radius:10px; border:1px solid transparent;
+}
+.feedback.ok{ border-color:#22c55e; background: rgba(34,197,94,.12); color:#d1fadf; }
+.feedback.err{ border-color:#ef4444; background: rgba(239,68,68,.12); color:#fee2e2; }
+
+#surv-success{
+  display:none; text-align:center; margin-top:.6rem;
+}
+#surv-success.show{
+  display:block;
+}
+#surv-success .badge{
+  padding:.4rem .6rem; border-radius:999px; border:1px solid var(--border);
+  background:#0f1a13; font-size:.95rem; display:inline-block; margin:.15rem;
+}
+
+/* Inputs */
+input.choice, .choice input, .order-item select{
+  color: var(--text);
+}
+.riddle-input::placeholder{ color: var(--muted); opacity:.85; }
+
+/* micro animation */
+@keyframes popIn {
+  from { transform: scale(.98); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+.step.done{ outline:2px solid var(--ok); outline-offset:2px; animation: popIn .25s ease }

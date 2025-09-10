@@ -10,7 +10,7 @@ export const ACCEPT = [
 ];
 
 export const HINTS = [
-  "Variegierte Monstera mit cremefarbenen Sprenkeln.",
-  "Entsteht stabil in Gewebekultur; Samen bringen selten Treffer.",
-  "Der Name enthält ein Land in Südostasien ⭐️"
+  "Der Name enthält ein Land in Südostasien ⭐️",
+  "Variegierte Pflanze mit cremefarbenen Sprenkeln.",
+  "Entsteht stabil in Gewebekultur; Samen bringen selten Treffer."
 ];

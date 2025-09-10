@@ -1,0 +1,92 @@
+:root{
+  --bg:#0b1223; --card:#121A2E; --border:#23314f;
+  --text:#E6ECFF; --muted:#9db0d6; --accent:#7dd3fc;
+  --ok:#10b981; --warn:#f59e0b; --err:#ef4444;
+  --shadow:0 10px 30px rgba(0,0,0,.25);
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body.app{
+  margin:0; font-family: ui-rounded, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  color:var(--text);
+  background: radial-gradient(1200px 800px at 50% -200px, #17203c 0%, #0b1223 60%) fixed;
+}
+
+/* Header */
+.topbar{
+  padding:18px 16px 10px; text-align:center; position:sticky; top:0;
+  backdrop-filter:saturate(1.4) blur(8px);
+  background:linear-gradient(180deg, rgba(11,18,35,.9), rgba(11,18,35,.6));
+  border-bottom:1px solid var(--border); z-index:10
+}
+.topbar h1{margin:.2rem 0 .2rem; font-size:1.5rem}
+.subtitle{margin:0 0 .6rem; color:var(--muted)}
+.countdown{margin:.25rem auto .6rem; font-variant-numeric:tabular-nums}
+.progresswrap{height:8px; background:#0e162a; border:1px solid var(--border); border-radius:999px; overflow:hidden; max-width:540px; margin:0 auto}
+.progress{height:100%; width:0%; background:linear-gradient(90deg, #34d399, #60a5fa)}
+.progresslabel{margin:.4rem 0 0; color:var(--muted)}
+.devbadge{margin-left:.5rem; font-size:.7rem; color:#111; background:#fef08a; border-radius:6px; padding:.1rem .35rem; font-weight:700}
+
+/* Navigation */
+.daynav{display:flex; gap:6px; justify-content:center; margin:10px 0 6px; flex-wrap:wrap}
+.daydot{
+  width:16px; height:16px; border-radius:999px; border:1px solid var(--border);
+  background:#101b34; box-shadow: var(--shadow); position:relative;
+}
+.daydot.unlocked{background:#1e293b}
+.daydot.done{background:#10b981}
+.daydot.active{outline:2px solid #60a5fa; outline-offset:2px}
+.daydot[aria-label]{cursor:pointer}
+
+.daycontrols{display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:4px}
+.daylabel{min-width:200px; text-align:center; color:#cfe3ff}
+
+/* Host */
+.dayhost{padding:12px; max-width:920px; margin:0 auto}
+.card{
+  background:linear-gradient(180deg, rgba(18,26,46,1), rgba(18,26,46,.7));
+  border:1px solid var(--border); border-radius:18px; padding:14px; box-shadow:var(--shadow); position:relative; overflow:hidden;
+}
+.card h2{margin:.2rem 0 .4rem; font-size:1.15rem}
+.card p{margin:.4rem 0 .5rem; color:#dbe6ff}
+.hint{color:var(--muted); min-height:1.2em}
+.lock{color:var(--muted); text-align:center}
+
+.choice{display:block; padding:.6rem .75rem; background:#0f172a; border:1px solid var(--border); border-radius:12px; margin:.35rem 0; width:100%}
+
+/* Buttons */
+.btn{
+  appearance:none; border:1px solid var(--border); background:#19223c; color:var(--text);
+  padding:.65rem .95rem; border-radius:12px; font-weight:600; cursor:pointer; box-shadow: var(--shadow);
+}
+.btn:active{transform:translateY(1px)}
+.btn.primary{background:linear-gradient(180deg,#2a5fff,#1e40af); border-color:#284b92}
+.btn.ghostbtn{background:transparent}
+.btn.big{font-size:1.15rem; padding:.9rem 1.2rem}
+.btnrow{display:flex; gap:.5rem; flex-wrap:wrap}
+.link{background:none; border:0; color:#93c5fd; text-decoration:underline; cursor:pointer}
+
+/* Finale */
+.final{
+  max-width:920px; margin:12px auto; background:linear-gradient(180deg, rgba(16,185,129,.08), rgba(59,130,246,.08));
+  border:1px solid var(--border); border-radius:20px; padding:16px; text-align:center;
+}
+.bigmsg{font-size:1.35rem}
+.badgewrap{display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin:.5rem 0}
+.badge{ padding:.4rem .6rem; border-radius:999px; border:1px solid var(--border); background:#0f172a; font-size:.92rem }
+
+#confetti{position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:9999}
+.confetti{ position:absolute; width:10px; height:14px; border-radius:2px; opacity:.9; animation:fall linear forwards; }
+@keyframes fall{ to{ transform:translateY(110vh) rotate(720deg); opacity:1;} }
+
+.foot{padding:16px; text-align:center; color:var(--muted)}
+.sep{opacity:.5;margin:0 .5rem}
+dialog{ border:1px solid var(--border); background:#0b1223; color:var(--text); border-radius:16px; padding:16px; max-width:560px; }
+
+/* Responsive Tweaks */
+@media (min-width:720px){
+  .topbar h1{font-size:1.7rem}
+  .daylabel{min-width:260px}
+}
+button, input, .choice{ touch-action:manipulation }

@@ -1,11 +1,17 @@
 <!doctype html>
 <html lang="de">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>🎉 Geburtstags-Quest · Tagesrätsel</title>
-  <link rel="stylesheet" href="style.css" />
-  <meta name="theme-color" content="#0f172a">
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <title>🎉 Geburtstags-Quest</title>
+
+  <!-- Globales, responsives Grundlayout -->
+  <link rel="stylesheet" href="core/core.css"/>
+
+  <!-- Tages-Stylesheet wird dynamisch gesetzt -->
+  <link id="day-style" rel="stylesheet" href="">
+
+  <meta name="theme-color" content="#0b1223">
 </head>
 <body class="app">
   <header class="topbar">
@@ -26,16 +32,15 @@
     </p>
 
     <nav class="daynav" id="dayNav" aria-label="Tage"></nav>
+
     <div class="daycontrols">
       <button class="btn ghostbtn" id="prevDay" aria-label="Voriger Tag">◀</button>
-      <div id="dayLabel" class="daylabel"></div>
+      <div id="dayLabel" class="daylabel">–</div>
       <button class="btn ghostbtn" id="nextDay" aria-label="Nächster Tag">▶</button>
     </div>
   </header>
 
-  <main id="dayHost" class="dayhost">
-    <!-- Hier rendert das JS den Inhalt pro Tag -->
-  </main>
+  <main id="dayHost" class="dayhost" role="main"></main>
 
   <section class="final" id="final" aria-live="polite" hidden>
     <h2>🎉 Geschafft!</h2>
@@ -64,13 +69,14 @@
     <ul>
       <li>Täglich wird ein neuer Tag freigeschaltet (16.–23.09.).</li>
       <li>Fortschritt bleibt lokal gespeichert.</li>
-      <li>Zum Testen kannst du <code>?dev=1</code> an die URL hängen – dann sind alle Tage offen.</li>
+      <li>Zum Testen: <code>?dev=1</code> an die URL → alle Tage offen.</li>
     </ul>
     <form method="dialog">
       <button class="btn">Okay</button>
     </form>
   </dialog>
 
-  <script src="main.js" defer></script>
+  <!-- Kernlogik (ES-Module) -->
+  <script type="module" src="core/main.js"></script>
 </body>
 </html>

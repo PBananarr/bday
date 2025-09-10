@@ -34,6 +34,7 @@ export function build(root, api){
     </section>
   `;
 
+  const riddleBox = root.querySelector(".riddle");
   const out = root.querySelector("#out");
   const hintBox = root.querySelector("#hints");
   const form = root.querySelector("#f");

@@ -1,0 +1,100 @@
+:root{
+  --bg:#0b1223; --card:#121A2E; --border:#23314f;
+  --text:#E6ECFF; --muted:#9db0d6; --accent:#7dd3fc;
+  --ok:#10b981; --warn:#f59e0b; --err:#ef4444;
+  --shadow:0 10px 30px rgba(0,0,0,.25);
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body.app{
+  margin:0; font-family: ui-rounded, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  color:var(--text); background: radial-gradient(1200px 800px at 50% -200px, #17203c 0%, #0b1223 60%) fixed;
+}
+
+.topbar{padding:18px 16px 10px; text-align:center; position:sticky; top:0; backdrop-filter:saturate(1.4) blur(8px); background:linear-gradient(180deg, rgba(11,18,35,.9), rgba(11,18,35,.6)); border-bottom:1px solid var(--border); z-index:10}
+.topbar h1{margin:.2rem 0 .2rem; font-size:1.5rem}
+.subtitle{margin:0 0 .6rem; color:var(--muted)}
+.countdown{margin:.25rem auto .6rem; font-variant-numeric:tabular-nums}
+.progresswrap{height:8px; background:#0e162a; border:1px solid var(--border); border-radius:999px; overflow:hidden; max-width:540px; margin:0 auto}
+.progress{height:100%; width:0%; background:linear-gradient(90deg, #34d399, #60a5fa)}
+.progresslabel{margin:.4rem 0 0; color:var(--muted)}
+.devbadge{margin-left:.5rem; font-size:.7rem; color:#111; background:#fef08a; border-radius:6px; padding:.1rem .35rem; font-weight:700}
+
+.daynav{display:flex; gap:6px; justify-content:center; margin:10px 0 6px}
+.daydot{
+  width:14px; height:14px; border-radius:999px; border:1px solid var(--border);
+  background:#101b34; box-shadow: var(--shadow); position:relative;
+}
+.daydot.unlocked{background:#1e293b}
+.daydot.done{background:#10b981}
+.daydot.active{outline:2px solid #60a5fa; outline-offset:2px}
+.daydot[aria-label]{cursor:pointer}
+
+.daycontrols{display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:4px}
+.daylabel{min-width:180px; text-align:center; color:#cfe3ff}
+
+.dayhost{padding:12px; max-width:920px; margin:0 auto}
+.card{
+  background:linear-gradient(180deg, rgba(18,26,46,1), rgba(18,26,46,.7));
+  border:1px solid var(--border); border-radius:18px; padding:14px; box-shadow:var(--shadow); position:relative; overflow:hidden;
+}
+.card h2{margin:.2rem 0 .4rem; font-size:1.15rem}
+.card p{margin:.4rem 0 .5rem; color:#dbe6ff}
+.hint{color:var(--muted); min-height:1.2em}
+.lock{color:var(--muted); text-align:center}
+
+.choice{display:block; padding:.35rem .55rem; background:#0f172a; border:1px solid var(--border); border-radius:12px; margin:.35rem 0}
+.choice input{margin-right:.5rem; transform:scale(1.2)}
+
+.btn{
+  appearance:none; border:1px solid var(--border); background:#19223c; color:var(--text);
+  padding:.6rem .9rem; border-radius:12px; font-weight:600; cursor:pointer; box-shadow: var(--shadow);
+}
+.btn:active{transform:translateY(1px)}
+.btn.primary{background:linear-gradient(180deg,#2a5fff,#1e40af); border-color:#284b92}
+.btn.ghostbtn{background:transparent}
+.btn.big{font-size:1.25rem; padding:1rem 1.4rem}
+.btnrow{display:flex; gap:.5rem; flex-wrap:wrap}
+.link{background:none; border:0; color:#93c5fd; text-decoration:underline; cursor:pointer}
+
+.compass{display:grid; place-items:center; padding:.6rem 0}
+.dial{
+  width:150px; height:150px; border-radius:999px; border:2px dashed #3b82f6; display:grid; place-items:center;
+  transition:transform .06s linear; user-select:none;
+}
+.dial span{font-weight:800; letter-spacing:.06em}
+input[type="range"]{ width:100% }
+
+/* Spotlight-Geisterfeld (Tag 3) */
+.ghostfield{
+  position:relative; height:220px; border-radius:16px; border:1px solid var(--border); overflow:hidden; background:#020617;
+}
+.ghost{
+  position:absolute; top:40%; left:60%; transform:translate(-50%,-50%);
+  background:transparent; border:0; font-size:2rem; filter:drop-shadow(0 0 10px #a78bfa); cursor:pointer;
+}
+.spotlight{
+  pointer-events:none; position:absolute; inset:0;
+  --x:50%; --y:50%;
+  background: radial-gradient(120px 120px at var(--x) var(--y), rgba(255,255,255,.85), rgba(255,255,255,.05) 40%, rgba(0,0,0,.92) 41%);
+  mix-blend-mode:screen;
+}
+
+.final{
+  max-width:920px; margin:12px auto; background:linear-gradient(180deg, rgba(16,185,129,.08), rgba(59,130,246,.08));
+  border:1px solid var(--border); border-radius:20px; padding:16px; text-align:center;
+}
+.bigmsg{font-size:1.35rem}
+.badgewrap{display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin:.5rem 0}
+.badge{ padding:.4rem .6rem; border-radius:999px; border:1px solid var(--border); background:#0f172a; font-size:.9rem }
+
+#confetti{position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:9999}
+.confetti{
+  position:absolute; width:10px; height:14px; border-radius:2px; opacity:.9; animation:fall linear forwards;
+}
+@keyframes fall{ to{ transform:translateY(110vh) rotate(720deg); opacity:1;} }
+
+.foot{padding:16px; text-align:center; color:var(--muted)}
+.sep{opacity:.5;margin:0 .5rem}
+dialog{ border:1px solid var(--border); background:#0b1223; color:var(--text); border-radius:16px; padding:16px; max-width:560px; }

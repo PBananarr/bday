@@ -1,6 +1,6 @@
 /* sw.js — Globaler Service Worker für Birthday-Quest */
 
-const VERSION = "v0.0.0.8.";               // <<< bei jedem Release anpassen
+const VERSION = "v0.0.0.9.";               // <<< bei jedem Release anpassen
 const STATIC_CACHE = `bq-static-${VERSION}`;
 const RUNTIME_CACHE = `bq-runtime-${VERSION}`;
 
@@ -11,10 +11,14 @@ const PRECACHE = [
   "./core/core.css",
   "./core/main.js",
 
-  // Tag 1 (Beispiel – weitere Tage ergänzen)
+  // Tag 1
   "./days/tag1-sternbild/sternbild.js",
   "./days/tag1-sternbild/sternbild.css",
   "./days/tag1-sternbild/sternbild_data.js",
+  // Tag 2
+  "./days/tag2-survival/survival.js",
+  "./days/tag2-survival/survival.css",
+  "./days/tag2-survival/survival_form.js",
 ];
 
 // Hilfsfunktion: nur gleiche Origin cachen
@@ -91,10 +95,3 @@ self.addEventListener("fetch", (event) => {
 self.addEventListener("message", (event) => {
   if (event.data === "SKIP_WAITING") self.skipWaiting();
 });
-
-
-
-
-
-
-

@@ -1,13 +1,13 @@
 // Teil A — Regel der 3 (in Reihenfolge der Dringlichkeit)
 export const RULE_OF_THREE = [
-  { key: "air",   label: "Ohne Luft (Atem) – ~3 Minuten" },
-  { key: "shelter", label: "Ohne Schutz/Unterkühlung – ~3 Stunden" },
-  { key: "water", label: "Ohne Wasser – ~3 Tage" },
-  { key: "food",  label: "Ohne Nahrung – ~3 Wochen" },
+  { key: "fire",   label: "Feuer machen" },
+  { key: "shelter", label: "Schutz vor Elementen" },
+  { key: "water", label: "Wasserbeschaffung" },
+  { key: "food",  label: "Nahrung beschaffen" },
 ];
 
 // Korrekte Reihenfolge der Keys (dringend → weniger dringend)
-export const RULE_OF_THREE_ORDER = ["air", "shelter", "water", "food"];
+export const RULE_OF_THREE_ORDER = ["shelter", "water", "fire", "food"];
 
 // Teil B — Zunderwahl (Mehrfachauswahl; genau 2 sind korrekt)
 export const TINDER_OPTIONS = [

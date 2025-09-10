@@ -97,4 +97,13 @@ body.tag-tag1-sternbild .riddle.solved::after{
   to   { transform: scale(1);   opacity: 1; }
 }
 
+body.tag-tag1-sternbild .card h2 {
+  text-align: center;        /* mittig */
+  font-size: 1.3rem;         /* etwas größer, optional */
+  margin-bottom: 0.8rem;     /* etwas mehr Luft nach unten */
+  color: var(--accent);      /* Gold-Akzentfarbe für Sternbild-Theme */
+  letter-spacing: 0.5px;     /* leichte Weite, wirkt edler */
+}
+
+
 

@@ -119,6 +119,149 @@ input.choice, .choice input, .order-item select{ color: var(--text); }
 }
 
 /* ==============================
+   Teil C — Modernes Layout (nur C)
+   ============================== */
+
+/* Kartenraster: mobil 1-spaltig, ab 720px 2-spaltig */
+.c-grid{
+  display:grid;
+  gap:12px;
+}
+@media (min-width:720px){
+  .c-grid{ grid-template-columns: 1fr 1fr; }
+}
+
+/* Card-Container innerhalb Schritt C */
+#stepC .c-card{
+  border:1px solid var(--border);
+  border-radius:14px;
+  background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
+  padding:12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,.25);
+}
+
+/* kompakter, moderner Header */
+.c-head{
+  display:grid; gap:4px; margin-bottom:8px;
+}
+.c-badge{
+  display:inline-flex; align-items:center; justify-content:center;
+  width:28px; height:28px; border-radius:8px;
+  background: #0f1a13;
+  border:1px solid var(--border);
+  color: var(--muted);
+  font-weight:700; font-size:.9rem;
+}
+.c-head h4{
+  margin:0; font-size:1.02rem; color:var(--accent);
+}
+.c-sub{
+  margin:0; color:var(--muted); font-size:.92rem;
+}
+
+/* -----------------------------
+   C1 & C4: Chips (Toggle)
+   ----------------------------- */
+.c-chiprow{
+  display:flex; flex-wrap:wrap; gap:8px;
+}
+
+/* Visueller, aber zugänglicher Input */
+.c-vis{ position:absolute; opacity:0; width:1px; height:1px; pointer-events:none; }
+
+.c-chip{
+  position:relative;
+  display:inline-flex; align-items:center; gap:.45rem;
+  border:1px solid var(--border);
+  background:#0f1a13;
+  padding:.55rem .7rem;
+  border-radius:999px;
+  color:var(--text);
+  cursor:pointer;
+  transition: transform .06s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
+.c-chip:hover{ transform: translateY(-1px); }
+.c-chip:active{ transform: translateY(0); }
+
+.c-chip__label{ line-height:1.2; }
+
+/* Häkchen vor dem Text, wenn aktiv */
+.c-chip__label::before{ content:""; }
+.c-chip input:checked + .c-chip__label::before{
+  content:"✓";
+  margin-right:.45rem;
+}
+
+/* aktiver Zustand über :has – Ring/Glow */
+.c-chip:has(input:checked){
+  border-color: rgba(34,197,94,.6);
+  box-shadow: 0 0 0 2px rgba(34,197,94,.35) inset, 0 6px 16px rgba(0,0,0,.25);
+  background: linear-gradient(180deg, rgba(34,197,94,.12), rgba(34,197,94,.06));
+}
+
+
+/* -----------------------------
+   C2: moderne Reihenfolge-UI (Selects behalten)
+   ----------------------------- */
+.c-order{ display:grid; gap:8px; }
+.c-order__row{
+  display:grid; grid-template-columns: 1fr auto; gap:8px;
+  align-items:center;
+  background:#0e170f; border:1px solid #2b3c2f; border-radius:12px; padding:8px;
+}
+.c-order__label{ font-size:.96rem; }
+.c-select{
+  appearance:none;
+  border:1px solid #2b3c2f; background:#0f1a13; color:var(--text);
+  padding:.48rem .65rem; border-radius:10px;
+  min-width:64px; text-align:center;
+}
+.c-order__sel{ display:flex; align-items:center; }
+
+/* -----------------------------
+   C3: Szenarien als Card-Radios
+   ----------------------------- */
+.c-cards{ display:grid; gap:10px; }
+.c-scenario{
+  border:1px solid var(--border); border-radius:12px; padding:10px;
+  background:#0f1a13; margin:0;
+}
+.c-scenario__q{
+  margin:0 0 .5rem; color:var(--text); font-weight:600; font-size:.98rem;
+}
+.c-cardradio{
+  display:block; margin:.35rem 0 0; cursor:pointer;
+}
+.c-cardradio__body{
+  display:flex; align-items:center; gap:10px;
+  border:1px solid #2b3c2f; border-radius:12px; padding:.55rem .7rem;
+  background:#0e170f;
+  transition: box-shadow .2s ease, transform .06s ease, border-color .2s ease, background .2s ease;
+}
+.c-cardradio__icon{ font-size:1.05rem; opacity:.9; }
+.c-cardradio__label{ font-size:.96rem; }
+
+.c-cardradio:hover .c-cardradio__body{ transform: translateY(-1px); }
+.c-cardradio:active .c-cardradio__body{ transform: translateY(0); }
+.c-cardradio input:checked ~ .c-cardradio__body{
+  border-color: rgba(96,165,250,.6);
+  box-shadow: 0 0 0 2px rgba(96,165,250,.35) inset, 0 6px 16px rgba(0,0,0,.25);
+  background: linear-gradient(180deg, rgba(96,165,250,.12), rgba(96,165,250,.06));
+}
+
+/* Abstände/Flexibilität auf sehr kleinen Geräten */
+@media (max-width:420px){
+  #stepC .c-card{ padding:10px; }
+  .c-order__row{ grid-template-columns: 1fr 86px; }
+  .c-scenario__q{ font-size:.95rem; }
+  .c-cardradio__label{ font-size:.94rem; }
+  .c-chip{ padding:.5rem .65rem; }
+}
+
+
+
+/* ==============================
    Teil D – Pflanzen: Grid mit Areas (robust)
    ============================== */
 
@@ -206,3 +349,4 @@ input.choice, .choice input, .order-item select{ color: var(--text); }
 
 /* Robustheit */
 *, *::before, *::after{ box-sizing: border-box; }
+

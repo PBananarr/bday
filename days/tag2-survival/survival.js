@@ -297,148 +297,158 @@ function autoScrollIfNeeded(clientY) {
   });
 
   /* ===== Step C – Fortgeschritten: Wasser ===== */
-  const c1Host = $("#c1");
-  const c2Host = $("#c2");
-  const c3Host = $("#c3");
-  const c4Host = $("#c4");
-  const fbC = $("#fbC");
+const c1Host = $("#c1");
+const c2Host = $("#c2");
+const c3Host = $("#c3");
+const c4Host = $("#c4");
+const fbC = $("#fbC");
 
-  (function renderC1() {
-    const wrap = document.createElement("div");
-    wrap.className = "step-sub";
-    wrap.innerHTML = `<h4 style="margin:.4rem 0;">C1) Wasserquellen erkennen – wähle alle verlässlichen Anzeichen</h4>`;
-    C1_SIGNS.forEach(opt => {
-      const id = `c1_${opt.key}`;
-      const row = document.createElement("label");
-      row.style.display = "block";
-      row.style.margin = ".25rem 0";
-      row.innerHTML = `
-        <input class="choice" type="checkbox" id="${id}" data-key="${opt.key}">
-        <span>${opt.label}</span>
-      `;
-      wrap.appendChild(row);
-    });
-    c1Host.appendChild(wrap);
-  })();
-
-  (function renderC2() {
-    const wrap = document.createElement("div");
-    wrap.className = "step-sub";
-    wrap.innerHTML = `<h4 style="margin:.6rem 0 .3rem;">C2) Improvisierter Filter – ordne die Schichten (1 = oben / zuerst)</h4>`;
-    const list = document.createElement("div");
-    list.className = "order-list";
-    C2_FILTER_LAYERS.forEach(layer => {
-      const row = document.createElement("div");
-      row.className = "order-item";
-      row.innerHTML = `
-        <div style="flex:1">${layer.label}</div>
-        <label>Rang:
-          <select data-key="${layer.key}">
-            <option value="">–</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-          </select>
-        </label>
-      `;
-      list.appendChild(row);
-    });
-    wrap.appendChild(list);
-    c2Host.appendChild(wrap);
-  })();
-
-  (function renderC3() {
-    const wrap = document.createElement("div");
-    wrap.className = "step-sub";
-    wrap.innerHTML = `<h4 style="margin:.6rem 0 .3rem;">C3) Welche Methode passt zum Szenario?</h4>`;
-    C3_SCENARIOS.forEach(sc => {
-      const block = document.createElement("div");
-      block.style.border = "1px solid var(--border)";
-      block.style.borderRadius = "10px";
-      block.style.padding = ".6rem";
-      block.style.margin = ".35rem 0";
-      const name = `sc_${sc.key}`;
-      const opts = sc.options.map(o => `
-        <label style="display:block;margin:.2rem 0;">
-          <input class="choice" type="radio" name="${name}" value="${o.key}">
-          <span>${o.label}</span>
-        </label>
-      `).join("");
-      block.innerHTML = `<div style="margin-bottom:.35rem">${sc.question}</div>${opts}`;
-      wrap.appendChild(block);
-    });
-    c3Host.appendChild(wrap);
-  })();
-
-  (function renderC4() {
-    const wrap = document.createElement("div");
-    wrap.className = "step-sub";
-    wrap.innerHTML = `<h4 style="margin:.6rem 0 .3rem;">C4) Wähle die korrekten Aussagen</h4>`;
-    C4_TIPS.forEach(opt => {
-      const id = `c4_${opt.key}`;
-      const row = document.createElement("label");
-      row.style.display = "block";
-      row.style.margin = ".25rem 0";
-      row.innerHTML = `
-        <input class="choice" type="checkbox" id="${id}" data-key="${opt.key}">
-        <span>${opt.label}</span>
-      `;
-      wrap.appendChild(row);
-    });
-    c4Host.appendChild(wrap);
-  })();
-
-  $("#checkC").addEventListener("click", () => {
-    const chosenC1 = new Set(
-      Array.from(c1Host.querySelectorAll('input[type="checkbox"]:checked'))
-        .map(i => i.dataset.key)
-    );
-    const correctC1 = new Set(C1_SIGNS.filter(x => x.correct).map(x => x.key));
-    const allC1 = new Set(C1_SIGNS.map(x => x.key));
-    const okC1 = [...allC1].every(k => correctC1.has(k) === chosenC1.has(k));
-
-    const selMap = {};
-    let validC2 = true;
-    c2Host.querySelectorAll("select[data-key]").forEach(sel => {
-      if (!sel.value) validC2 = false;
-      selMap[sel.value] = sel.dataset.key;
-    });
-    const okC2 = validC2 &&
-      selMap["1"] === C2_FILTER_ORDER[0] &&
-      selMap["2"] === C2_FILTER_ORDER[1] &&
-      selMap["3"] === C2_FILTER_ORDER[2] &&
-      selMap["4"] === C2_FILTER_ORDER[3];
-
-    const okC3 = C3_SCENARIOS.every(sc => {
-      const selected = (c3Host.querySelector(`input[name="sc_${sc.key}"]:checked`) || {}).value;
-      return selected === sc.answer;
-    });
-
-    const chosenC4 = new Set(
-      Array.from(c4Host.querySelectorAll('input[type="checkbox"]:checked')).map(i => i.dataset.key)
-    );
-    const correctC4 = new Set(C4_TIPS.filter(x => x.correct).map(x => x.key));
-    const allC4 = new Set(C4_TIPS.map(x => x.key));
-    const okC4 = [...allC4].every(k => correctC4.has(k) === chosenC4.has(k));
-
-    const ok = okC1 && okC2 && okC3 && okC4;
-    markDone($("#stepC"), ok);
-
-    if (!ok) {
-      fbC.className = "feedback err";
-      const pieces = [
-        okC1 ? null : "C1",
-        okC2 ? null : "C2",
-        okC3 ? null : "C3",
-        okC4 ? null : "C4",
-      ].filter(Boolean);
-      fbC.textContent = `Noch nicht ganz – prüfe: ${pieces.join(", ")}.`;
-    } else {
-      fbC.className = "feedback ok";
-      fbC.textContent = "Wasser-Check bestanden! 💧";
-    }
+/* C-Wrapper: 2-spaltiges Grid (mobil 1-spaltig) */
+(function wrapCAsGrid(){
+  const grid = document.createElement("div");
+  grid.className = "c-grid";
+  // c1..c4 in Karten stecken
+  [c1Host, c2Host, c3Host, c4Host].forEach(h => {
+    const card = document.createElement("div");
+    card.className = "c-card";
+    // move existing host into card
+    h.parentNode.insertBefore(card, h);
+    card.appendChild(h);
   });
+})();
+
+/* C1 — Wasserquellen erkennen (Chip-Toggles) */
+(function renderC1() {
+  const wrap = document.createElement("div");
+  wrap.className = "step-sub";
+  wrap.innerHTML = `
+    <div class="c-head">
+      <span class="c-badge">C1</span>
+      <h4>Wasserquellen erkennen</h4>
+      <p class="c-sub">Wähle alle verlässlichen Anzeichen</p>
+    </div>
+    <div class="c-chiprow" role="group" aria-label="Anzeichen">
+    </div>
+  `;
+  const chiprow = wrap.querySelector(".c-chiprow");
+  C1_SIGNS.forEach(opt => {
+    const id = `c1_${opt.key}`;
+    const label = document.createElement("label");
+    label.className = "c-chip";
+    label.setAttribute("for", id);
+    label.innerHTML = `
+      <input class="choice c-vis" type="checkbox" id="${id}" data-key="${opt.key}">
+      <span class="c-chip__label">${opt.label}</span>
+    `;
+    chiprow.appendChild(label);
+  });
+  c1Host.innerHTML = "";
+  c1Host.appendChild(wrap);
+})();
+
+/* C2 — Improvisierter Filter (modernisierte Reihenfolge-UI) */
+(function renderC2() {
+  const wrap = document.createElement("div");
+  wrap.className = "step-sub";
+  wrap.innerHTML = `
+    <div class="c-head">
+      <span class="c-badge">C2</span>
+      <h4>Improvisierter Filter</h4>
+      <p class="c-sub">Ordne die Schichten (1 = oben / zuerst)</p>
+    </div>
+    <div class="c-order">
+      ${C2_FILTER_LAYERS.map(layer => `
+        <div class="c-order__row">
+          <div class="c-order__label">${layer.label}</div>
+          <div class="c-order__sel">
+            <select data-key="${layer.key}" class="c-select">
+              <option value="">–</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+            </select>
+          </div>
+        </div>
+      `).join("")}
+    </div>
+  `;
+  c2Host.innerHTML = "";
+  c2Host.appendChild(wrap);
+})();
+
+/* C3 — Szenarien (Card-Radios) */
+(function renderC3() {
+  const wrap = document.createElement("div");
+  wrap.className = "step-sub";
+  wrap.innerHTML = `
+    <div class="c-head">
+      <span class="c-badge">C3</span>
+      <h4>Welche Methode passt?</h4>
+      <p class="c-sub">Tippe die passende Lösung pro Szenario</p>
+    </div>
+    <div class="c-cards"></div>
+  `;
+  const list = wrap.querySelector(".c-cards");
+
+  C3_SCENARIOS.forEach(sc => {
+    const group = document.createElement("fieldset");
+    group.className = "c-scenario";
+    const legendText = sc.question;
+    group.innerHTML = `<legend class="c-scenario__q">${legendText}</legend>`;
+
+    sc.options.forEach(o => {
+      const id = `sc_${sc.key}_${o.key}`;
+      const card = document.createElement("label");
+      card.className = "c-cardradio";
+      card.setAttribute("for", id);
+      card.innerHTML = `
+        <input class="choice c-vis" type="radio" id="${id}" name="sc_${sc.key}" value="${o.key}">
+        <div class="c-cardradio__body">
+          <div class="c-cardradio__icon">💧</div>
+          <div class="c-cardradio__label">${o.label}</div>
+        </div>
+      `;
+      group.appendChild(card);
+    });
+
+    list.appendChild(group);
+  });
+
+  c3Host.innerHTML = "";
+  c3Host.appendChild(wrap);
+})();
+
+/* C4 — Tipps/Hacks (Chip-Toggles) */
+(function renderC4() {
+  const wrap = document.createElement("div");
+  wrap.className = "step-sub";
+  wrap.innerHTML = `
+    <div class="c-head">
+      <span class="c-badge">C4</span>
+      <h4>Wasser – richtig handeln</h4>
+      <p class="c-sub">Wähle die korrekten Aussagen</p>
+    </div>
+    <div class="c-chiprow" role="group" aria-label="Tipps"></div>
+  `;
+  const chiprow = wrap.querySelector(".c-chiprow");
+
+  C4_TIPS.forEach(opt => {
+    const id = `c4_${opt.key}`;
+    const label = document.createElement("label");
+    label.className = "c-chip";
+    label.setAttribute("for", id);
+    label.innerHTML = `
+      <input class="choice c-vis" type="checkbox" id="${id}" data-key="${opt.key}">
+      <span class="c-chip__label">${opt.label}</span>
+    `;
+    chiprow.appendChild(label);
+  });
+
+  c4Host.innerHTML = "";
+  c4Host.appendChild(wrap);
+})();
+
 
   /* ===== Step D – Profi: Pflanzenerkennung (Drag & Drop, freie Paarbildung) ===== */
   const dBank  = $("#dBank");

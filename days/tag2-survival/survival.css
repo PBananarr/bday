@@ -34,8 +34,16 @@ body.tag-tag2-survival .progress{
 .step{
   border:1px solid var(--border); border-radius:14px; padding:12px;
   background: rgba(255,255,255,0.02);
+  margin-bottom:28px;   /* mehr Abstand zwischen Sektionen */
 }
-.step h3{ margin:.15rem 0 .35rem; font-size:1.05rem; color:var(--accent); text-align:left; }
+.step:last-child{ margin-bottom:0; }
+
+.step h3{
+  margin:.15rem 0 .35rem;
+  font-size:1.05rem;
+  color:var(--accent);
+  text-align:center;    /* Überschriften mittig */
+}
 .step .hint{ color:var(--muted) }
 
 .feedback{

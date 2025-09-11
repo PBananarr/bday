@@ -95,9 +95,10 @@ export function build(root, api) {
       <div id="surv-success">
         <p class="feedback ok"><strong>Stark!</strong> Du hast alle Survival-Checks bestanden. 🏕️</p>
         <div>
-          <span class="badge">🧭 Orientierung</span>
-          <span class="badge">🔥 Feuer</span>
+          <span class="badge">🧭 Priorisierung</span>
+          <span class="badge">🪓 Werkzeuge</span>
           <span class="badge">💧 Wasser</span>
+          <span class="badge">🌿 Pflanzen</span>
         </div>
       </div>
     </section>

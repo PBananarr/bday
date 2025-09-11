@@ -29,6 +29,7 @@ body.tag-tag2-survival .progress{
   background: linear-gradient(90deg, #fb923c, #f59e0b);
 }
 
+/* Card/Step-Grundlayout */
 .surv-wrap{ display:grid; gap:12px; }
 .step{
   border:1px solid var(--border); border-radius:14px; padding:12px;
@@ -122,12 +123,14 @@ input.choice, .choice input, .order-item select{ color: var(--text); }
    Teil C — Modernes Layout (nur C)
    ============================== */
 
-/* Kartenraster: mobil 1-spaltig, ab 720px 2-spaltig */
+/* Kartenraster: mobil 1 Spalte; ab 600px 2 Spalten (iPhone quer, Tablets, Laptops) */
 .c-grid{
-  display:grid;
-  gap:12px;
+  display: grid;
+  gap: 12px;           /* Abstand zwischen den Karten */
+  margin-top: 8px;     /* etwas Luft unter der Hint-Zeile */
+  grid-template-columns: 1fr;
 }
-@media (min-width:720px){
+@media (min-width:600px){
   .c-grid{ grid-template-columns: 1fr 1fr; }
 }
 
@@ -200,7 +203,6 @@ input.choice, .choice input, .order-item select{ color: var(--text); }
   background: linear-gradient(180deg, rgba(34,197,94,.12), rgba(34,197,94,.06));
 }
 
-
 /* -----------------------------
    C2: moderne Reihenfolge-UI (Selects behalten)
    ----------------------------- */
@@ -258,8 +260,6 @@ input.choice, .choice input, .order-item select{ color: var(--text); }
   .c-cardradio__label{ font-size:.94rem; }
   .c-chip{ padding:.5rem .65rem; }
 }
-
-
 
 /* ==============================
    Teil D – Pflanzen: Grid mit Areas (robust)
@@ -349,4 +349,3 @@ input.choice, .choice input, .order-item select{ color: var(--text); }
 
 /* Robustheit */
 *, *::before, *::after{ box-sizing: border-box; }
-

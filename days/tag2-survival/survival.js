@@ -305,17 +305,23 @@ const fbC = $("#fbC");
 
 /* C-Wrapper: 2-spaltiges Grid (mobil 1-spaltig) */
 (function wrapCAsGrid(){
+  const stepC = document.getElementById("stepC");
+  const btnRow = stepC.querySelector(".btnrow"); // Grid vor dem Button einfügen
+
+  // Grid erstellen und an die richtige Stelle setzen
   const grid = document.createElement("div");
   grid.className = "c-grid";
-  // c1..c4 in Karten stecken
+  stepC.insertBefore(grid, btnRow);
+
+  // c1..c4 in Karten packen und INS GRID verschieben
   [c1Host, c2Host, c3Host, c4Host].forEach(h => {
     const card = document.createElement("div");
     card.className = "c-card";
-    // move existing host into card
-    h.parentNode.insertBefore(card, h);
-    card.appendChild(h);
+    card.appendChild(h);     // Host in die Card verschieben
+    grid.appendChild(card);  // Card ins Grid
   });
 })();
+
 
 /* C1 — Wasserquellen erkennen (Chip-Toggles) */
 (function renderC1() {

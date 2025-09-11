@@ -5,12 +5,12 @@ import {
   D_PLANT_PAIRS, D_PLANT_CATEGORIES
 } from "./survival_data.js";
 
-
 /**
  * Tag 2 – Survival
  * A) Regel der 3
  * B) Improvisierte Werkzeuge – Drag&Drop Matching
  * C) Fortgeschritten – Wasserversorgung
+ * D) Profi – Pflanzenerkennung (Drag&Drop-Tabelle mit freiem Paaren)
  */
 export function build(root, api) {
   root.innerHTML = `
@@ -58,7 +58,6 @@ export function build(root, api) {
           <div class="feedback" id="fbB"></div>
         </div>
 
-
         <!-- Step C: Fortgeschritten – Wasser -->
         <div class="step" id="stepC">
           <h3>C) Fortgeschritten – Wasserversorgung</h3>
@@ -74,14 +73,12 @@ export function build(root, api) {
           </div>
           <div class="feedback" id="fbC"></div>
         </div>
-
       </div> <!-- schließt .surv-wrap -->
-
 
       <!-- Step D: Profi – Pflanzenerkennung (Drag & Drop Tabelle) -->
       <div class="step" id="stepD">
         <h3>D) Profi – Pflanzenerkennung</h3>
-        <p class="hint">Ziehe die Bilder in die passende Spalte. Stimmt die Zuordnung, erscheint der Pflanzenname.</p>
+        <p class="hint">Ziehe die Bilder in die passende Spalte. Richtig ist eine Zeile, wenn links (Essbar/Heilpflanze) und rechts (Giftig) liegen <em>und</em> beide Bilder zum selben Paar gehören. Dann erscheint der Pflanzenname.</p>
 
         <!-- Bilderbank -->
         <div id="dBank" class="plant-bank"></div>
@@ -95,7 +92,6 @@ export function build(root, api) {
         <div class="feedback" id="fbD"></div>
       </div>
 
-
       <div id="surv-success">
         <p class="feedback ok"><strong>Stark!</strong> Du hast alle Survival-Checks bestanden. 🏕️</p>
         <div>
@@ -108,7 +104,7 @@ export function build(root, api) {
   `;
 
   /* ===== Helpers ===== */
-  const $ = (s, p = root) => p.querySelector(s);
+  const $  = (s, p = root) => p.querySelector(s);
   const $$ = (s, p = root) => Array.from(p.querySelectorAll(s));
   const markDone = (el, ok = true) => {
     el.classList.toggle("done", ok);
@@ -151,7 +147,6 @@ export function build(root, api) {
       $("#fbA").textContent = "Bitte alle Ränge setzen (1–4).";
       return;
     }
-    // Behalte deine bestehende Logik
     const correct =
       chosen["3"] === "fire" &&
       chosen["1"] === "shelter" &&
@@ -173,7 +168,6 @@ export function build(root, api) {
     return arr;
   }
 
-  // Chips rendern (damit wir beim Reset neu mischen können)
   function renderChips(list) {
     chipsHost.innerHTML = "";
     list.forEach(it => {
@@ -185,7 +179,7 @@ export function build(root, api) {
       chipsHost.appendChild(chip);
     });
   }
-  renderChips(shuffle([...B_ITEMS])); // initial gemischt
+  renderChips(shuffle([...B_ITEMS]));
 
   // Drag per Pointer Events
   let drag = { el: null, ox: 0, oy: 0, from: null };
@@ -200,17 +194,15 @@ export function build(root, api) {
     drag.oy = e.clientY - r.top;
     chip.style.position = "fixed";
     chip.style.left = r.left + "px";
-    chip.style.top = r.top + "px";
+    chip.style.top  = r.top  + "px";
     chip.style.zIndex = "9999";
     chip.setPointerCapture?.(e.pointerId);
   }
-
   function onMove(e) {
     if (!drag.el) return;
     drag.el.style.left = (e.clientX - drag.ox) + "px";
-    drag.el.style.top = (e.clientY - drag.oy) + "px";
+    drag.el.style.top  = (e.clientY - drag.oy) + "px";
   }
-
   function onUp(e) {
     if (!drag.el) return;
     drag.el.releasePointerCapture?.(e.pointerId);
@@ -230,7 +222,6 @@ export function build(root, api) {
       }
     }
     if (!placed) {
-      // zurück in Bank
       chip.style.position = ""; chip.style.left = ""; chip.style.top = ""; chip.style.zIndex = "";
       chipsHost.appendChild(chip);
     }
@@ -258,21 +249,17 @@ export function build(root, api) {
   }
 
   $("#resetB").addEventListener("click", () => {
-    // Buckets leeren & Status zurücksetzen
     buckets.forEach(b => {
       const drop = b.el.querySelector(".b-drop");
       if (drop) drop.innerHTML = "";
       b.el.classList.remove("ok");
     });
     fbB.className = "feedback"; fbB.textContent = "";
-
-    // Bank neu & gemischt aufbauen
     renderChips(shuffle([...B_ITEMS]));
     updateBucketMeta();
   });
 
   $("#checkB").addEventListener("click", () => {
-    // Prüfkriterium: Jeder Bucket >= minPerBucket korrekte Items
     updateBucketMeta();
     const ok = buckets.every(b => b.el.classList.contains("ok"));
     markDone($("#stepB"), ok);
@@ -292,7 +279,6 @@ export function build(root, api) {
   const c4Host = $("#c4");
   const fbC = $("#fbC");
 
-  // C1 — Anzeichen (Checkboxen)
   (function renderC1() {
     const wrap = document.createElement("div");
     wrap.className = "step-sub";
@@ -311,7 +297,6 @@ export function build(root, api) {
     c1Host.appendChild(wrap);
   })();
 
-  // C2 — Filter bauen (Reihenfolge 1..4)
   (function renderC2() {
     const wrap = document.createElement("div");
     wrap.className = "step-sub";
@@ -339,7 +324,6 @@ export function build(root, api) {
     c2Host.appendChild(wrap);
   })();
 
-  // C3 — Szenarien (Radio)
   (function renderC3() {
     const wrap = document.createElement("div");
     wrap.className = "step-sub";
@@ -363,7 +347,6 @@ export function build(root, api) {
     c3Host.appendChild(wrap);
   })();
 
-  // C4 — Tipps/Hacks (Checkboxen)
   (function renderC4() {
     const wrap = document.createElement("div");
     wrap.className = "step-sub";
@@ -382,9 +365,7 @@ export function build(root, api) {
     c4Host.appendChild(wrap);
   })();
 
-  // Prüfen
   $("#checkC").addEventListener("click", () => {
-    // C1 auswerten
     const chosenC1 = new Set(
       Array.from(c1Host.querySelectorAll('input[type="checkbox"]:checked'))
         .map(i => i.dataset.key)
@@ -393,7 +374,6 @@ export function build(root, api) {
     const allC1 = new Set(C1_SIGNS.map(x => x.key));
     const okC1 = [...allC1].every(k => correctC1.has(k) === chosenC1.has(k));
 
-    // C2 auswerten
     const selMap = {};
     let validC2 = true;
     c2Host.querySelectorAll("select[data-key]").forEach(sel => {
@@ -406,13 +386,11 @@ export function build(root, api) {
       selMap["3"] === C2_FILTER_ORDER[2] &&
       selMap["4"] === C2_FILTER_ORDER[3];
 
-    // C3 auswerten
     const okC3 = C3_SCENARIOS.every(sc => {
       const selected = (c3Host.querySelector(`input[name="sc_${sc.key}"]:checked`) || {}).value;
       return selected === sc.answer;
     });
 
-    // C4 auswerten
     const chosenC4 = new Set(
       Array.from(c4Host.querySelectorAll('input[type="checkbox"]:checked')).map(i => i.dataset.key)
     );
@@ -438,137 +416,194 @@ export function build(root, api) {
     }
   });
 
-  /* ===== Step D – Profi: Pflanzenerkennung (Drag & Drop) ===== */
-  const dBank = $("#dBank");
+  /* ===== Step D – Profi: Pflanzenerkennung (Drag & Drop, freie Paarbildung) ===== */
+  const dBank  = $("#dBank");
   const dTable = $("#dTable");
-  const fbD = $("#fbD");
+  const fbD    = $("#fbD");
 
-  // Tabelle aufbauen (Headerzeile + Paare)
-  (function renderDTable() {
-    // Header
+  // Tabelle aufbauen
+  (function renderDTable(){
     const header = document.createElement("div");
     header.className = "pt-row pt-head";
     header.innerHTML = `
-    <div class="pt-col pt-pair"></div>
-    <div class="pt-col pt-headcol">${D_PLANT_CATEGORIES.edible}</div>
-    <div class="pt-col pt-headcol">${D_PLANT_CATEGORIES.toxic}</div>
-  `;
+      <div class="pt-col pt-pair"></div>
+      <div class="pt-col pt-headcol">${D_PLANT_CATEGORIES.edible}</div>
+      <div class="pt-col pt-headcol">${D_PLANT_CATEGORIES.toxic}</div>
+    `;
     dTable.appendChild(header);
 
-    // Paare
     D_PLANT_PAIRS.forEach(pair => {
       const row = document.createElement("div");
       row.className = "pt-row";
       row.dataset.pair = pair.key;
       row.innerHTML = `
-      <div class="pt-col pt-pair"><strong>${pair.title}</strong></div>
-      <div class="pt-col pt-drop" data-pair="${pair.key}" data-accept="edible">
-        <div class="pt-dropinner"><span class="pt-placeholder">hierhin ziehen</span></div>
-      </div>
-      <div class="pt-col pt-drop" data-pair="${pair.key}" data-accept="toxic">
-        <div class="pt-dropinner"><span class="pt-placeholder">hierhin ziehen</span></div>
-      </div>
-    `;
+        <div class="pt-col pt-pair"><strong>${pair.title}</strong></div>
+        <div class="pt-col pt-drop" data-accept="edible">
+          <div class="pt-dropinner"><span class="pt-placeholder">hierhin ziehen</span></div>
+        </div>
+        <div class="pt-col pt-drop" data-accept="toxic">
+          <div class="pt-dropinner"><span class="pt-placeholder">hierhin ziehen</span></div>
+        </div>
+      `;
       dTable.appendChild(row);
     });
   })();
 
-  // Bilderbank aufbauen (alle Items gemischt)
-  (function renderBank() {
-    const items = D_PLANT_PAIRS.flatMap(p => p.items.map(it => ({ ...it, pair: p.key })));
-    // Shuffle
-    for (let i = items.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1));[items[i], items[j]] = [items[j], items[i]]; }
+  // Bilderbank aufbauen
+  (function renderBank(){
+    const items = D_PLANT_PAIRS.flatMap(p => p.items.map(it => ({...it, pair:p.key})));
+    for(let i=items.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [items[i],items[j]]=[items[j],items[i]]; }
     items.forEach(it => {
       const card = document.createElement("div");
       card.className = "plant-chip";
-      card.dataset.key = it.key;
-      card.dataset.pair = it.pair;
-      card.dataset.ans = it.category; // "edible" | "toxic"
+      card.dataset.key   = it.key;
+      card.dataset.pair  = it.pair;
+      card.dataset.ans   = it.category; // "edible" | "toxic"
       card.dataset.label = `${it.label} (${it.latin})`;
       card.innerHTML = `<img loading="lazy" src="${it.src}" alt="${it.label}">`;
       dBank.appendChild(card);
     });
   })();
 
-  // --- Drag per Pointer Events (wie in Step B) ---
-  let dDrag = { el: null, ox: 0, oy: 0 };
+  // Drag per Pointer Events
+  let dDrag = { el: null, ox: 0, oy: 0, from: null };
 
-  function dDown(e) {
+  function dDown(e){
     const chip = e.target.closest(".plant-chip");
-    if (!chip) return;
+    if(!chip) return;
     dDrag.el = chip;
+    dDrag.from = chip.parentElement; // Ursprung merken
     const r = chip.getBoundingClientRect();
     dDrag.ox = e.clientX - r.left;
     dDrag.oy = e.clientY - r.top;
     chip.style.position = "fixed";
-    chip.style.left = r.left + "px";
-    chip.style.top = r.top + "px";
-    chip.style.zIndex = "9999";
+    chip.style.left = r.left+"px";
+    chip.style.top  = r.top +"px";
+    chip.style.zIndex="9999";
     chip.classList.add("dragging");
     chip.setPointerCapture?.(e.pointerId);
   }
-  function dMove(e) {
-    if (!dDrag.el) return;
+
+  function dMove(e){
+    if(!dDrag.el) return;
     dDrag.el.style.left = (e.clientX - dDrag.ox) + "px";
-    dDrag.el.style.top = (e.clientY - dDrag.oy) + "px";
+    dDrag.el.style.top  = (e.clientY - dDrag.oy) + "px";
   }
-  function dUp(e) {
-    if (!dDrag.el) return;
+
+  function resetCell(cell){
+    if(!cell || !cell.classList.contains("pt-drop")) return;
+    cell.classList.remove("ok","err","filled");
+    cell.querySelector(".pt-name")?.remove();
+    if(!cell.querySelector(".pt-dropinner")){
+      const inner = document.createElement("div");
+      inner.className = "pt-dropinner";
+      inner.innerHTML = `<span class="pt-placeholder">hierhin ziehen</span>`;
+      cell.prepend(inner);
+    }else{
+      cell.querySelector(".pt-dropinner").innerHTML = `<span class="pt-placeholder">hierhin ziehen</span>`;
+    }
+  }
+
+  function flashErr(cell){
+    cell.classList.add("err");
+    setTimeout(()=>cell.classList.remove("err"), 450);
+  }
+
+  function getRowCells(row){
+    const cells = $$(".pt-drop", row);
+    const edible = cells.find(c => c.dataset.accept === "edible");
+    const toxic  = cells.find(c => c.dataset.accept === "toxic");
+    return { edible, toxic };
+  }
+
+  // Zeile ist korrekt, wenn beide Seiten gefüllt und Paar-Keys gleich
+  function evaluateRow(row){
+    if(!row || row.classList.contains("pt-head")) return;
+    const {edible, toxic} = getRowCells(row);
+    const chipE = edible?.querySelector(".plant-chip");
+    const chipT = toxic?.querySelector(".plant-chip");
+
+    [edible, toxic].forEach(c => c && c.classList.remove("ok","err"));
+
+    if(!chipE || !chipT){
+      row.classList.remove("row-ok");
+      return;
+    }
+    const samePair = chipE.dataset.pair === chipT.dataset.pair;
+    if(samePair){
+      edible.classList.add("ok");
+      toxic.classList.add("ok");
+      row.classList.add("row-ok");
+    }else{
+      edible.classList.add("err");
+      toxic.classList.add("err");
+      row.classList.remove("row-ok");
+    }
+  }
+
+  function dUp(e){
+    if(!dDrag.el) return;
     dDrag.el.releasePointerCapture?.(e.pointerId);
     const chip = dDrag.el;
 
-    // Drop-Ziele checken
     const drops = $$(".pt-drop", dTable);
-    let placed = false, correct = false, targetCell = null;
+    let placed = false, targetCell = null;
 
-    for (const cell of drops) {
+    for(const cell of drops){
       const r = cell.getBoundingClientRect();
-      const hit = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
-      if (!hit) continue;
+      const hit = e.clientX>=r.left && e.clientX<=r.right && e.clientY>=r.top && e.clientY<=r.bottom;
+      if(!hit) continue;
 
-      // Regel: Bild muss in die Zelle seines Paares & akzeptierte Kategorie
-      const okPair = (cell.dataset.pair === chip.dataset.pair);
-      const okCat = (cell.dataset.accept === chip.dataset.ans);
-
-      if (okPair && okCat) {
-        correct = true;
-        targetCell = cell;
-      } else {
-        targetCell = cell; // gemerkt für „falsch“-Feedback
-      }
+      const okCat = (cell.dataset.accept === chip.dataset.ans); // nur Spaltenregel
+      targetCell = cell;
       placed = true;
+
+      if(!okCat){
+        flashErr(cell);
+        break;
+      }
+
+      // Wenn Zelle belegt: altes Bild in Bank und Zelle sauber resetten
+      const already = cell.querySelector(".plant-chip");
+      if(already){
+        dBank.appendChild(already);
+        resetCell(cell);
+      }
+
+      // platzieren
+      cell.querySelector(".pt-dropinner")?.remove();
+      cell.appendChild(chip);
+      cell.classList.add("filled");
+
+      // Namen anzeigen
+      let name = cell.querySelector(".pt-name");
+      if(!name){
+        name = document.createElement("div");
+        name.className = "pt-name";
+        cell.appendChild(name);
+      }
+      name.textContent = chip.dataset.label;
+
       break;
     }
 
-    // zurücksetzen Position
-    chip.style.position = ""; chip.style.left = ""; chip.style.top = ""; chip.style.zIndex = "";
+    // Position reset
+    chip.style.position=""; chip.style.left=""; chip.style.top=""; chip.style.zIndex="";
     chip.classList.remove("dragging");
 
-    if (!placed) {
-      // zurück in Bank
+    if(!placed){
       dBank.appendChild(chip);
-    } else if (correct) {
-      const inner = targetCell.querySelector(".pt-dropinner");
-      inner.innerHTML = "";           // Platzhalter weg
-      inner.appendChild(chip);        // Bild in Zelle
-      targetCell.classList.add("ok"); // grün markieren
-
-      // Namen anzeigen
-      let name = targetCell.querySelector(".pt-name");
-      if (!name) {
-        name = document.createElement("div");
-        name.className = "pt-name";
-        targetCell.appendChild(name);
+      if(dDrag.from && dDrag.from.classList?.contains("pt-drop")){
+        resetCell(dDrag.from);
+        evaluateRow(dDrag.from.closest(".pt-row"));
       }
-      name.textContent = chip.dataset.label;
-    } else {
-      // falsches Feld → kurzer Fehlerblitz + zurück in Bank
-      targetCell?.classList.add("err");
-      setTimeout(() => targetCell?.classList.remove("err"), 450);
-      dBank.appendChild(chip);
     }
 
-    dDrag.el = null;
+    if(targetCell){
+      evaluateRow(targetCell.closest(".pt-row"));
+    }
+
+    dDrag.el = null; dDrag.from = null;
   }
 
   $("#stepD").addEventListener("pointerdown", dDown);
@@ -578,34 +613,31 @@ export function build(root, api) {
 
   // Prüfen-Button
   $("#checkD").addEventListener("click", () => {
-    // Pro Paar: beide Zellen gefüllt & ok
     const rows = $$(".pt-row", dTable).filter(r => !r.classList.contains("pt-head"));
-    let allOk = true, allFilled = true;
+    let allFilled = true, allOk = true;
 
     rows.forEach(row => {
-      const drops = $$(".pt-drop", row);
-      const okRow = drops.every(c => c.classList.contains("ok"));
-      const filledRow = drops.every(c => c.querySelector(".plant-chip"));
-      row.classList.toggle("row-ok", okRow);
-      if (!okRow) allOk = false;
-      if (!filledRow) allFilled = false;
+      evaluateRow(row);
+      const {edible, toxic} = getRowCells(row);
+      const filledRow = !!(edible.querySelector(".plant-chip") && toxic.querySelector(".plant-chip"));
+      allFilled = allFilled && filledRow;
+      allOk     = allOk && row.classList.contains("row-ok");
     });
 
-    if (!allFilled) {
+    if(!allFilled){
       fbD.className = "feedback err";
-      fbD.textContent = "Bitte ordne alle Bilder zu (je Paar beide Spalten).";
+      fbD.textContent = "Bitte fülle jede Zeile mit je 1 essbaren und 1 giftigen Bild.";
       markDone($("#stepD"), false);
-    } else if (!allOk) {
+    } else if(!allOk){
       fbD.className = "feedback err";
-      fbD.textContent = "Einige Zuordnungen sind noch falsch – prüfe die Doppelgänger.";
+      fbD.textContent = "Einige Zeilen bilden kein korrektes Paar. Tausche die Bilder so, dass essbar + giftig vom selben Paar sind.";
       markDone($("#stepD"), false);
     } else {
       fbD.className = "feedback ok";
-      fbD.textContent = "Top! Alle Pflanzen richtig zugeordnet. 🌿";
+      fbD.textContent = "Perfekt! Alle Paare sind korrekt zugeordnet. 🌿";
       markDone($("#stepD"), true);
     }
   });
-
 
   /* ===== Gesamterfolg ===== */
   const checkAll = () => {
@@ -621,6 +653,5 @@ export function build(root, api) {
     obs.observe(el, { attributes: true, attributeFilter: ["class"] });
   });
 
-
-  return () => { };
+  return () => {};
 }

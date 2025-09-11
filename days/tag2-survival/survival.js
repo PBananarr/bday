@@ -100,9 +100,46 @@ export function build(root, api) {
           <span class="badge">💧 Wasser</span>
           <span class="badge">🌿 Pflanzen</span>
         </div>
+        <div class="campbtn-wrap" id="campBtnWrap"></div>
       </div>
     </section>
   `;
+
+    // --- Lightbox (einmalig) ---
+  function ensureLightbox() {
+    if (document.getElementById("lightbox")) return;
+    const lb = document.createElement("div");
+    lb.id = "lightbox";
+    lb.className = "lightbox";
+    lb.innerHTML = `
+      <button class="close" aria-label="Schließen">×</button>
+      <img class="lightbox-content" id="lightbox-img" alt="Survival Camp">
+    `;
+    document.body.appendChild(lb);
+
+    const close = () => { lb.style.display = "none"; document.getElementById("lightbox-img").removeAttribute("src"); };
+    lb.querySelector(".close").addEventListener("click", close);
+    lb.addEventListener("click", (e) => { if (e.target === lb) close(); });
+    window.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
+  }
+
+  function openLightbox() {
+    ensureLightbox();
+    const lb = document.getElementById("lightbox");
+    const img = document.getElementById("lightbox-img");
+    img.src = "img/picSurvival.png";         // <-- dein Bild
+    lb.style.display = "block";
+  }
+
+  function setupCampButton() {
+    const wrap = root.querySelector("#campBtnWrap");
+    if (!wrap || wrap.querySelector(".survival-btn")) return; // schon vorhanden
+    const btn = document.createElement("button");
+    btn.className = "survival-btn";
+    btn.textContent = "🔥 Dein Survival Camp";
+    btn.addEventListener("click", openLightbox);
+    wrap.appendChild(btn);
+  }
 
   /* ===== Helpers ===== */
   const $ = (s, p = root) => p.querySelector(s);
@@ -745,6 +782,7 @@ export function build(root, api) {
     const allOk = ["stepA", "stepB", "stepC", "stepD"].every(id => $("#" + id).classList.contains("done"));
     if (allOk) {
       $("#surv-success").classList.add("show");
+      setupCampButton();
       api.solved();
     }
   };

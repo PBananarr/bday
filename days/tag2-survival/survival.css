@@ -378,3 +378,52 @@ input.choice, .choice input, .order-item select{ color: var(--text); }
 
 /* Robustheit */
 *, *::before, *::after{ box-sizing: border-box; }
+
+/* --- Lightbox --- */
+.lightbox{
+  display:none; position:fixed; inset:0; z-index:1000; background:rgba(0,0,0,.85);
+}
+.lightbox-content{
+  display:block; margin:5% auto; max-width:92%; max-height:85vh; border-radius:10px;
+  box-shadow:0 20px 60px rgba(0,0,0,.6);
+}
+.lightbox .close{
+  position:absolute; top:18px; right:24px; font-size:36px; line-height:1;
+  border:0; background:transparent; color:#fff; cursor:pointer;
+}
+
+/* --- Platzierung unter den Badges --- */
+.campbtn-wrap{ margin-top:12px; display:flex; justify-content:center; }
+
+/* --- Bushcraft/Survival-Button mit Textur (ohne externe Assets) --- */
+.survival-btn{
+  position:relative; display:inline-block; padding:14px 26px; border-radius:10px;
+  color:#f4e1b3; font-weight:800; letter-spacing:.06em; text-transform:uppercase;
+  cursor:pointer; user-select:none; border:3px solid #1e2f16;
+
+  background-image:
+    radial-gradient(120% 140% at 50% 10%, rgba(0,0,0,.35), rgba(0,0,0,0) 60%),
+    repeating-linear-gradient(24deg, rgba(255,255,255,.06) 0 2px, rgba(0,0,0,.08) 2px 4px),
+    linear-gradient(145deg, #6b4a2f, #402a18 70%);
+  box-shadow:
+    0 8px 0 #1e2f16,
+    inset 0 2px 6px rgba(255,255,255,.08),
+    inset 0 -6px 12px rgba(0,0,0,.35);
+  transition: transform .15s ease, box-shadow .15s ease, filter .2s ease;
+}
+.survival-btn::before{
+  content:""; position:absolute; inset:6px; border-radius:8px; pointer-events:none;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 18px, #f4e1b3 18px 22px),
+    repeating-linear-gradient(0deg,  transparent 0 18px, #f4e1b3 18px 22px);
+  mix-blend-mode:soft-light; opacity:.45; filter:drop-shadow(0 1px 0 rgba(0,0,0,.35));
+}
+.survival-btn:hover{
+  filter:saturate(1.05);
+  box-shadow:0 10px 0 #1a2913, inset 0 2px 6px rgba(255,255,255,.12), inset 0 -6px 12px rgba(0,0,0,.4);
+  transform:translateY(-2px);
+}
+.survival-btn:active{
+  transform:translateY(2px);
+  box-shadow:0 4px 0 #1a2913, inset 0 6px 10px rgba(0,0,0,.5);
+}

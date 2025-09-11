@@ -1,14 +1,14 @@
 import {
-  RULE_OF_THREE, RULE_OF_THREE_ORDER,
+  RULE_OF_THREE,
   B_TOOL_BUCKETS, B_ITEMS, B_RULE, B_HINT,
-  MORSE_HINT, MORSE_ANSWER
+  WATER_HINT, C1_SIGNS, C2_FILTER_LAYERS, C2_FILTER_ORDER, C3_SCENARIOS, C4_TIPS
 } from "./survival_data.js";
 
 /**
  * Tag 2 – Survival
- * A) Regel der 3 (unverändert)
- * B) NEU: Improvisierte Werkzeuge – Drag&Drop Matching
- * C) Morse (unverändert)
+ * A) Regel der 3
+ * B) Improvisierte Werkzeuge – Drag&Drop Matching
+ * C) Fortgeschritten – Wasserversorgung
  */
 export function build(root, api) {
   root.innerHTML = `
@@ -27,7 +27,7 @@ export function build(root, api) {
           <div class="feedback" id="fbA"></div>
         </div>
 
-        <!-- Step B: Improvisierte Werkzeuge (NEU) -->
+        <!-- Step B: Improvisierte Werkzeuge -->
         <div class="step" id="stepB">
           <h3>B) Erweiterte Grundlagen – Improvisierte Werkzeuge</h3>
           <p class="hint">${B_HINT}</p>
@@ -56,33 +56,37 @@ export function build(root, api) {
           <div class="feedback" id="fbB"></div>
         </div>
 
-        <!-- Step C: Notsignal -->
+        <!-- Step C: Fortgeschritten – Wasser -->
         <div class="step" id="stepC">
-          <h3>C) Notsignal – Morse</h3>
-          <p class="hint">Was bedeutet <code>${MORSE_HINT}</code>?</p>
-          <form id="morseForm">
-            <input class="choice riddle-input" name="morse" placeholder="Antwort eingeben …" autocomplete="off" inputmode="text" />
-            <div class="btnrow" style="margin-top:.35rem">
-              <button class="btn" type="submit">Prüfen</button>
-            </div>
-          </form>
+          <h3>C) Fortgeschritten – Wasserversorgung</h3>
+          <p class="hint">${WATER_HINT}</p>
+
+          <div id="c1"></div>
+          <div id="c2"></div>
+          <div id="c3"></div>
+          <div id="c4"></div>
+
+          <div class="btnrow" style="margin-top:.35rem">
+            <button class="btn" id="checkC">Prüfen</button>
+          </div>
           <div class="feedback" id="fbC"></div>
         </div>
-      </div>
+
+      </div> <!-- schließt .surv-wrap -->
 
       <div id="surv-success">
         <p class="feedback ok"><strong>Stark!</strong> Du hast alle Survival-Checks bestanden. 🏕️</p>
         <div>
           <span class="badge">🧭 Orientierung</span>
           <span class="badge">🔥 Feuer</span>
-          <span class="badge">📡 Signal</span>
+          <span class="badge">💧 Wasser</span>
         </div>
       </div>
     </section>
   `;
 
   /* ===== Helpers ===== */
-  const $ = (s, p = root) => p.querySelector(s);
+  const $  = (s, p = root) => p.querySelector(s);
   const $$ = (s, p = root) => Array.from(p.querySelectorAll(s));
   const markDone = (el, ok = true) => {
     el.classList.toggle("done", ok);
@@ -92,7 +96,7 @@ export function build(root, api) {
     fb.textContent = ok ? "Korrekt!" : "Nicht ganz – versuch’s noch einmal.";
   };
 
-  /* ===== Step A – Regel der 3 (wie bei dir) ===== */
+  /* ===== Step A – Regel der 3 ===== */
   const orderList = $("#orderList");
   RULE_OF_THREE.forEach((item) => {
     const row = document.createElement("div");
@@ -125,7 +129,7 @@ export function build(root, api) {
       $("#fbA").textContent = "Bitte alle Ränge setzen (1–4).";
       return;
     }
-    // (Deine aktuelle Logik behalten)
+    // Behalte deine bestehende Logik
     const correct =
       chosen["3"] === "fire" &&
       chosen["1"] === "shelter" &&
@@ -134,8 +138,7 @@ export function build(root, api) {
     markDone($("#stepA"), correct);
   });
 
-  /* ===== Step B – Improvisierte Werkzeuge (NEU) ===== */
-  const bank = $("#bBank");
+  /* ===== Step B – Improvisierte Werkzeuge ===== */
   const chipsHost = $("#bChips");
   const buckets = B_TOOL_BUCKETS.map(b => ({ ...b, el: $(`.b-bucket[data-bucket="${b.key}"]`) }));
   const fbB = $("#fbB");
@@ -148,7 +151,7 @@ export function build(root, api) {
     return arr;
   }
 
-  // Chips rendern (ausgelagert, damit wir beim Reset neu mischen können)
+  // Chips rendern (damit wir beim Reset neu mischen können)
   function renderChips(list) {
     chipsHost.innerHTML = "";
     list.forEach(it => {
@@ -233,11 +236,16 @@ export function build(root, api) {
   }
 
   $("#resetB").addEventListener("click", () => {
-    // neu mischen und Bank neu aufbauen
-    renderChips(shuffle([...B_ITEMS]));
-    // Buckets zurücksetzen
-    buckets.forEach(b => b.el.classList.remove("ok"));
+    // Buckets leeren & Status zurücksetzen
+    buckets.forEach(b => {
+      const drop = b.el.querySelector(".b-drop");
+      if (drop) drop.innerHTML = "";
+      b.el.classList.remove("ok");
+    });
     fbB.className = "feedback"; fbB.textContent = "";
+
+    // Bank neu & gemischt aufbauen
+    renderChips(shuffle([...B_ITEMS]));
     updateBucketMeta();
   });
 
@@ -255,15 +263,156 @@ export function build(root, api) {
     }
   });
 
+  /* ===== Step C – Fortgeschritten: Wasser ===== */
+  const c1Host = $("#c1");
+  const c2Host = $("#c2");
+  const c3Host = $("#c3");
+  const c4Host = $("#c4");
+  const fbC = $("#fbC");
 
-  /* ===== Step C – Morse (wie bei dir) ===== */
-  $("#morseForm").addEventListener("submit", (e) => {
-    e.preventDefault();
-    const val = (new FormData(e.currentTarget).get("morse") || "").toString().trim().toLowerCase();
-    const ok = (val === MORSE_ANSWER);
+  // C1 — Anzeichen (Checkboxen)
+  (function renderC1() {
+    const wrap = document.createElement("div");
+    wrap.className = "step-sub";
+    wrap.innerHTML = `<h4 style="margin:.4rem 0;">C1) Wasserquellen erkennen – wähle alle verlässlichen Anzeichen</h4>`;
+    C1_SIGNS.forEach(opt => {
+      const id = `c1_${opt.key}`;
+      const row = document.createElement("label");
+      row.style.display = "block";
+      row.style.margin = ".25rem 0";
+      row.innerHTML = `
+        <input class="choice" type="checkbox" id="${id}" data-key="${opt.key}">
+        <span>${opt.label}</span>
+      `;
+      wrap.appendChild(row);
+    });
+    c1Host.appendChild(wrap);
+  })();
+
+  // C2 — Filter bauen (Reihenfolge 1..4)
+  (function renderC2() {
+    const wrap = document.createElement("div");
+    wrap.className = "step-sub";
+    wrap.innerHTML = `<h4 style="margin:.6rem 0 .3rem;">C2) Improvisierter Filter – ordne die Schichten (1 = oben / zuerst)</h4>`;
+    const list = document.createElement("div");
+    list.className = "order-list";
+    C2_FILTER_LAYERS.forEach(layer => {
+      const row = document.createElement("div");
+      row.className = "order-item";
+      row.innerHTML = `
+        <div style="flex:1">${layer.label}</div>
+        <label>Rang:
+          <select data-key="${layer.key}">
+            <option value="">–</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+          </select>
+        </label>
+      `;
+      list.appendChild(row);
+    });
+    wrap.appendChild(list);
+    c2Host.appendChild(wrap);
+  })();
+
+  // C3 — Szenarien (Radio)
+  (function renderC3() {
+    const wrap = document.createElement("div");
+    wrap.className = "step-sub";
+    wrap.innerHTML = `<h4 style="margin:.6rem 0 .3rem;">C3) Welche Methode passt zum Szenario?</h4>`;
+    C3_SCENARIOS.forEach(sc => {
+      const block = document.createElement("div");
+      block.style.border = "1px solid var(--border)";
+      block.style.borderRadius = "10px";
+      block.style.padding = ".6rem";
+      block.style.margin = ".35rem 0";
+      const name = `sc_${sc.key}`;
+      const opts = sc.options.map(o => `
+        <label style="display:block;margin:.2rem 0;">
+          <input class="choice" type="radio" name="${name}" value="${o.key}">
+          <span>${o.label}</span>
+        </label>
+      `).join("");
+      block.innerHTML = `<div style="margin-bottom:.35rem">${sc.question}</div>${opts}`;
+      wrap.appendChild(block);
+    });
+    c3Host.appendChild(wrap);
+  })();
+
+  // C4 — Tipps/Hacks (Checkboxen)
+  (function renderC4() {
+    const wrap = document.createElement("div");
+    wrap.className = "step-sub";
+    wrap.innerHTML = `<h4 style="margin:.6rem 0 .3rem;">C4) Wähle die korrekten Aussagen</h4>`;
+    C4_TIPS.forEach(opt => {
+      const id = `c4_${opt.key}`;
+      const row = document.createElement("label");
+      row.style.display = "block";
+      row.style.margin = ".25rem 0";
+      row.innerHTML = `
+        <input class="choice" type="checkbox" id="${id}" data-key="${opt.key}">
+        <span>${opt.label}</span>
+      `;
+      wrap.appendChild(row);
+    });
+    c4Host.appendChild(wrap);
+  })();
+
+  // Prüfen
+  $("#checkC").addEventListener("click", () => {
+    // C1 auswerten
+    const chosenC1 = new Set(
+      Array.from(c1Host.querySelectorAll('input[type="checkbox"]:checked'))
+        .map(i => i.dataset.key)
+    );
+    const correctC1 = new Set(C1_SIGNS.filter(x => x.correct).map(x => x.key));
+    const allC1 = new Set(C1_SIGNS.map(x => x.key));
+    const okC1 = [...allC1].every(k => correctC1.has(k) === chosenC1.has(k));
+
+    // C2 auswerten
+    const selMap = {};
+    let validC2 = true;
+    c2Host.querySelectorAll("select[data-key]").forEach(sel => {
+      if (!sel.value) validC2 = false;
+      selMap[sel.value] = sel.dataset.key;
+    });
+    const okC2 = validC2 &&
+      selMap["1"] === C2_FILTER_ORDER[0] &&
+      selMap["2"] === C2_FILTER_ORDER[1] &&
+      selMap["3"] === C2_FILTER_ORDER[2] &&
+      selMap["4"] === C2_FILTER_ORDER[3];
+
+    // C3 auswerten
+    const okC3 = C3_SCENARIOS.every(sc => {
+      const selected = (c3Host.querySelector(`input[name="sc_${sc.key}"]:checked`) || {}).value;
+      return selected === sc.answer;
+    });
+
+    // C4 auswerten
+    const chosenC4 = new Set(
+      Array.from(c4Host.querySelectorAll('input[type="checkbox"]:checked')).map(i => i.dataset.key)
+    );
+    const correctC4 = new Set(C4_TIPS.filter(x => x.correct).map(x => x.key));
+    const allC4 = new Set(C4_TIPS.map(x => x.key));
+    const okC4 = [...allC4].every(k => correctC4.has(k) === chosenC4.has(k));
+
+    const ok = okC1 && okC2 && okC3 && okC4;
     markDone($("#stepC"), ok);
+
     if (!ok) {
-      $("#fbC").textContent = "Tipp: Internationales Notsignal.";
+      fbC.className = "feedback err";
+      const pieces = [
+        okC1 ? null : "C1",
+        okC2 ? null : "C2",
+        okC3 ? null : "C3",
+        okC4 ? null : "C4",
+      ].filter(Boolean);
+      fbC.textContent = `Noch nicht ganz – prüfe: ${pieces.join(", ")}.`;
+    } else {
+      fbC.className = "feedback ok";
+      fbC.textContent = "Wasser-Check bestanden! 💧";
     }
   });
 

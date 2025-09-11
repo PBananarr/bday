@@ -57,7 +57,64 @@ export const B_RULE = {
 export const B_HINT = "Ziehe die Kärtchen zu den passenden Kategorien. Pro Kategorie brauchst du mindestens 2 korrekte Zuordnungen.";
 
 // ==============================
-// Teil C — Morse
+// Teil C — Fortgeschritten: Wasserversorgung
 // ==============================
-export const MORSE_HINT = "··· --- ···";
-export const MORSE_ANSWER = "sos";  // Vergleich in Kleinschreibung
+export const WATER_HINT = "Beantworte die Aufgaben zur sicheren Wasserversorgung.";
+
+export const C1_SIGNS = [
+  { key: "trails",   label: "Frische Wildwechsel / Tierpfade",          correct: true },
+  { key: "birds",    label: "Vogelflug am Morgen/Abend Richtung Tal",   correct: true },
+  { key: "insects",  label: "Viele Insekten in der Dämmerung",          correct: true },
+  { key: "moss",     label: "Moos an der Nordseite von Bäumen",         correct: false },
+  { key: "northstar",label: "Polarstern (Richtung bestimmen)",          correct: false },
+];
+
+export const C2_FILTER_LAYERS = [
+  { key: "coarse_sand", label: "Grober Sand" },
+  { key: "fine_sand",   label: "Feiner Sand" },
+  { key: "charcoal",    label: "Holzkohle" },
+  { key: "cloth",       label: "Stoff / Tuch" },
+];
+// Korrekte Reihenfolge (1 → 4)
+export const C2_FILTER_ORDER = ["coarse_sand", "fine_sand", "charcoal", "cloth"];
+
+export const C3_SCENARIOS = [
+  {
+    key: "sodis",
+    question: "Du hast nur eine klare PET-Flasche und volle Sonne, kein Brennstoff.",
+    options: [
+      { key: "boil",  label: "Abkochen" },
+      { key: "sodis", label: "UV-Desinfektion (SODIS)" },
+      { key: "chem",  label: "Jod/Chlor" },
+    ],
+    answer: "sodis",
+  },
+  {
+    key: "solarstill",
+    question: "Du hast Plane/Folie, Grube und Pflanzenmaterial, aber kein Feuer.",
+    options: [
+      { key: "solarstill", label: "Solarstill (Kondensgrube)" },
+      { key: "boil",       label: "Abkochen" },
+      { key: "filter",     label: "Nur Filtern" },
+    ],
+    answer: "solarstill",
+  },
+  {
+    key: "distill",
+    question: "Nur Salz- oder Brackwasser verfügbar (am Meer).",
+    options: [
+      { key: "distill", label: "Destillation" },
+      { key: "filter",  label: "Nur Filtern" },
+      { key: "sodis",   label: "UV-Desinfektion (SODIS)" },
+    ],
+    answer: "distill",
+  },
+];
+
+export const C4_TIPS = [
+  { key: "no_sea",          label: "Nie direkt Meerwasser trinken.",                 correct: true },
+  { key: "snow_eat",        label: "Schnee/Eis direkt essen ist ideal.",            correct: false },
+  { key: "char_filter",     label: "Holzkohle kann Gerüche/Gifte adsorbieren.",     correct: true },
+  { key: "standing_ok",     label: "Stehendes Wasser ist so sicher wie fließendes.",correct: false },
+  { key: "boil_after_filter",label:"Nach dem Filtern wenn möglich abkochen.",       correct: true },
+];

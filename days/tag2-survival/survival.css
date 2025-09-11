@@ -11,6 +11,21 @@ body.tag-tag2-survival{
   --err:#ef4444;
 }
 
+/* Hauptüberschrift im Survival-Bereich */
+body.tag-tag2-survival h2 {
+  text-align: center;
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin: 0 0 1.2rem 0;
+
+  /* Farbverlauf im Text */
+  background: linear-gradient(90deg, #22c55e, #fb923c, #a3e635);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text; /* Fallback für neuere Browser */
+}
+
+
 body.tag-tag2-survival .card{
   background: linear-gradient(180deg, rgba(17,27,20,.98), rgba(12,20,15,.92));
   box-shadow: 0 10px 28px rgba(0,0,0,.5);

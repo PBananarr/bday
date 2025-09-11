@@ -148,18 +148,23 @@ export function build(root, api) {
     return arr;
   }
 
-  // Chips anlegen
-  B_ITEMS.forEach(it => {
-    const chip = document.createElement("div");
-    chip.className = "b-chip";
-    chip.textContent = it.label;
-    chip.dataset.key = it.key;
-    chip.dataset.accepts = it.accepts.join(",");
-    chipsHost.appendChild(chip);
-  });
+  // Chips rendern (ausgelagert, damit wir beim Reset neu mischen können)
+  function renderChips(list) {
+    chipsHost.innerHTML = "";
+    list.forEach(it => {
+      const chip = document.createElement("div");
+      chip.className = "b-chip";
+      chip.textContent = it.label;
+      chip.dataset.key = it.key;
+      chip.dataset.accepts = it.accepts.join(",");
+      chipsHost.appendChild(chip);
+    });
+  }
+  renderChips(shuffle([...B_ITEMS])); // initial gemischt
 
   // Drag per Pointer Events
   let drag = { el: null, ox: 0, oy: 0, from: null };
+
   function onDown(e) {
     const chip = e.target.closest(".b-chip");
     if (!chip) return;
@@ -174,11 +179,13 @@ export function build(root, api) {
     chip.style.zIndex = "9999";
     chip.setPointerCapture?.(e.pointerId);
   }
+
   function onMove(e) {
     if (!drag.el) return;
     drag.el.style.left = (e.clientX - drag.ox) + "px";
     drag.el.style.top = (e.clientY - drag.oy) + "px";
   }
+
   function onUp(e) {
     if (!drag.el) return;
     drag.el.releasePointerCapture?.(e.pointerId);
@@ -226,7 +233,9 @@ export function build(root, api) {
   }
 
   $("#resetB").addEventListener("click", () => {
-    Array.from($("#stepB").querySelectorAll(".b-chip")).forEach(ch => chipsHost.appendChild(ch));
+    // neu mischen und Bank neu aufbauen
+    renderChips(shuffle([...B_ITEMS]));
+    // Buckets zurücksetzen
     buckets.forEach(b => b.el.classList.remove("ok"));
     fbB.className = "feedback"; fbB.textContent = "";
     updateBucketMeta();
@@ -245,6 +254,7 @@ export function build(root, api) {
       fbB.textContent = "Sauber sortiert! ✅";
     }
   });
+
 
   /* ===== Step C – Morse (wie bei dir) ===== */
   $("#morseForm").addEventListener("submit", (e) => {

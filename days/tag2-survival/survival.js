@@ -104,7 +104,7 @@ export function build(root, api) {
   `;
 
   /* ===== Helpers ===== */
-  const $  = (s, p = root) => p.querySelector(s);
+  const $ = (s, p = root) => p.querySelector(s);
   const $$ = (s, p = root) => Array.from(p.querySelectorAll(s));
   const markDone = (el, ok = true) => {
     el.classList.toggle("done", ok);
@@ -115,25 +115,25 @@ export function build(root, api) {
   };
 
   // ===== Auto-Scroll beim Drag in Randnähe =====
-const AUTOSCROLL_EDGE = 80;   // px Abstand zum Rand, ab dem gescrollt wird
-const AUTOSCROLL_MAX  = 22;   // maximale Scrollgeschwindigkeit pro Move
+  const AUTOSCROLL_EDGE = 80;   // px Abstand zum Rand, ab dem gescrollt wird
+  const AUTOSCROLL_MAX = 22;   // maximale Scrollgeschwindigkeit pro Move
 
-function autoScrollIfNeeded(clientY) {
-  const vh = window.innerHeight;
-  let delta = 0;
+  function autoScrollIfNeeded(clientY) {
+    const vh = window.innerHeight;
+    let delta = 0;
 
-  if (clientY < AUTOSCROLL_EDGE) {
-    // oben: je näher am Rand, desto schneller
-    const factor = (AUTOSCROLL_EDGE - clientY) / AUTOSCROLL_EDGE;
-    delta = -Math.ceil(factor * AUTOSCROLL_MAX);
-  } else if ((vh - clientY) < AUTOSCROLL_EDGE) {
-    // unten
-    const factor = (AUTOSCROLL_EDGE - (vh - clientY)) / AUTOSCROLL_EDGE;
-    delta = Math.ceil(factor * AUTOSCROLL_MAX);
+    if (clientY < AUTOSCROLL_EDGE) {
+      // oben: je näher am Rand, desto schneller
+      const factor = (AUTOSCROLL_EDGE - clientY) / AUTOSCROLL_EDGE;
+      delta = -Math.ceil(factor * AUTOSCROLL_MAX);
+    } else if ((vh - clientY) < AUTOSCROLL_EDGE) {
+      // unten
+      const factor = (AUTOSCROLL_EDGE - (vh - clientY)) / AUTOSCROLL_EDGE;
+      delta = Math.ceil(factor * AUTOSCROLL_MAX);
+    }
+
+    if (delta !== 0) window.scrollBy(0, delta);
   }
-
-  if (delta !== 0) window.scrollBy(0, delta);
-}
 
 
   /* ===== Step A – Regel der 3 ===== */
@@ -216,14 +216,14 @@ function autoScrollIfNeeded(clientY) {
     drag.oy = e.clientY - r.top;
     chip.style.position = "fixed";
     chip.style.left = r.left + "px";
-    chip.style.top  = r.top  + "px";
+    chip.style.top = r.top + "px";
     chip.style.zIndex = "9999";
     chip.setPointerCapture?.(e.pointerId);
   }
   function onMove(e) {
     if (!drag.el) return;
     drag.el.style.left = (e.clientX - drag.ox) + "px";
-    drag.el.style.top  = (e.clientY - drag.oy) + "px";
+    drag.el.style.top = (e.clientY - drag.oy) + "px";
 
     autoScrollIfNeeded(e.clientY);
   }
@@ -297,37 +297,37 @@ function autoScrollIfNeeded(clientY) {
   });
 
   /* ===== Step C – Fortgeschritten: Wasser ===== */
-const c1Host = $("#c1");
-const c2Host = $("#c2");
-const c3Host = $("#c3");
-const c4Host = $("#c4");
-const fbC = $("#fbC");
+  const c1Host = $("#c1");
+  const c2Host = $("#c2");
+  const c3Host = $("#c3");
+  const c4Host = $("#c4");
+  const fbC = $("#fbC");
 
-/* C-Wrapper: 2-spaltiges Grid (mobil 1-spaltig) */
-(function wrapCAsGrid(){
-  const stepC = document.getElementById("stepC");
-  const btnRow = stepC.querySelector(".btnrow"); // Grid vor dem Button einfügen
+  /* C-Wrapper: 2-spaltiges Grid (mobil 1-spaltig) */
+  (function wrapCAsGrid() {
+    const stepC = document.getElementById("stepC");
+    const btnRow = stepC.querySelector(".btnrow"); // Grid vor dem Button einfügen
 
-  // Grid erstellen und an die richtige Stelle setzen
-  const grid = document.createElement("div");
-  grid.className = "c-grid";
-  stepC.insertBefore(grid, btnRow);
+    // Grid erstellen und an die richtige Stelle setzen
+    const grid = document.createElement("div");
+    grid.className = "c-grid";
+    stepC.insertBefore(grid, btnRow);
 
-  // c1..c4 in Karten packen und INS GRID verschieben
-  [c1Host, c2Host, c3Host, c4Host].forEach(h => {
-    const card = document.createElement("div");
-    card.className = "c-card";
-    card.appendChild(h);     // Host in die Card verschieben
-    grid.appendChild(card);  // Card ins Grid
-  });
-})();
+    // c1..c4 in Karten packen und INS GRID verschieben
+    [c1Host, c2Host, c3Host, c4Host].forEach(h => {
+      const card = document.createElement("div");
+      card.className = "c-card";
+      card.appendChild(h);     // Host in die Card verschieben
+      grid.appendChild(card);  // Card ins Grid
+    });
+  })();
 
 
-/* C1 — Wasserquellen erkennen (Chip-Toggles) */
-(function renderC1() {
-  const wrap = document.createElement("div");
-  wrap.className = "step-sub";
-  wrap.innerHTML = `
+  /* C1 — Wasserquellen erkennen (Chip-Toggles) */
+  (function renderC1() {
+    const wrap = document.createElement("div");
+    wrap.className = "step-sub";
+    wrap.innerHTML = `
     <div class="c-head">
       <span class="c-badge">C1</span>
       <h4>Wasserquellen erkennen</h4>
@@ -336,27 +336,27 @@ const fbC = $("#fbC");
     <div class="c-chiprow" role="group" aria-label="Anzeichen">
     </div>
   `;
-  const chiprow = wrap.querySelector(".c-chiprow");
-  C1_SIGNS.forEach(opt => {
-    const id = `c1_${opt.key}`;
-    const label = document.createElement("label");
-    label.className = "c-chip";
-    label.setAttribute("for", id);
-    label.innerHTML = `
+    const chiprow = wrap.querySelector(".c-chiprow");
+    C1_SIGNS.forEach(opt => {
+      const id = `c1_${opt.key}`;
+      const label = document.createElement("label");
+      label.className = "c-chip";
+      label.setAttribute("for", id);
+      label.innerHTML = `
       <input class="choice c-vis" type="checkbox" id="${id}" data-key="${opt.key}">
       <span class="c-chip__label">${opt.label}</span>
     `;
-    chiprow.appendChild(label);
-  });
-  c1Host.innerHTML = "";
-  c1Host.appendChild(wrap);
-})();
+      chiprow.appendChild(label);
+    });
+    c1Host.innerHTML = "";
+    c1Host.appendChild(wrap);
+  })();
 
-/* C2 — Improvisierter Filter (modernisierte Reihenfolge-UI) */
-(function renderC2() {
-  const wrap = document.createElement("div");
-  wrap.className = "step-sub";
-  wrap.innerHTML = `
+  /* C2 — Improvisierter Filter (modernisierte Reihenfolge-UI) */
+  (function renderC2() {
+    const wrap = document.createElement("div");
+    wrap.className = "step-sub";
+    wrap.innerHTML = `
     <div class="c-head">
       <span class="c-badge">C2</span>
       <h4>Improvisierter Filter</h4>
@@ -379,15 +379,15 @@ const fbC = $("#fbC");
       `).join("")}
     </div>
   `;
-  c2Host.innerHTML = "";
-  c2Host.appendChild(wrap);
-})();
+    c2Host.innerHTML = "";
+    c2Host.appendChild(wrap);
+  })();
 
-/* C3 — Szenarien (Card-Radios) */
-(function renderC3() {
-  const wrap = document.createElement("div");
-  wrap.className = "step-sub";
-  wrap.innerHTML = `
+  /* C3 — Szenarien (Card-Radios) */
+  (function renderC3() {
+    const wrap = document.createElement("div");
+    wrap.className = "step-sub";
+    wrap.innerHTML = `
     <div class="c-head">
       <span class="c-badge">C3</span>
       <h4>Welche Methode passt?</h4>
@@ -395,41 +395,41 @@ const fbC = $("#fbC");
     </div>
     <div class="c-cards"></div>
   `;
-  const list = wrap.querySelector(".c-cards");
+    const list = wrap.querySelector(".c-cards");
 
-  C3_SCENARIOS.forEach(sc => {
-    const group = document.createElement("fieldset");
-    group.className = "c-scenario";
-    const legendText = sc.question;
-    group.innerHTML = `<legend class="c-scenario__q">${legendText}</legend>`;
+    C3_SCENARIOS.forEach(sc => {
+      const group = document.createElement("fieldset");
+      group.className = "c-scenario";
+      const legendText = sc.question;
+      group.innerHTML = `<legend class="c-scenario__q">${legendText}</legend>`;
 
-    sc.options.forEach(o => {
-      const id = `sc_${sc.key}_${o.key}`;
-      const card = document.createElement("label");
-      card.className = "c-cardradio";
-      card.setAttribute("for", id);
-      card.innerHTML = `
+      sc.options.forEach(o => {
+        const id = `sc_${sc.key}_${o.key}`;
+        const card = document.createElement("label");
+        card.className = "c-cardradio";
+        card.setAttribute("for", id);
+        card.innerHTML = `
         <input class="choice c-vis" type="radio" id="${id}" name="sc_${sc.key}" value="${o.key}">
         <div class="c-cardradio__body">
           <div class="c-cardradio__icon">💧</div>
           <div class="c-cardradio__label">${o.label}</div>
         </div>
       `;
-      group.appendChild(card);
+        group.appendChild(card);
+      });
+
+      list.appendChild(group);
     });
 
-    list.appendChild(group);
-  });
+    c3Host.innerHTML = "";
+    c3Host.appendChild(wrap);
+  })();
 
-  c3Host.innerHTML = "";
-  c3Host.appendChild(wrap);
-})();
-
-/* C4 — Tipps/Hacks (Chip-Toggles) */
-(function renderC4() {
-  const wrap = document.createElement("div");
-  wrap.className = "step-sub";
-  wrap.innerHTML = `
+  /* C4 — Tipps/Hacks (Chip-Toggles) */
+  (function renderC4() {
+    const wrap = document.createElement("div");
+    wrap.className = "step-sub";
+    wrap.innerHTML = `
     <div class="c-head">
       <span class="c-badge">C4</span>
       <h4>Wasser – richtig handeln</h4>
@@ -437,32 +437,91 @@ const fbC = $("#fbC");
     </div>
     <div class="c-chiprow" role="group" aria-label="Tipps"></div>
   `;
-  const chiprow = wrap.querySelector(".c-chiprow");
+    const chiprow = wrap.querySelector(".c-chiprow");
 
-  C4_TIPS.forEach(opt => {
-    const id = `c4_${opt.key}`;
-    const label = document.createElement("label");
-    label.className = "c-chip";
-    label.setAttribute("for", id);
-    label.innerHTML = `
+    C4_TIPS.forEach(opt => {
+      const id = `c4_${opt.key}`;
+      const label = document.createElement("label");
+      label.className = "c-chip";
+      label.setAttribute("for", id);
+      label.innerHTML = `
       <input class="choice c-vis" type="checkbox" id="${id}" data-key="${opt.key}">
       <span class="c-chip__label">${opt.label}</span>
     `;
-    chiprow.appendChild(label);
+      chiprow.appendChild(label);
+    });
+
+    c4Host.innerHTML = "";
+    c4Host.appendChild(wrap);
+  })();
+
+  /* ===== Step C – Auswertung (Prüfen-Button) ===== */
+  $("#checkC").addEventListener("click", () => {
+    // --- C1: Checkboxen (verläßliche Anzeichen) ---
+    const chosenC1 = new Set(
+      Array.from(c1Host.querySelectorAll('input[type="checkbox"]:checked'))
+        .map(i => i.dataset.key)
+    );
+    const correctC1 = new Set(C1_SIGNS.filter(x => x.correct).map(x => x.key));
+    const allC1 = new Set(C1_SIGNS.map(x => x.key));
+    const okC1 = [...allC1].every(k => correctC1.has(k) === chosenC1.has(k));
+
+    // --- C2: Select-Rangfolge ---
+    const selMap = {};
+    let validC2 = true;
+    c2Host.querySelectorAll("select[data-key]").forEach(sel => {
+      if (!sel.value) validC2 = false;
+      selMap[sel.value] = sel.dataset.key;
+    });
+    const okC2 = validC2 &&
+      selMap["1"] === C2_FILTER_ORDER[0] &&
+      selMap["2"] === C2_FILTER_ORDER[1] &&
+      selMap["3"] === C2_FILTER_ORDER[2] &&
+      selMap["4"] === C2_FILTER_ORDER[3];
+
+    // --- C3: Radios pro Szenario ---
+    const okC3 = C3_SCENARIOS.every(sc => {
+      const selected = (c3Host.querySelector(`input[name="sc_${sc.key}"]:checked`) || {}).value;
+      return selected === sc.answer;
+    });
+
+    // --- C4: Checkboxen (Tipps) ---
+    const chosenC4 = new Set(
+      Array.from(c4Host.querySelectorAll('input[type="checkbox"]:checked'))
+        .map(i => i.dataset.key)
+    );
+    const correctC4 = new Set(C4_TIPS.filter(x => x.correct).map(x => x.key));
+    const allC4 = new Set(C4_TIPS.map(x => x.key));
+    const okC4 = [...allC4].every(k => correctC4.has(k) === chosenC4.has(k));
+
+    // --- Gesamtergebnis & Feedback ---
+    const ok = okC1 && okC2 && okC3 && okC4;
+    markDone($("#stepC"), ok);
+
+    if (!ok) {
+      fbC.className = "feedback err";
+      const pieces = [
+        okC1 ? null : "C1",
+        okC2 ? null : "C2",
+        okC3 ? null : "C3",
+        okC4 ? null : "C4",
+      ].filter(Boolean);
+      fbC.textContent = `Noch nicht ganz – prüfe: ${pieces.join(", ")}.`;
+    } else {
+      fbC.className = "feedback ok";
+      fbC.textContent = "Wasser-Check bestanden! 💧";
+    }
   });
 
-  c4Host.innerHTML = "";
-  c4Host.appendChild(wrap);
-})();
 
 
   /* ===== Step D – Profi: Pflanzenerkennung (Drag & Drop, freie Paarbildung) ===== */
-  const dBank  = $("#dBank");
+  const dBank = $("#dBank");
   const dTable = $("#dTable");
-  const fbD    = $("#fbD");
+  const fbD = $("#fbD");
 
   // Tabelle aufbauen
-  (function renderDTable(){
+  (function renderDTable() {
     const header = document.createElement("div");
     header.className = "pt-row pt-head";
     header.innerHTML = `
@@ -490,15 +549,15 @@ const fbC = $("#fbC");
   })();
 
   // Bilderbank aufbauen
-  (function renderBank(){
-    const items = D_PLANT_PAIRS.flatMap(p => p.items.map(it => ({...it, pair:p.key})));
-    for(let i=items.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [items[i],items[j]]=[items[j],items[i]]; }
+  (function renderBank() {
+    const items = D_PLANT_PAIRS.flatMap(p => p.items.map(it => ({ ...it, pair: p.key })));
+    for (let i = items.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1));[items[i], items[j]] = [items[j], items[i]]; }
     items.forEach(it => {
       const card = document.createElement("div");
       card.className = "plant-chip";
-      card.dataset.key   = it.key;
-      card.dataset.pair  = it.pair;
-      card.dataset.ans   = it.category; // "edible" | "toxic"
+      card.dataset.key = it.key;
+      card.dataset.pair = it.pair;
+      card.dataset.ans = it.category; // "edible" | "toxic"
       card.dataset.label = `${it.label} (${it.latin})`;
       card.innerHTML = `<img loading="lazy" src="${it.src}" alt="${it.label}">`;
       dBank.appendChild(card);
@@ -508,105 +567,105 @@ const fbC = $("#fbC");
   // Drag per Pointer Events
   let dDrag = { el: null, ox: 0, oy: 0, from: null };
 
-  function dDown(e){
+  function dDown(e) {
     const chip = e.target.closest(".plant-chip");
-    if(!chip) return;
+    if (!chip) return;
     dDrag.el = chip;
     dDrag.from = chip.parentElement; // Ursprung merken
     const r = chip.getBoundingClientRect();
     dDrag.ox = e.clientX - r.left;
     dDrag.oy = e.clientY - r.top;
     chip.style.position = "fixed";
-    chip.style.left = r.left+"px";
-    chip.style.top  = r.top +"px";
-    chip.style.zIndex="9999";
+    chip.style.left = r.left + "px";
+    chip.style.top = r.top + "px";
+    chip.style.zIndex = "9999";
     chip.classList.add("dragging");
     chip.setPointerCapture?.(e.pointerId);
   }
 
-  function dMove(e){
-    if(!dDrag.el) return;
+  function dMove(e) {
+    if (!dDrag.el) return;
     dDrag.el.style.left = (e.clientX - dDrag.ox) + "px";
-    dDrag.el.style.top  = (e.clientY - dDrag.oy) + "px";
+    dDrag.el.style.top = (e.clientY - dDrag.oy) + "px";
     autoScrollIfNeeded(e.clientY);
   }
 
-  function resetCell(cell){
-    if(!cell || !cell.classList.contains("pt-drop")) return;
-    cell.classList.remove("ok","err","filled");
+  function resetCell(cell) {
+    if (!cell || !cell.classList.contains("pt-drop")) return;
+    cell.classList.remove("ok", "err", "filled");
     cell.querySelector(".pt-name")?.remove();
-    if(!cell.querySelector(".pt-dropinner")){
+    if (!cell.querySelector(".pt-dropinner")) {
       const inner = document.createElement("div");
       inner.className = "pt-dropinner";
       inner.innerHTML = `<span class="pt-placeholder">hierhin ziehen</span>`;
       cell.prepend(inner);
-    }else{
+    } else {
       cell.querySelector(".pt-dropinner").innerHTML = `<span class="pt-placeholder">hierhin ziehen</span>`;
     }
   }
 
-  function flashErr(cell){
+  function flashErr(cell) {
     cell.classList.add("err");
-    setTimeout(()=>cell.classList.remove("err"), 450);
+    setTimeout(() => cell.classList.remove("err"), 450);
   }
 
-  function getRowCells(row){
+  function getRowCells(row) {
     const cells = $$(".pt-drop", row);
     const edible = cells.find(c => c.dataset.accept === "edible");
-    const toxic  = cells.find(c => c.dataset.accept === "toxic");
+    const toxic = cells.find(c => c.dataset.accept === "toxic");
     return { edible, toxic };
   }
 
   // Zeile ist korrekt, wenn beide Seiten gefüllt und Paar-Keys gleich
-  function evaluateRow(row){
-    if(!row || row.classList.contains("pt-head")) return;
-    const {edible, toxic} = getRowCells(row);
+  function evaluateRow(row) {
+    if (!row || row.classList.contains("pt-head")) return;
+    const { edible, toxic } = getRowCells(row);
     const chipE = edible?.querySelector(".plant-chip");
     const chipT = toxic?.querySelector(".plant-chip");
 
-    [edible, toxic].forEach(c => c && c.classList.remove("ok","err"));
+    [edible, toxic].forEach(c => c && c.classList.remove("ok", "err"));
 
-    if(!chipE || !chipT){
+    if (!chipE || !chipT) {
       row.classList.remove("row-ok");
       return;
     }
     const samePair = chipE.dataset.pair === chipT.dataset.pair;
-    if(samePair){
+    if (samePair) {
       edible.classList.add("ok");
       toxic.classList.add("ok");
       row.classList.add("row-ok");
-    }else{
+    } else {
       edible.classList.add("err");
       toxic.classList.add("err");
       row.classList.remove("row-ok");
     }
   }
 
-  function dUp(e){
-    if(!dDrag.el) return;
+  function dUp(e) {
+    if (!dDrag.el) return;
     dDrag.el.releasePointerCapture?.(e.pointerId);
     const chip = dDrag.el;
 
     const drops = $$(".pt-drop", dTable);
     let placed = false, targetCell = null;
 
-    for(const cell of drops){
+    for (const cell of drops) {
       const r = cell.getBoundingClientRect();
-      const hit = e.clientX>=r.left && e.clientX<=r.right && e.clientY>=r.top && e.clientY<=r.bottom;
-      if(!hit) continue;
+      const hit = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+      if (!hit) continue;
 
       const okCat = (cell.dataset.accept === chip.dataset.ans); // nur Spaltenregel
       targetCell = cell;
       placed = true;
 
-      if(!okCat){
+      if (!okCat) {
         flashErr(cell);
         break;
       }
 
       // Wenn Zelle belegt: altes Bild in Bank und Zelle sauber resetten
       const already = cell.querySelector(".plant-chip");
-      if(already){
+      if (already) {
         dBank.appendChild(already);
         resetCell(cell);
       }
@@ -618,7 +677,7 @@ const fbC = $("#fbC");
 
       // Namen anzeigen
       let name = cell.querySelector(".pt-name");
-      if(!name){
+      if (!name) {
         name = document.createElement("div");
         name.className = "pt-name";
         cell.appendChild(name);
@@ -629,18 +688,18 @@ const fbC = $("#fbC");
     }
 
     // Position reset
-    chip.style.position=""; chip.style.left=""; chip.style.top=""; chip.style.zIndex="";
+    chip.style.position = ""; chip.style.left = ""; chip.style.top = ""; chip.style.zIndex = "";
     chip.classList.remove("dragging");
 
-    if(!placed){
+    if (!placed) {
       dBank.appendChild(chip);
-      if(dDrag.from && dDrag.from.classList?.contains("pt-drop")){
+      if (dDrag.from && dDrag.from.classList?.contains("pt-drop")) {
         resetCell(dDrag.from);
         evaluateRow(dDrag.from.closest(".pt-row"));
       }
     }
 
-    if(targetCell){
+    if (targetCell) {
       evaluateRow(targetCell.closest(".pt-row"));
     }
 
@@ -659,17 +718,17 @@ const fbC = $("#fbC");
 
     rows.forEach(row => {
       evaluateRow(row);
-      const {edible, toxic} = getRowCells(row);
+      const { edible, toxic } = getRowCells(row);
       const filledRow = !!(edible.querySelector(".plant-chip") && toxic.querySelector(".plant-chip"));
       allFilled = allFilled && filledRow;
-      allOk     = allOk && row.classList.contains("row-ok");
+      allOk = allOk && row.classList.contains("row-ok");
     });
 
-    if(!allFilled){
+    if (!allFilled) {
       fbD.className = "feedback err";
       fbD.textContent = "Bitte fülle jede Zeile mit je 1 essbaren und 1 giftigen Bild.";
       markDone($("#stepD"), false);
-    } else if(!allOk){
+    } else if (!allOk) {
       fbD.className = "feedback err";
       fbD.textContent = "Einige Zeilen bilden kein korrektes Paar. Tausche die Bilder so, dass essbar + giftig vom selben Paar sind.";
       markDone($("#stepD"), false);
@@ -694,5 +753,5 @@ const fbC = $("#fbC");
     obs.observe(el, { attributes: true, attributeFilter: ["class"] });
   });
 
-  return () => {};
+  return () => { };
 }

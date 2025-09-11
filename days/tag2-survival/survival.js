@@ -136,7 +136,7 @@ export function build(root, api) {
     if (!wrap || wrap.querySelector(".survival-btn")) return; // schon vorhanden
     const btn = document.createElement("button");
     btn.className = "survival-btn";
-    btn.textContent = "🔥 Dein Survival Camp";
+    btn.textContent = "Dein Survival Camp";
     btn.addEventListener("click", openLightbox);
     wrap.appendChild(btn);
   }

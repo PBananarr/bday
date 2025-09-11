@@ -20,7 +20,7 @@ export function build(root, api) {
       <div class="surv-wrap">
         <!-- Step A: Regel der 3 -->
         <div class="step" id="stepA">
-          <h3>A) Grundlagen – Überleben nach Dringlichkeit</h3>
+          <h3>Grundlagen – Überleben nach Dringlichkeit</h3>
           <p class="hint">Wähle für jede Zeile die <strong>Rangzahl</strong> (1 = dringend, 4 = weniger dringend).</p>
           <div class="order-list" id="orderList"></div>
           <div class="btnrow" style="margin-top:.35rem">
@@ -31,7 +31,7 @@ export function build(root, api) {
 
         <!-- Step B: Improvisierte Werkzeuge -->
         <div class="step" id="stepB">
-          <h3>B) Erweiterte Grundlagen – Improvisierte Werkzeuge</h3>
+          <h3>Erweiterte Grundlagen – Improvisierte Werkzeuge</h3>
           <p class="hint">${B_HINT}</p>
 
           <div class="b-grid">
@@ -60,7 +60,7 @@ export function build(root, api) {
 
         <!-- Step C: Fortgeschritten – Wasser -->
         <div class="step" id="stepC">
-          <h3>C) Fortgeschritten – Wasserversorgung</h3>
+          <h3>Fortgeschritten – Wasserversorgung</h3>
           <p class="hint">${WATER_HINT}</p>
 
           <div id="c1"></div>
@@ -77,7 +77,7 @@ export function build(root, api) {
 
       <!-- Step D: Profi – Pflanzenerkennung (Drag & Drop Tabelle) -->
       <div class="step" id="stepD">
-        <h3>D) Profi – Pflanzenerkennung</h3>
+        <h3>Profi – Pflanzenerkennung</h3>
         <p class="hint">Ziehe die Bilder in die passende Spalte. Richtig ist eine Zeile, wenn links (Essbar/Heilpflanze) und rechts (Giftig) liegen <em>und</em> beide Bilder zum selben Paar gehören. Dann erscheint der Pflanzenname.</p>
 
         <!-- Bilderbank -->

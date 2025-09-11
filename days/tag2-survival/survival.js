@@ -1,8 +1,10 @@
 import {
   RULE_OF_THREE,
   B_TOOL_BUCKETS, B_ITEMS, B_RULE, B_HINT,
-  WATER_HINT, C1_SIGNS, C2_FILTER_LAYERS, C2_FILTER_ORDER, C3_SCENARIOS, C4_TIPS
+  WATER_HINT, C1_SIGNS, C2_FILTER_LAYERS, C2_FILTER_ORDER, C3_SCENARIOS, C4_TIPS,
+  D_PLANT_PAIRS, D_PLANT_CATEGORIES
 } from "./survival_data.js";
+
 
 /**
  * Tag 2 – Survival
@@ -56,6 +58,7 @@ export function build(root, api) {
           <div class="feedback" id="fbB"></div>
         </div>
 
+
         <!-- Step C: Fortgeschritten – Wasser -->
         <div class="step" id="stepC">
           <h3>C) Fortgeschritten – Wasserversorgung</h3>
@@ -74,6 +77,25 @@ export function build(root, api) {
 
       </div> <!-- schließt .surv-wrap -->
 
+
+      <!-- Step D: Profi – Pflanzenerkennung (Drag & Drop Tabelle) -->
+      <div class="step" id="stepD">
+        <h3>D) Profi – Pflanzenerkennung</h3>
+        <p class="hint">Ziehe die Bilder in die passende Spalte. Stimmt die Zuordnung, erscheint der Pflanzenname.</p>
+
+        <!-- Bilderbank -->
+        <div id="dBank" class="plant-bank"></div>
+
+        <!-- Tabelle -->
+        <div class="plant-table" id="dTable"></div>
+
+        <div class="btnrow" style="margin-top:.35rem">
+          <button class="btn" id="checkD">Prüfen</button>
+        </div>
+        <div class="feedback" id="fbD"></div>
+      </div>
+
+
       <div id="surv-success">
         <p class="feedback ok"><strong>Stark!</strong> Du hast alle Survival-Checks bestanden. 🏕️</p>
         <div>
@@ -86,7 +108,7 @@ export function build(root, api) {
   `;
 
   /* ===== Helpers ===== */
-  const $  = (s, p = root) => p.querySelector(s);
+  const $ = (s, p = root) => p.querySelector(s);
   const $$ = (s, p = root) => Array.from(p.querySelectorAll(s));
   const markDone = (el, ok = true) => {
     el.classList.toggle("done", ok);
@@ -416,21 +438,189 @@ export function build(root, api) {
     }
   });
 
+  /* ===== Step D – Profi: Pflanzenerkennung (Drag & Drop) ===== */
+  const dBank = $("#dBank");
+  const dTable = $("#dTable");
+  const fbD = $("#fbD");
+
+  // Tabelle aufbauen (Headerzeile + Paare)
+  (function renderDTable() {
+    // Header
+    const header = document.createElement("div");
+    header.className = "pt-row pt-head";
+    header.innerHTML = `
+    <div class="pt-col pt-pair"></div>
+    <div class="pt-col pt-headcol">${D_PLANT_CATEGORIES.edible}</div>
+    <div class="pt-col pt-headcol">${D_PLANT_CATEGORIES.toxic}</div>
+  `;
+    dTable.appendChild(header);
+
+    // Paare
+    D_PLANT_PAIRS.forEach(pair => {
+      const row = document.createElement("div");
+      row.className = "pt-row";
+      row.dataset.pair = pair.key;
+      row.innerHTML = `
+      <div class="pt-col pt-pair"><strong>${pair.title}</strong></div>
+      <div class="pt-col pt-drop" data-pair="${pair.key}" data-accept="edible">
+        <div class="pt-dropinner"><span class="pt-placeholder">hierhin ziehen</span></div>
+      </div>
+      <div class="pt-col pt-drop" data-pair="${pair.key}" data-accept="toxic">
+        <div class="pt-dropinner"><span class="pt-placeholder">hierhin ziehen</span></div>
+      </div>
+    `;
+      dTable.appendChild(row);
+    });
+  })();
+
+  // Bilderbank aufbauen (alle Items gemischt)
+  (function renderBank() {
+    const items = D_PLANT_PAIRS.flatMap(p => p.items.map(it => ({ ...it, pair: p.key })));
+    // Shuffle
+    for (let i = items.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1));[items[i], items[j]] = [items[j], items[i]]; }
+    items.forEach(it => {
+      const card = document.createElement("div");
+      card.className = "plant-chip";
+      card.dataset.key = it.key;
+      card.dataset.pair = it.pair;
+      card.dataset.ans = it.category; // "edible" | "toxic"
+      card.dataset.label = `${it.label} (${it.latin})`;
+      card.innerHTML = `<img loading="lazy" src="${it.src}" alt="${it.label}">`;
+      dBank.appendChild(card);
+    });
+  })();
+
+  // --- Drag per Pointer Events (wie in Step B) ---
+  let dDrag = { el: null, ox: 0, oy: 0 };
+
+  function dDown(e) {
+    const chip = e.target.closest(".plant-chip");
+    if (!chip) return;
+    dDrag.el = chip;
+    const r = chip.getBoundingClientRect();
+    dDrag.ox = e.clientX - r.left;
+    dDrag.oy = e.clientY - r.top;
+    chip.style.position = "fixed";
+    chip.style.left = r.left + "px";
+    chip.style.top = r.top + "px";
+    chip.style.zIndex = "9999";
+    chip.classList.add("dragging");
+    chip.setPointerCapture?.(e.pointerId);
+  }
+  function dMove(e) {
+    if (!dDrag.el) return;
+    dDrag.el.style.left = (e.clientX - dDrag.ox) + "px";
+    dDrag.el.style.top = (e.clientY - dDrag.oy) + "px";
+  }
+  function dUp(e) {
+    if (!dDrag.el) return;
+    dDrag.el.releasePointerCapture?.(e.pointerId);
+    const chip = dDrag.el;
+
+    // Drop-Ziele checken
+    const drops = $$(".pt-drop", dTable);
+    let placed = false, correct = false, targetCell = null;
+
+    for (const cell of drops) {
+      const r = cell.getBoundingClientRect();
+      const hit = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+      if (!hit) continue;
+
+      // Regel: Bild muss in die Zelle seines Paares & akzeptierte Kategorie
+      const okPair = (cell.dataset.pair === chip.dataset.pair);
+      const okCat = (cell.dataset.accept === chip.dataset.ans);
+
+      if (okPair && okCat) {
+        correct = true;
+        targetCell = cell;
+      } else {
+        targetCell = cell; // gemerkt für „falsch“-Feedback
+      }
+      placed = true;
+      break;
+    }
+
+    // zurücksetzen Position
+    chip.style.position = ""; chip.style.left = ""; chip.style.top = ""; chip.style.zIndex = "";
+    chip.classList.remove("dragging");
+
+    if (!placed) {
+      // zurück in Bank
+      dBank.appendChild(chip);
+    } else if (correct) {
+      const inner = targetCell.querySelector(".pt-dropinner");
+      inner.innerHTML = "";           // Platzhalter weg
+      inner.appendChild(chip);        // Bild in Zelle
+      targetCell.classList.add("ok"); // grün markieren
+
+      // Namen anzeigen
+      let name = targetCell.querySelector(".pt-name");
+      if (!name) {
+        name = document.createElement("div");
+        name.className = "pt-name";
+        targetCell.appendChild(name);
+      }
+      name.textContent = chip.dataset.label;
+    } else {
+      // falsches Feld → kurzer Fehlerblitz + zurück in Bank
+      targetCell?.classList.add("err");
+      setTimeout(() => targetCell?.classList.remove("err"), 450);
+      dBank.appendChild(chip);
+    }
+
+    dDrag.el = null;
+  }
+
+  $("#stepD").addEventListener("pointerdown", dDown);
+  $("#stepD").addEventListener("pointermove", dMove);
+  $("#stepD").addEventListener("pointerup", dUp);
+  $("#stepD").addEventListener("pointercancel", dUp);
+
+  // Prüfen-Button
+  $("#checkD").addEventListener("click", () => {
+    // Pro Paar: beide Zellen gefüllt & ok
+    const rows = $$(".pt-row", dTable).filter(r => !r.classList.contains("pt-head"));
+    let allOk = true, allFilled = true;
+
+    rows.forEach(row => {
+      const drops = $$(".pt-drop", row);
+      const okRow = drops.every(c => c.classList.contains("ok"));
+      const filledRow = drops.every(c => c.querySelector(".plant-chip"));
+      row.classList.toggle("row-ok", okRow);
+      if (!okRow) allOk = false;
+      if (!filledRow) allFilled = false;
+    });
+
+    if (!allFilled) {
+      fbD.className = "feedback err";
+      fbD.textContent = "Bitte ordne alle Bilder zu (je Paar beide Spalten).";
+      markDone($("#stepD"), false);
+    } else if (!allOk) {
+      fbD.className = "feedback err";
+      fbD.textContent = "Einige Zuordnungen sind noch falsch – prüfe die Doppelgänger.";
+      markDone($("#stepD"), false);
+    } else {
+      fbD.className = "feedback ok";
+      fbD.textContent = "Top! Alle Pflanzen richtig zugeordnet. 🌿";
+      markDone($("#stepD"), true);
+    }
+  });
+
+
   /* ===== Gesamterfolg ===== */
   const checkAll = () => {
-    const allOk = ["stepA", "stepB", "stepC"].every(id => $("#" + id).classList.contains("done"));
+    const allOk = ["stepA", "stepB", "stepC", "stepD"].every(id => $("#" + id).classList.contains("done"));
     if (allOk) {
       $("#surv-success").classList.add("show");
       api.solved();
     }
   };
-
-  // Beobachte Veränderungen und prüfe finalen Zustand
-  ["stepA", "stepB", "stepC"].forEach(id => {
+  ["stepA", "stepB", "stepC", "stepD"].forEach(id => {
     const el = $("#" + id);
     const obs = new MutationObserver(checkAll);
     obs.observe(el, { attributes: true, attributeFilter: ["class"] });
   });
+
 
   return () => { };
 }

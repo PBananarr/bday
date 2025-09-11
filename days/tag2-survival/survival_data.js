@@ -63,9 +63,9 @@ export const WATER_HINT = "Beantworte die Aufgaben zur sicheren Wasserversorgung
 
 export const C1_SIGNS = [
   { key: "trails",   label: "Frische Wildwechsel / Tierpfade",          correct: true },
+  { key: "moss",     label: "Moos an der Nordseite von Bäumen",         correct: false },
   { key: "birds",    label: "Vogelflug am Morgen/Abend Richtung Tal",   correct: true },
   { key: "insects",  label: "Viele Insekten in der Dämmerung",          correct: true },
-  { key: "moss",     label: "Moos an der Nordseite von Bäumen",         correct: false },
   { key: "northstar",label: "Polarstern (Richtung bestimmen)",          correct: false },
 ];
 
@@ -118,3 +118,98 @@ export const C4_TIPS = [
   { key: "standing_ok",     label: "Stehendes Wasser ist so sicher wie fließendes.",correct: false },
   { key: "boil_after_filter",label:"Nach dem Filtern wenn möglich abkochen.",       correct: true },
 ];
+
+// ==============================
+// Teil D — Profi: Pflanzenerkennung
+// ==============================
+export const D_PLANT_PAIRS = [
+  {
+    key: "p1",
+    title: "Paar 1",
+    items: [
+      {
+        key: "petersilie",
+        label: "Petersilie",
+        latin: "Petroselinum crispum",
+        src: "./img/survival/p1Petersilie.png",
+        category: "edible",
+      },
+      {
+        key: "hundspetersilie",
+        label: "Hundspetersilie",
+        latin: "Aethusa cynapium",
+        src: "./img/survival/p1Hundspetersilie.png",
+        category: "toxic",
+      },
+    ],
+  },
+  {
+    key: "p2",
+    title: "Paar 2",
+    items: [
+      {
+        key: "baldrian",
+        label: "Echter Baldrian",
+        latin: "Valeriana officinalis",
+        src: "./img/survival/p2Baldrian.png",
+        category: "edible",  // Heilpflanze
+      },
+      {
+        key: "schierling",
+        label: "Gefleckter Schierling",
+        latin: "Conium maculatum",
+        src: "./img/survival/p2Schierling.png",
+        category: "toxic",
+      },
+    ],
+  },
+  {
+    key: "p3",
+    title: "Paar 3",
+    items: [
+      {
+        key: "baerlauch",
+        label: "Bärlauch",
+        latin: "Allium ursinum",
+        src: "./img/survival/p3Baerlauch.png",
+        category: "edible",
+      },
+      {
+        key: "maiglocke",
+        label: "Maiglöckchen",
+        latin: "Convallaria majalis",
+        src: "./img/survival/p3Maiglocke.png",
+        category: "toxic",
+      },
+      // Optionaler zweiter Doppelgänger (falls du ihn nutzen willst):
+      // { key: "herbstzeitlose", label: "Herbstzeitlose", latin: "Colchicum autumnale", src: "./img/survival/p3Herbstzeitlose.png", category: "toxic" },
+    ],
+  },
+  {
+    key: "p4",
+    title: "Paar 4",
+    items: [
+      {
+        key: "brennnessel",
+        label: "Brennnessel",
+        latin: "Urtica dioica",
+        src: "./img/survival/p4Brennessel.png",
+        category: "edible",
+      },
+      {
+        key: "baerenklau",
+        label: "Riesen-Bärenklau",
+        latin: "Heracleum mantegazzianum",
+        src: "./img/survival/p4Baerenklau.png",
+        category: "toxic",
+      },
+    ],
+  },
+];
+
+// Labels für die Auswahl
+export const D_PLANT_CATEGORIES = {
+  edible: "Essbare / Heilpflanze",
+  toxic: "Giftiger Doppelgänger",
+};
+

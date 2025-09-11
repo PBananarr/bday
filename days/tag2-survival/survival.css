@@ -146,3 +146,40 @@ input.choice, .choice input, .order-item select{
   box-shadow: 0 0 0 2px var(--ok) inset; /* grüner Innenrahmen */
   border-radius: 12px;
 }
+
+/* Teil D – Drag&Drop Tabelle */
+.plant-bank{
+  display:flex; flex-wrap:wrap; gap:8px;
+  border:1px dashed var(--border); border-radius:12px;
+  padding:10px; background:#0f1a13; margin-bottom:10px;
+}
+.plant-chip{
+  touch-action:none; user-select:none; cursor:grab;
+  width:110px; height:110px; border:1px solid #2b3c2f; border-radius:10px;
+  overflow:hidden; background:#0d1410;
+}
+.plant-chip img{ width:100%; height:100%; object-fit:cover; display:block; }
+.plant-chip.dragging{ opacity:.9; box-shadow:0 14px 30px rgba(0,0,0,.4); }
+
+.plant-table{ display:grid; gap:6px; }
+.pt-row{ display:grid; grid-template-columns: 120px 1fr 1fr; gap:6px; }
+.pt-head{ color:var(--muted); }
+.pt-col{
+  border:1px solid var(--border); border-radius:10px; background:#0f1a13; padding:8px;
+}
+.pt-pair{ display:flex; align-items:center; justify-content:center; background:#0e170f; }
+.pt-headcol{ text-align:center; font-weight:600; }
+
+.pt-drop{ position:relative; min-height:140px; }
+.pt-dropinner{ display:flex; align-items:center; justify-content:center; min-height:110px; }
+.pt-placeholder{ color:var(--muted); opacity:.85; font-size:.9rem; }
+.pt-name{ margin-top:6px; font-size:.92rem; color:var(--text); }
+
+.pt-drop.ok{ box-shadow:0 0 0 2px var(--ok) inset; }
+.pt-drop.err{ box-shadow:0 0 0 2px var(--err) inset; }
+
+@media (max-width:700px){
+  .pt-row{ grid-template-columns: 90px 1fr 1fr; }
+  .plant-chip{ width:96px; height:96px; }
+}
+

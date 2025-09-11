@@ -1,5 +1,4 @@
 /* Tag 2 – Theme: Erde · Moosgrün · Signalorange */
-
 body.tag-tag2-survival{
   --bg:#0d1410;         /* dunkles Waldgrün-Schwarz */
   --card:#111b14;       /* tiefes Moosgrün */
@@ -38,24 +37,6 @@ body.tag-tag2-survival .progress{
 .step h3{ margin:.15rem 0 .35rem; font-size:1.05rem; color:var(--accent); text-align:left; }
 .step .hint{ color:var(--muted) }
 
-.selector{ display:grid; gap:8px }
-.selector .choice{
-  display:flex; align-items:center; gap:.55rem;
-  background:#0e170f; border-color:#2b3c2f; border-radius:10px;
-}
-.selector input[type="checkbox"],
-.selector input[type="radio"]{ transform: scale(1.2); }
-
-.order-list{ display:grid; gap:8px; }
-.order-item{
-  display:flex; align-items:center; gap:8px;
-  background:#0e170f; border:1px solid #2b3c2f; border-radius:10px; padding:8px;
-}
-.order-item select{
-  appearance:none; border:1px solid #2b3c2f; background:#0f1a13; color:var(--text);
-  padding:.45rem .6rem; border-radius:10px;
-}
-
 .feedback{
   margin-top:.6rem; padding:.55rem .8rem; border-radius:10px; border:1px solid transparent;
 }
@@ -78,6 +59,47 @@ input.choice, .choice input, .order-item select{
   color: var(--text);
 }
 .riddle-input::placeholder{ color: var(--muted); opacity:.85; }
+
+/* Step A – Order UI */
+.order-list{ display:grid; gap:8px; }
+.order-item{
+  display:flex; align-items:center; gap:8px;
+  background:#0e170f; border:1px solid #2b3c2f; border-radius:10px; padding:8px;
+}
+.order-item select{
+  appearance:none; border:1px solid #2b3c2f; background:#0f1a13; color:var(--text);
+  padding:.45rem .6rem; border-radius:10px;
+}
+
+/* Step B – Buckets Drag&Drop */
+.b-grid{
+  display:grid; gap:10px;
+}
+@media (min-width:680px){
+  .b-grid{ grid-template-columns: 1fr 1fr; }
+}
+.b-bank, .b-bucket{
+  border:1px dashed #2b3c2f; border-radius:12px; padding:10px; min-height:84px;
+  background:#0f1a13;
+}
+.b-bank h4, .b-bucket h4{
+  margin:.2rem 0 .5rem; font-size:.95rem; color:var(--muted);
+}
+.b-chip{
+  touch-action:none; user-select:none; cursor:grab;
+  display:inline-flex; align-items:center; justify-content:center;
+  padding:.45rem .6rem; border-radius:10px; border:1px solid #2b3c2f; background:#121f17; color:var(--text);
+  min-height:36px; margin:4px; font-size:.95rem;
+}
+.b-chip:active{ cursor:grabbing }
+
+.b-bucket{
+  position:relative;
+}
+.b-bucket.ok{ outline:2px solid var(--ok); outline-offset:2px; }
+.b-bucket .b-meta{
+  position:absolute; right:8px; bottom:6px; font-size:.8rem; color:var(--muted);
+}
 
 /* micro animation */
 @keyframes popIn {

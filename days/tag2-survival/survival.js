@@ -1,8 +1,14 @@
-import { RULE_OF_THREE, RULE_OF_THREE_ORDER, TINDER_OPTIONS, MORSE_HINT, MORSE_ANSWER } from "./survival_data.js";
+import {
+  RULE_OF_THREE, RULE_OF_THREE_ORDER,
+  B_TOOL_BUCKETS, B_ITEMS, B_RULE, B_HINT,
+  MORSE_HINT, MORSE_ANSWER
+} from "./survival_data.js";
 
 /**
- * Tag 2 – Survival (3 Mini-Tasks).
- * build(root, api) rendert UI; ruft api.solved() auf, wenn alle drei Aufgaben korrekt sind.
+ * Tag 2 – Survival
+ * A) Regel der 3 (unverändert)
+ * B) NEU: Improvisierte Werkzeuge – Drag&Drop Matching
+ * C) Morse (unverändert)
  */
 export function build(root, api){
   root.innerHTML = `
@@ -12,7 +18,7 @@ export function build(root, api){
       <div class="surv-wrap">
         <!-- Step A: Regel der 3 -->
         <div class="step" id="stepA">
-          <h3>A) Regel der 3 – ordne nach Dringlichkeit</h3>
+          <h3>A) Basic – Ordne nach Dringlichkeit</h3>
           <p class="hint">Wähle für jede Zeile die <strong>Rangzahl</strong> (1 = dringend, 4 = weniger dringend).</p>
           <div class="order-list" id="orderList"></div>
           <div class="btnrow" style="margin-top:.35rem">
@@ -21,12 +27,31 @@ export function build(root, api){
           <div class="feedback" id="fbA"></div>
         </div>
 
-        <!-- Step B: Zunder im Regen -->
+        <!-- Step B: Improvisierte Werkzeuge (NEU) -->
         <div class="step" id="stepB">
-          <h3>B) Feuer im Regen – wähle 2 geeignete Zunder</h3>
-          <div class="selector" id="tinderSel"></div>
+          <h3>B) Improvisierte Werkzeuge – ordne richtig zu</h3>
+          <p class="hint">${B_HINT}</p>
+
+          <div class="b-grid">
+            <div class="b-bank" id="bBank">
+              <h4>Werkzeug-Kärtchen</h4>
+              <div id="bChips"></div>
+            </div>
+
+            <div>
+              ${B_TOOL_BUCKETS.map(b => `
+                <div class="b-bucket" data-bucket="${b.key}">
+                  <h4>${b.label}</h4>
+                  <div class="b-drop"></div>
+                  <div class="b-meta" id="meta-${b.key}">0 korrekt</div>
+                </div>
+              `).join("")}
+            </div>
+          </div>
+
           <div class="btnrow" style="margin-top:.35rem">
             <button class="btn" id="checkB">Prüfen</button>
+            <button class="btn ghostbtn" id="resetB">Zurücksetzen</button>
           </div>
           <div class="feedback" id="fbB"></div>
         </div>
@@ -67,9 +92,9 @@ export function build(root, api){
     fb.textContent = ok ? "Korrekt!" : "Nicht ganz – versuch’s noch einmal.";
   };
 
-  /* ===== Step A – Regel der 3 ===== */
+  /* ===== Step A – Regel der 3 (wie bei dir) ===== */
   const orderList = $("#orderList");
-  RULE_OF_THREE.forEach((item, idx)=>{
+  RULE_OF_THREE.forEach((item)=>{
     const row = document.createElement("div");
     row.className = "order-item";
     row.innerHTML = `
@@ -100,42 +125,120 @@ export function build(root, api){
       $("#fbA").textContent="Bitte alle Ränge setzen (1–4).";
       return;
     }
-    // Prüfen: 1→fire, 2→shelter, 3→water, 4→food
+    // (Deine aktuelle Logik behalten)
     const correct =
       chosen["3"]==="fire" &&
       chosen["1"]==="shelter" &&
       chosen["2"]==="water" &&
       chosen["4"]==="food";
-
     markDone($("#stepA"), correct);
   });
 
-  /* ===== Step B – Zunderwahl ===== */
-  const selWrap = $("#tinderSel");
-  TINDER_OPTIONS.forEach(opt=>{
-    const label = document.createElement("label");
-    label.className = "choice";
-    label.innerHTML = `<input type="checkbox" value="${opt.key}"> ${opt.label}`;
-    selWrap.appendChild(label);
+  /* ===== Step B – Improvisierte Werkzeuge (NEU) ===== */
+  const bank = $("#bBank");
+  const chipsHost = $("#bChips");
+  const buckets = B_TOOL_BUCKETS.map(b => ({ ...b, el: $(`.b-bucket[data-bucket="${b.key}"]`) }));
+  const fbB = $("#fbB");
+
+  // Chips anlegen
+  B_ITEMS.forEach(it=>{
+    const chip = document.createElement("div");
+    chip.className = "b-chip";
+    chip.textContent = it.label;
+    chip.dataset.key = it.key;
+    chip.dataset.accepts = it.accepts.join(",");
+    chipsHost.appendChild(chip);
+  });
+
+  // Drag per Pointer Events
+  let drag = { el:null, ox:0, oy:0, from:null };
+  function onDown(e){
+    const chip = e.target.closest(".b-chip");
+    if(!chip) return;
+    drag.el = chip;
+    drag.from = chip.parentElement;
+    const r = chip.getBoundingClientRect();
+    drag.ox = e.clientX - r.left;
+    drag.oy = e.clientY - r.top;
+    chip.style.position="fixed";
+    chip.style.left = r.left+"px";
+    chip.style.top  = r.top+"px";
+    chip.style.zIndex="9999";
+    chip.setPointerCapture?.(e.pointerId);
+  }
+  function onMove(e){
+    if(!drag.el) return;
+    drag.el.style.left = (e.clientX - drag.ox) + "px";
+    drag.el.style.top  = (e.clientY - drag.oy) + "px";
+  }
+  function onUp(e){
+    if(!drag.el) return;
+    drag.el.releasePointerCapture?.(e.pointerId);
+    const chip = drag.el;
+
+    // Bucket-Hit testen
+    let placed = false;
+    for(const b of buckets){
+      const r = b.el.getBoundingClientRect();
+      const hit = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+      if(hit){
+        chip.style.position="";
+        chip.style.left=""; chip.style.top=""; chip.style.zIndex="";
+        b.el.querySelector(".b-drop").appendChild(chip);
+        placed = true;
+        break;
+      }
+    }
+    if(!placed){
+      // zurück in Bank
+      chip.style.position=""; chip.style.left=""; chip.style.top=""; chip.style.zIndex="";
+      chipsHost.appendChild(chip);
+    }
+
+    drag.el = null; drag.from = null;
+    updateBucketMeta();
+  }
+
+  $("#stepB").addEventListener("pointerdown", onDown);
+  $("#stepB").addEventListener("pointermove", onMove);
+  $("#stepB").addEventListener("pointerup", onUp);
+  $("#stepB").addEventListener("pointercancel", onUp);
+
+  function updateBucketMeta(){
+    buckets.forEach(b=>{
+      const items = Array.from(b.el.querySelectorAll(".b-drop .b-chip"));
+      const correct = items.filter(ch=>{
+        const acc = (ch.dataset.accepts||"").split(",").filter(Boolean);
+        return acc.includes(b.key);
+      }).length;
+      b.el.classList.toggle("ok", correct >= (B_RULE.minPerBucket||1));
+      const meta = b.el.querySelector(`#meta-${b.key}`);
+      if(meta) meta.textContent = `${correct} korrekt`;
+    });
+  }
+
+  $("#resetB").addEventListener("click", ()=>{
+    Array.from($("#stepB").querySelectorAll(".b-chip")).forEach(ch => chipsHost.appendChild(ch));
+    buckets.forEach(b=> b.el.classList.remove("ok"));
+    fbB.className="feedback"; fbB.textContent="";
+    updateBucketMeta();
   });
 
   $("#checkB").addEventListener("click", ()=>{
-    const picks = $$("#tinderSel input:checked").map(i=>i.value);
-    if(picks.length !== 2){
-      $("#fbB").className="feedback err";
-      $("#fbB").textContent="Bitte wähle genau 2 Optionen.";
-      return;
-    }
-    const correctKeys = TINDER_OPTIONS.filter(o=>o.correct).map(o=>o.key).sort().join(",");
-    const pickKeys = picks.sort().join(",");
-    const ok = (pickKeys === correctKeys);
+    // Prüfkriterium: Jeder Bucket >= minPerBucket korrekte Items
+    updateBucketMeta();
+    const ok = buckets.every(b => b.el.classList.contains("ok"));
     markDone($("#stepB"), ok);
     if(!ok){
-      $("#fbB").textContent = "Nicht ganz. Tipp: Harz/Öle & trockene Schichten helfen auch bei Nässe.";
+      fbB.className="feedback err";
+      fbB.textContent = `Noch nicht. Pro Kategorie brauchst du mindestens ${B_RULE.minPerBucket} korrekte Zuordnungen.`;
+    } else {
+      fbB.className="feedback ok";
+      fbB.textContent = "Sauber sortiert! ✅";
     }
   });
 
-  /* ===== Step C – Morse ===== */
+  /* ===== Step C – Morse (wie bei dir) ===== */
   $("#morseForm").addEventListener("submit", (e)=>{
     e.preventDefault();
     const val = (new FormData(e.currentTarget).get("morse")||"").toString().trim().toLowerCase();
@@ -162,6 +265,5 @@ export function build(root, api){
     obs.observe(el, { attributes:true, attributeFilter:["class"] });
   });
 
-  // Cleanup (nichts Spezielles hier)
-  return () => {};
+  return ()=>{};
 }

@@ -114,6 +114,28 @@ export function build(root, api) {
     fb.textContent = ok ? "Korrekt!" : "Nicht ganz – versuch’s noch einmal.";
   };
 
+  // ===== Auto-Scroll beim Drag in Randnähe =====
+const AUTOSCROLL_EDGE = 80;   // px Abstand zum Rand, ab dem gescrollt wird
+const AUTOSCROLL_MAX  = 22;   // maximale Scrollgeschwindigkeit pro Move
+
+function autoScrollIfNeeded(clientY) {
+  const vh = window.innerHeight;
+  let delta = 0;
+
+  if (clientY < AUTOSCROLL_EDGE) {
+    // oben: je näher am Rand, desto schneller
+    const factor = (AUTOSCROLL_EDGE - clientY) / AUTOSCROLL_EDGE;
+    delta = -Math.ceil(factor * AUTOSCROLL_MAX);
+  } else if ((vh - clientY) < AUTOSCROLL_EDGE) {
+    // unten
+    const factor = (AUTOSCROLL_EDGE - (vh - clientY)) / AUTOSCROLL_EDGE;
+    delta = Math.ceil(factor * AUTOSCROLL_MAX);
+  }
+
+  if (delta !== 0) window.scrollBy(0, delta);
+}
+
+
   /* ===== Step A – Regel der 3 ===== */
   const orderList = $("#orderList");
   RULE_OF_THREE.forEach((item) => {
@@ -202,6 +224,8 @@ export function build(root, api) {
     if (!drag.el) return;
     drag.el.style.left = (e.clientX - drag.ox) + "px";
     drag.el.style.top  = (e.clientY - drag.oy) + "px";
+
+    autoScrollIfNeeded(e.clientY);
   }
   function onUp(e) {
     if (!drag.el) return;
@@ -488,6 +512,7 @@ export function build(root, api) {
     if(!dDrag.el) return;
     dDrag.el.style.left = (e.clientX - dDrag.ox) + "px";
     dDrag.el.style.top  = (e.clientY - dDrag.oy) + "px";
+    autoScrollIfNeeded(e.clientY);
   }
 
   function resetCell(cell){

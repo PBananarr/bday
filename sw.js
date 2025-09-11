@@ -1,6 +1,6 @@
 /* sw.js — Globaler Service Worker für Birthday-Quest */
 
-const VERSION = "v0.0.0.F.";               // <<< bei jedem Release anpassen
+const VERSION = "v0.0.1.0.";               // <<< bei jedem Release anpassen
 self.VERSION = VERSION;
 const STATIC_CACHE = `bq-static-${VERSION}`;
 const RUNTIME_CACHE = `bq-runtime-${VERSION}`;
@@ -19,7 +19,7 @@ const PRECACHE = [
   // Tag 2
   "./days/tag2-survival/survival.js",
   "./days/tag2-survival/survival.css",
-  "./days/tag2-survival/survival_form.js",
+  "./days/tag2-survival/survival_data.js",
 ];
 
 // Hilfsfunktion: nur gleiche Origin cachen
@@ -35,12 +35,13 @@ self.addEventListener("install", (event) => {
 });
 
 self.addEventListener("message", (event) => {
-  if(event.data?.type === "GET_VERSION"){
-    event.source.postMessage({type:"VERSION", version: VERSION});
+  if (event.data?.type === "GET_VERSION") {
+    // robust: an alle Fenster senden (auch uncontrolled)
+    self.clients.matchAll({ type: "window", includeUncontrolled: true })
+      .then(clients => clients.forEach(c => c.postMessage({ type: "VERSION", version: VERSION })));
   }
   if (event.data === "SKIP_WAITING") self.skipWaiting();
 });
-
 
 // ACTIVATE: Alte Caches löschen, sofort übernehmen
 self.addEventListener("activate", (event) => {
@@ -100,7 +101,3 @@ self.addEventListener("fetch", (event) => {
   }
 });
 
-// Optional: manuelles skipWaiting via Message
-self.addEventListener("message", (event) => {
-  if (event.data === "SKIP_WAITING") self.skipWaiting();
-});

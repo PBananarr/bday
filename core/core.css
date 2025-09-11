@@ -90,3 +90,6 @@ dialog{ border:1px solid var(--border); background:#0b1223; color:var(--text); b
   .daylabel{min-width:260px}
 }
 button, input, .choice{ touch-action:manipulation }
+
+#sw-version { margin-left:.5rem; font-size:.8rem; color:var(--muted); opacity:.85; }
+

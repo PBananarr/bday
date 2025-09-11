@@ -10,7 +10,7 @@ import {
  * B) NEU: Improvisierte Werkzeuge – Drag&Drop Matching
  * C) Morse (unverändert)
  */
-export function build(root, api){
+export function build(root, api) {
   root.innerHTML = `
     <section class="card">
       <h2>Survival · Bushcraft Basics</h2>
@@ -82,19 +82,19 @@ export function build(root, api){
   `;
 
   /* ===== Helpers ===== */
-  const $ = (s, p=root) => p.querySelector(s);
-  const $$ = (s, p=root) => Array.from(p.querySelectorAll(s));
-  const markDone = (el, ok=true) => {
+  const $ = (s, p = root) => p.querySelector(s);
+  const $$ = (s, p = root) => Array.from(p.querySelectorAll(s));
+  const markDone = (el, ok = true) => {
     el.classList.toggle("done", ok);
     const fb = el.querySelector(".feedback");
-    if(!fb) return;
+    if (!fb) return;
     fb.className = "feedback " + (ok ? "ok" : "err");
     fb.textContent = ok ? "Korrekt!" : "Nicht ganz – versuch’s noch einmal.";
   };
 
   /* ===== Step A – Regel der 3 (wie bei dir) ===== */
   const orderList = $("#orderList");
-  RULE_OF_THREE.forEach((item)=>{
+  RULE_OF_THREE.forEach((item) => {
     const row = document.createElement("div");
     row.className = "order-item";
     row.innerHTML = `
@@ -112,25 +112,25 @@ export function build(root, api){
     orderList.appendChild(row);
   });
 
-  $("#checkA").addEventListener("click", ()=>{
+  $("#checkA").addEventListener("click", () => {
     const chosen = {};
     let valid = true;
-    $$("#orderList select").forEach(sel=>{
+    $$("#orderList select").forEach(sel => {
       const v = sel.value;
-      if(!v){ valid=false; }
+      if (!v) { valid = false; }
       chosen[v] = sel.dataset.key;
     });
-    if(!valid || Object.keys(chosen).length !== 4){
-      $("#fbA").className="feedback err";
-      $("#fbA").textContent="Bitte alle Ränge setzen (1–4).";
+    if (!valid || Object.keys(chosen).length !== 4) {
+      $("#fbA").className = "feedback err";
+      $("#fbA").textContent = "Bitte alle Ränge setzen (1–4).";
       return;
     }
     // (Deine aktuelle Logik behalten)
     const correct =
-      chosen["3"]==="fire" &&
-      chosen["1"]==="shelter" &&
-      chosen["2"]==="water" &&
-      chosen["4"]==="food";
+      chosen["3"] === "fire" &&
+      chosen["1"] === "shelter" &&
+      chosen["2"] === "water" &&
+      chosen["4"] === "food";
     markDone($("#stepA"), correct);
   });
 
@@ -140,8 +140,16 @@ export function build(root, api){
   const buckets = B_TOOL_BUCKETS.map(b => ({ ...b, el: $(`.b-bucket[data-bucket="${b.key}"]`) }));
   const fbB = $("#fbB");
 
+  function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
   // Chips anlegen
-  B_ITEMS.forEach(it=>{
+  B_ITEMS.forEach(it => {
     const chip = document.createElement("div");
     chip.className = "b-chip";
     chip.textContent = it.label;
@@ -151,47 +159,47 @@ export function build(root, api){
   });
 
   // Drag per Pointer Events
-  let drag = { el:null, ox:0, oy:0, from:null };
-  function onDown(e){
+  let drag = { el: null, ox: 0, oy: 0, from: null };
+  function onDown(e) {
     const chip = e.target.closest(".b-chip");
-    if(!chip) return;
+    if (!chip) return;
     drag.el = chip;
     drag.from = chip.parentElement;
     const r = chip.getBoundingClientRect();
     drag.ox = e.clientX - r.left;
     drag.oy = e.clientY - r.top;
-    chip.style.position="fixed";
-    chip.style.left = r.left+"px";
-    chip.style.top  = r.top+"px";
-    chip.style.zIndex="9999";
+    chip.style.position = "fixed";
+    chip.style.left = r.left + "px";
+    chip.style.top = r.top + "px";
+    chip.style.zIndex = "9999";
     chip.setPointerCapture?.(e.pointerId);
   }
-  function onMove(e){
-    if(!drag.el) return;
+  function onMove(e) {
+    if (!drag.el) return;
     drag.el.style.left = (e.clientX - drag.ox) + "px";
-    drag.el.style.top  = (e.clientY - drag.oy) + "px";
+    drag.el.style.top = (e.clientY - drag.oy) + "px";
   }
-  function onUp(e){
-    if(!drag.el) return;
+  function onUp(e) {
+    if (!drag.el) return;
     drag.el.releasePointerCapture?.(e.pointerId);
     const chip = drag.el;
 
     // Bucket-Hit testen
     let placed = false;
-    for(const b of buckets){
+    for (const b of buckets) {
       const r = b.el.getBoundingClientRect();
       const hit = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
-      if(hit){
-        chip.style.position="";
-        chip.style.left=""; chip.style.top=""; chip.style.zIndex="";
+      if (hit) {
+        chip.style.position = "";
+        chip.style.left = ""; chip.style.top = ""; chip.style.zIndex = "";
         b.el.querySelector(".b-drop").appendChild(chip);
         placed = true;
         break;
       }
     }
-    if(!placed){
+    if (!placed) {
       // zurück in Bank
-      chip.style.position=""; chip.style.left=""; chip.style.top=""; chip.style.zIndex="";
+      chip.style.position = ""; chip.style.left = ""; chip.style.top = ""; chip.style.zIndex = "";
       chipsHost.appendChild(chip);
     }
 
@@ -204,66 +212,66 @@ export function build(root, api){
   $("#stepB").addEventListener("pointerup", onUp);
   $("#stepB").addEventListener("pointercancel", onUp);
 
-  function updateBucketMeta(){
-    buckets.forEach(b=>{
+  function updateBucketMeta() {
+    buckets.forEach(b => {
       const items = Array.from(b.el.querySelectorAll(".b-drop .b-chip"));
-      const correct = items.filter(ch=>{
-        const acc = (ch.dataset.accepts||"").split(",").filter(Boolean);
+      const correct = items.filter(ch => {
+        const acc = (ch.dataset.accepts || "").split(",").filter(Boolean);
         return acc.includes(b.key);
       }).length;
-      b.el.classList.toggle("ok", correct >= (B_RULE.minPerBucket||1));
+      b.el.classList.toggle("ok", correct >= (B_RULE.minPerBucket || 1));
       const meta = b.el.querySelector(`#meta-${b.key}`);
-      if(meta) meta.textContent = `${correct} korrekt`;
+      if (meta) meta.textContent = `${correct} korrekt`;
     });
   }
 
-  $("#resetB").addEventListener("click", ()=>{
+  $("#resetB").addEventListener("click", () => {
     Array.from($("#stepB").querySelectorAll(".b-chip")).forEach(ch => chipsHost.appendChild(ch));
-    buckets.forEach(b=> b.el.classList.remove("ok"));
-    fbB.className="feedback"; fbB.textContent="";
+    buckets.forEach(b => b.el.classList.remove("ok"));
+    fbB.className = "feedback"; fbB.textContent = "";
     updateBucketMeta();
   });
 
-  $("#checkB").addEventListener("click", ()=>{
+  $("#checkB").addEventListener("click", () => {
     // Prüfkriterium: Jeder Bucket >= minPerBucket korrekte Items
     updateBucketMeta();
     const ok = buckets.every(b => b.el.classList.contains("ok"));
     markDone($("#stepB"), ok);
-    if(!ok){
-      fbB.className="feedback err";
+    if (!ok) {
+      fbB.className = "feedback err";
       fbB.textContent = `Noch nicht. Pro Kategorie brauchst du mindestens ${B_RULE.minPerBucket} korrekte Zuordnungen.`;
     } else {
-      fbB.className="feedback ok";
+      fbB.className = "feedback ok";
       fbB.textContent = "Sauber sortiert! ✅";
     }
   });
 
   /* ===== Step C – Morse (wie bei dir) ===== */
-  $("#morseForm").addEventListener("submit", (e)=>{
+  $("#morseForm").addEventListener("submit", (e) => {
     e.preventDefault();
-    const val = (new FormData(e.currentTarget).get("morse")||"").toString().trim().toLowerCase();
+    const val = (new FormData(e.currentTarget).get("morse") || "").toString().trim().toLowerCase();
     const ok = (val === MORSE_ANSWER);
     markDone($("#stepC"), ok);
-    if(!ok){
+    if (!ok) {
       $("#fbC").textContent = "Tipp: Internationales Notsignal.";
     }
   });
 
   /* ===== Gesamterfolg ===== */
-  const checkAll = ()=> {
-    const allOk = ["stepA","stepB","stepC"].every(id => $("#"+id).classList.contains("done"));
-    if(allOk){
+  const checkAll = () => {
+    const allOk = ["stepA", "stepB", "stepC"].every(id => $("#" + id).classList.contains("done"));
+    if (allOk) {
       $("#surv-success").classList.add("show");
       api.solved();
     }
   };
 
   // Beobachte Veränderungen und prüfe finalen Zustand
-  ["stepA","stepB","stepC"].forEach(id=>{
-    const el = $("#"+id);
+  ["stepA", "stepB", "stepC"].forEach(id => {
+    const el = $("#" + id);
     const obs = new MutationObserver(checkAll);
-    obs.observe(el, { attributes:true, attributeFilter:["class"] });
+    obs.observe(el, { attributes: true, attributeFilter: ["class"] });
   });
 
-  return ()=>{};
+  return () => { };
 }

@@ -2,12 +2,12 @@
 const BIRTHDAY_ISO = "2025-09-23T00:00:00+02:00";
 export const DAYS = [
   { key:"tag1-sternbild", date:"2025-09-16", title:"Tag 1 · Sternbild", badge:"🪴 Pflanzen-Profi" },
-  { key:"tag2-survival",  date:"2025-09-17", title:"Tag 2 · Survival",  badge:"🧭 Pfadfinder/in" },
+  { key:"tag2-survival",  date:"2025-09-17", title:"Tag 2 · Survival",  badge:"🧭 Survivalistin" },
   { key:"tag3-ghost",     date:"2025-09-18", title:"Tag 3 · Geisterjagd", badge:"👻 Mutig" },
   { key:"tag4-wein",      date:"2025-09-19", title:"Tag 4 · Weinwahl", badge:"🥂 Weinliebhaberin" },
-  { key:"tag5-sport",     date:"2025-09-20", title:"Tag 5 · Sport-Boost", badge:"💪 Durchzieher/in" },
+  { key:"tag5-sport",     date:"2025-09-20", title:"Tag 5 · Sport-Boost", badge:"💪 Durchzieherin" },
   { key:"tag6-moto",      date:"2025-09-21", title:"Tag 6 · Motorrad-Safety", badge:"🏍️ Safety First" },
-  { key:"tag7-exit",      date:"2025-09-22", title:"Tag 7 · Exit-Teaser", badge:"🧩 Rätselfuchs" },
+  { key:"tag7-exit",      date:"2025-09-22", title:"Tag 7 · Planeten", badge:"🪐 Space-Rangerin" },
   { key:"tag8-finale",    date:"2025-09-23", title:"Tag 8 · Finale", badge:"🎖️ Missionsabschluss" },
 ];
 const TOTAL = DAYS.length;
@@ -183,4 +183,20 @@ document.addEventListener("DOMContentLoaded", ()=>{
   initActions();
   currentIndex = Math.max(0, Math.min(unlockedIndex(), DAYS.length-1));
   mount();
+  // Service Worker Version im Footer anzeigen
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.getRegistration().then(reg=>{
+    if(reg && reg.active){
+      reg.active.postMessage({type:"GET_VERSION"});
+    }
+  });
+
+  navigator.serviceWorker.addEventListener("message", e=>{
+    if(e.data?.type === "VERSION"){
+      const span = document.getElementById("sw-version");
+      if(span) span.textContent = `SW ${e.data.version}`;
+    }
+  });
+}
+
 });

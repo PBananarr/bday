@@ -1,6 +1,7 @@
 /* sw.js — Globaler Service Worker für Birthday-Quest */
 
-const VERSION = "v0.0.0.D.";               // <<< bei jedem Release anpassen
+const VERSION = "v0.0.0.E.";               // <<< bei jedem Release anpassen
+self.VERSION = VERSION;
 const STATIC_CACHE = `bq-static-${VERSION}`;
 const RUNTIME_CACHE = `bq-runtime-${VERSION}`;
 
@@ -32,6 +33,14 @@ self.addEventListener("install", (event) => {
       .then(() => self.skipWaiting())
   );
 });
+
+self.addEventListener("message", (event) => {
+  if(event.data?.type === "GET_VERSION"){
+    event.source.postMessage({type:"VERSION", version: VERSION});
+  }
+  if (event.data === "SKIP_WAITING") self.skipWaiting();
+});
+
 
 // ACTIVATE: Alte Caches löschen, sofort übernehmen
 self.addEventListener("activate", (event) => {
@@ -95,7 +104,3 @@ self.addEventListener("fetch", (event) => {
 self.addEventListener("message", (event) => {
   if (event.data === "SKIP_WAITING") self.skipWaiting();
 });
-
-
-
-

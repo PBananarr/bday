@@ -107,3 +107,42 @@ input.choice, .choice input, .order-item select{
   to   { transform: scale(1);   opacity: 1; }
 }
 .step.done{ outline:2px solid var(--ok); outline-offset:2px; animation: popIn .25s ease }
+
+
+/* --- Buckets-Spalte: Abstand zwischen den Buckets --- */
+.b-col{
+  display: grid;
+  gap: 12px;            /* Abstand zwischen den .b-bucket Boxen */
+}
+
+/* --- Drop-Fläche: Wrap + Luft --- */
+.b-bucket .b-drop{
+  display: flex;
+  flex-wrap: wrap;      /* Chips umbrechen sich statt zu drücken */
+  gap: 8px;
+  min-height: 46px;     /* Start-Höhe, damit nix kollabiert */
+}
+
+/* --- Bucket: etwas mehr Innenabstand unten für die Meta-Zeile --- */
+.b-bucket{
+  position: relative;
+  padding: 12px 10px 32px;  /* extra bottom padding */
+  overflow: visible;        /* wächst normal mit, nichts schneidet ab */
+}
+
+/* Meta unten rechts bleibt sichtbar und überlappt nichts Wichtiges */
+.b-bucket .b-meta{
+  position: absolute;
+  right: 8px;
+  bottom: 6px;
+  font-size: .8rem;
+  color: var(--muted);
+}
+
+/* Optional: statt Outline (die über den Rand hinausgeht) ein Innenrahmen,
+   damit es optisch nicht wie "Überlappen" wirkt. */
+.b-bucket.ok{
+  outline: none;
+  box-shadow: 0 0 0 2px var(--ok) inset; /* grüner Innenrahmen */
+  border-radius: 12px;
+}

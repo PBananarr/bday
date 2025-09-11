@@ -18,7 +18,7 @@ export function build(root, api){
       <div class="surv-wrap">
         <!-- Step A: Regel der 3 -->
         <div class="step" id="stepA">
-          <h3>A) Basic – Ordne nach Dringlichkeit</h3>
+          <h3>A) Grundlagen – Überleben nach Dringlichkeit</h3>
           <p class="hint">Wähle für jede Zeile die <strong>Rangzahl</strong> (1 = dringend, 4 = weniger dringend).</p>
           <div class="order-list" id="orderList"></div>
           <div class="btnrow" style="margin-top:.35rem">
@@ -29,7 +29,7 @@ export function build(root, api){
 
         <!-- Step B: Improvisierte Werkzeuge (NEU) -->
         <div class="step" id="stepB">
-          <h3>B) Improvisierte Werkzeuge – ordne richtig zu</h3>
+          <h3>B) Erweiterte Grundlagen – Improvisierte Werkzeuge</h3>
           <p class="hint">${B_HINT}</p>
 
           <div class="b-grid">
@@ -38,7 +38,7 @@ export function build(root, api){
               <div id="bChips"></div>
             </div>
 
-            <div>
+            <div class="b-col">
               ${B_TOOL_BUCKETS.map(b => `
                 <div class="b-bucket" data-bucket="${b.key}">
                   <h4>${b.label}</h4>

@@ -1,80 +1,125 @@
-/* Tag 1 – Theme: Nachtblau · Dschungelgrün · Gold (aus deinem Bild) */
+/* Tag 1 – Theme: Thai Monstera · Regenwaldnacht · Sternen-Flecken */
 
 /* Aktiv, wenn body die Klasse 'tag-tag1-sternbild' trägt (setzt main.js) */
-body.tag-tag1-sternbild{
-  --bg:#0b0f1d;         /* tiefes Nachtblau */
-  --card:#102018;       /* dunkles Waldgrün */
-  --border:#2a3a2a;     /* Moosgrün */
-  --text:#f1f5e1;       /* Cremeweiß */
-  --muted:#a3b99c;      /* Graugrün */
-  --accent:#fbbf24;     /* Gold */
-  --ok:#facc15;         /* helleres Gold */
-  --warn:#f59e0b;
-  --err:#ef4444;
+body.tag-tag1-sternbild {
+  --bg:        #0b0f1d; /* tiefes Nachtgrün-Blau (Seitenhintergrund) */
+  --card:      linear-gradient(180deg, #0f1a14, #0b1410); /* feuchte Waldtöne */
+  --border:    #1f2e24; /* Moosgrün für Ränder */
+  --text:      #e8f2e9; /* Cremeweiß mit leichtem Grün-Touch (Monstera-Flecken) */
+  --muted:     #9fb6a4; /* Graugrün für Sekundärtexte */
+  --accent:    #9ae6b4; /* helles Blattgrün als Akzent */
+  --ok:        #22c55e;
+  --warn:      #eab308;
+  --err:       #ef4444;
 }
 
-body.tag-tag1-sternbild .card{
-  background: linear-gradient(180deg, rgba(16,32,24,.95), rgba(10,18,14,.92));
-  box-shadow: 0 10px 32px rgba(0,0,0,.55);
+/* Karten-Styling für Tag 1 */
+body.tag-tag1-sternbild .card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow:
+    0 12px 32px rgba(0,0,0,.55),
+    inset 0 0 40px rgba(154, 230, 180, 0.05); /* sanfter „Fleck“-Glow */
+  position: relative;
+  overflow: hidden;
 }
 
-body.tag-tag1-sternbild .btn.primary{
-  background: linear-gradient(180deg,#facc15,#eab308);
-  border-color:#ca8a04;
-  color:#1a1a0d;
+/* Subtile „Regenwald“-Textur (optional) */
+body.tag-tag1-sternbild .card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-image: url("../../img/rain-texture.png"); /* kannst du austauschen oder löschen */
+  background-size: cover;
+  opacity: 0.04; /* sehr dezent */
+  pointer-events: none;
 }
 
-body.tag-tag1-sternbild .btn.ghostbtn{
-  border-color:#3f3f22;
-  color:#fbbf24;
+/* Überschriften */
+body.tag-tag1-sternbild .card h2 {
+  text-align: center;
+  font-size: 1.3rem;
+  margin-bottom: 0.8rem;
+  color: var(--accent); /* Akzentgrün wie Monstera-Lichtflecken */
+  letter-spacing: 0.5px;
+  font-weight: 700;
 }
 
-body.tag-tag1-sternbild .progress{
-  background: linear-gradient(90deg, #fbbf24, #fde047);
+/* Standardtext */
+body.tag-tag1-sternbild .card p {
+  color: var(--text);
+  line-height: 1.6;
 }
 
-.riddle{ line-height:1.6 }
-.riddle-form .choice{
-  background:#0f1a13;
-  border-color:#2a3a2a;
+/* Buttons */
+body.tag-tag1-sternbild .btn.primary {
+  background: linear-gradient(180deg, #9ae6b4, #4ade80);
+  border-color: #3da765;
+  color: #0a0f0c;
+  margin-top: 0.8rem;
 }
 
-input.choice, 
+body.tag-tag1-sternbild .btn.ghostbtn {
+  border-color: #2f4636;
+  color: var(--accent);
+  margin-top: 0.8rem;
+}
+
+body.tag-tag1-sternbild .progress {
+  background: linear-gradient(90deg, #4ade80, #9ae6b4);
+}
+
+/* Rätselboxen */
+.riddle { 
+  line-height: 1.6;
+}
+
+.riddle-form .choice {
+  background: #0f1a13;
+  border-color: var(--border);
+}
+
+input.choice,
 .riddle-form input {
-  color: #f1f5e1;         /* Textfarbe */
-  background: #0f1a13;    /* dunkler Hintergrund */
-  border: 1px solid #2a3a2a;
+  color: var(--text);
+  background: #0f1a13;
+  border: 1px solid var(--border);
 }
 
-input.choice::placeholder, 
+input.choice::placeholder,
 .riddle-form input::placeholder {
-  color: #a3b99c;         /* Platzhalter etwas heller/graugrün */
+  color: var(--muted);
   opacity: 0.8;
 }
 
 /* Wenn Tag 1 gelöst ist: Riddle-Box zeigt ein Bild */
-body.tag-tag1-sternbild .riddle.solved{
+body.tag-tag1-sternbild .riddle.solved {
   position: relative;
   min-height: 220px;
   border-radius: 12px;
   background: url("../../img/thaiMonsteraThemeStars.png") center / cover no-repeat;
-  color: transparent;                 /* Text ausblenden */
-  -webkit-text-fill-color: transparent; /* iOS Safari */
+  color: transparent;                 
+  -webkit-text-fill-color: transparent; 
   transition: background .3s ease, opacity .3s ease;
-  border: 1px solid #2a3a2a;
+  border: 1px solid var(--border);
   overflow: hidden;
 }
 
-/* optional: leichter Overlay für Tiefe */
-body.tag-tag1-sternbild .riddle.solved::after{
+/* Overlay für Tiefe */
+body.tag-tag1-sternbild .riddle.solved::after {
   content:"";
-  position:absolute; inset:0;
+  position:absolute; 
+  inset:0;
   background: linear-gradient(180deg, rgba(0,0,0,.15), rgba(0,0,0,.25));
   pointer-events:none;
 }
 
+/* Ausgabe nach Lösung */
 #out {
-  margin-top: 1rem;     /* Abstand nach oben */
+  margin-top: 1rem;
 }
 
 #out.success {
@@ -82,9 +127,9 @@ body.tag-tag1-sternbild .riddle.solved::after{
   margin-top: 1rem;
   padding: 0.6rem 0.9rem;
   border-radius: 10px;
-  background: rgba(16, 185, 129, 0.15);  /* leicht grünlich */
+  background: rgba(16, 185, 129, 0.15);  
   border: 1px solid #10b981;
-  color: #d1fae5;                        /* hellgrün-weiß */
+  color: #d1fae5;                        
   font-weight: 600;
   font-size: 1rem;
   text-align: center;
@@ -97,13 +142,57 @@ body.tag-tag1-sternbild .riddle.solved::after{
   to   { transform: scale(1);   opacity: 1; }
 }
 
-body.tag-tag1-sternbild .card h2 {
-  text-align: center;        /* mittig */
-  font-size: 1.3rem;         /* etwas größer, optional */
-  margin-bottom: 0.8rem;     /* etwas mehr Luft nach unten */
-  color: var(--accent);      /* Gold-Akzentfarbe für Sternbild-Theme */
-  letter-spacing: 0.5px;     /* leichte Weite, wirkt edler */
+/* ---------- Responsive Tweaks Thai Monstera ---------- */
+
+/* Smartphones (bis 480px) */
+@media (max-width: 480px) {
+  body.tag-tag1-sternbild .card {
+    padding: 12px;                  /* etwas kompakter */
+  }
+  body.tag-tag1-sternbild .card h2 {
+    font-size: 1.4rem;              /* kleinere Überschrift */
+    margin-top: 1.3rem;
+    margin-bottom: 1.3rem;
+  }
+  body.tag-tag1-sternbild .btn {
+    width: 100%;                    /* Buttons voll breit */
+    margin-top: 0.9rem;
+    padding: 0.7rem 1rem;           /* leichter Fingerkomfort */
+    font-size: 1rem;
+  }
+  body.tag-tag1-sternbild .riddle {
+    font-size: 0.95rem;
+    text-align: center;
+  }
 }
 
+/* Tablets (481px – 1024px) */
+@media (min-width: 481px) and (max-width: 1024px) {
+  body.tag-tag1-sternbild .card {
+    padding: 14px 18px;             /* etwas luftiger */
+  }
+  body.tag-tag1-sternbild .card h2 {
+    font-size: 1.25rem;
+  }
+  body.tag-tag1-sternbild .btn {
+    margin-top: 1rem;
+    padding: 0.8rem 1.1rem;
+    font-size: 0.75rem;
+  }
+}
 
+/* Laptops & Desktops (ab 1025px) */
+@media (min-width: 1025px) {
+  body.tag-tag1-sternbild .card {
+    padding: 18px 20px;
+  }
+  body.tag-tag1-sternbild .card h2 {
+    font-size: 1.4rem;              /* darf größer wirken */
+  }
+  body.tag-tag1-sternbild .btn {
+    margin-top: 1.2rem;
+    padding: 0.9rem 1.2rem;
+    font-size: 1.1rem;
+  }
+}
 

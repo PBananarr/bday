@@ -1,0 +1,147 @@
+/* escape.css – düsteres Theme + Effekte */
+
+:root{
+  --bg:#0a0c12;
+  --panel:#111826;
+  --edge:#1b2740;
+  --text:#e6ecff;
+  --muted:#97a4c7;
+  --accent:#f43f5e; /* Blut */
+  --cold:#60a5fa;
+  --shadow:0 18px 50px rgba(0,0,0,.35);
+}
+
+.escape-root{
+  position:relative;
+  min-height:60vh;
+  padding:12px;
+  background:
+    radial-gradient(900px 600px at 80% -10%, #16203a 0%, transparent 55%),
+    linear-gradient(180deg, #0a0c12, #080a10 60%);
+  border:1px solid #151c2f;
+  border-radius:18px;
+  box-shadow: var(--shadow);
+  overflow:hidden;
+}
+
+/* Bildschirm */
+.escape-screen{
+  position:relative;
+  transform-origin:50% 50%;
+  transition: transform .24s ease, opacity .24s ease;
+}
+.escape-screen.leaving{ opacity:.3; transform:translateX(-8px) scale(.99); filter:blur(1px); }
+.escape-screen.entering{ opacity:1; transform:translateX(0) }
+
+/* Karte/Room */
+.escape-card{
+  background: linear-gradient(180deg, rgba(19,28,47,.9), rgba(10,14,22,.92));
+  border:1px solid var(--edge);
+  border-radius:18px;
+  padding:16px;
+  box-shadow: var(--shadow);
+  overflow:hidden;
+}
+.escape-card h2{
+  margin:.2rem 0 .35rem;
+  font-size:1.2rem;
+  letter-spacing:.02em;
+}
+.escape-card p{
+  margin:.5rem 0 .8rem;
+  color:var(--text);
+  line-height:1.55;
+  opacity:.95;
+}
+
+.choice-list{ display:grid; gap:8px; }
+.choice{
+  appearance:none;
+  background:#0f172a;
+  border:1px solid #1f2945;
+  color:var(--text);
+  font-weight:650;
+  padding:.7rem .9rem;
+  border-radius:12px;
+  cursor:pointer;
+  box-shadow: var(--shadow);
+  text-align:left;
+}
+.choice:hover{ border-color:#2a3b66; transform:translateY(-1px); }
+.choice:active{ transform:translateY(0); }
+
+/* Schritt-Anzeige */
+.escape-meter{
+  margin-top:.8rem;
+  color:var(--muted);
+  font-size:.95rem;
+}
+
+/* FX-Layer */
+.escape-fx{
+  pointer-events:none;
+  position:absolute;
+  inset:0;
+}
+
+/* Blutsplash */
+.fx-blood{
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(400px 220px at 70% 30%, rgba(244,63,94,.12), transparent 70%),
+    linear-gradient(180deg, rgba(244,63,94,.08), rgba(8,10,16,0) 60%);
+  opacity:0;
+  transform:scale(1.05);
+  transition:opacity .2s ease, transform .2s ease;
+  filter:contrast(110%) saturate(110%);
+}
+.fx-blood.show{
+  opacity:1;
+  transform:scale(1);
+}
+.fx-blood::after{
+  content:\"\"; position:absolute; left:50%; top:0;
+  width:4px; height:0; background:var(--accent);
+  box-shadow:0 0 16px rgba(244,63,94,.4);
+  animation:drip .55s ease forwards;
+}
+@keyframes drip{
+  0%{ height:0; }
+  100%{ height:120px; }
+}
+
+/* Jumpscare */
+.fx-scare{ position:absolute; inset:0; display:grid; place-items:center; opacity:0; }
+.fx-scare.on{ opacity:1; transition:opacity .18s ease; }
+.fx-scare-backdrop{
+  position:absolute; inset:0;
+  background: radial-gradient(80vw 80vh at 50% 50%, rgba(0,0,0,.0), rgba(0,0,0,.75) 60%);
+}
+.fx-scare-img{
+  max-width:min(80vw, 520px);
+  max-height:min(60vh, 420px);
+  object-fit:cover;
+  border:3px solid #2a314b;
+  border-radius:12px;
+  box-shadow:0 30px 80px rgba(0,0,0,.6);
+  transform: scale(1.2) rotate(-1deg);
+  animation: scarePop .22s ease forwards, shake .35s ease-in-out .22s 1;
+  filter: contrast(120%) saturate(120%);
+}
+@keyframes scarePop{
+  from{ transform:scale(1.6) rotate(-4deg); opacity:.6; }
+  to{ transform:scale(1.0) rotate(0deg); opacity:1; }
+}
+@keyframes shake{
+  0%,100%{ transform:translateX(0) }
+  25%{ transform:translateX(-6px) }
+  50%{ transform:translateX(5px) }
+  75%{ transform:translateX(-3px) }
+}
+
+/* Responsive */
+@media (min-width:720px){
+  .escape-card{ padding:20px; }
+  .escape-card h2{ font-size:1.3rem; }
+}

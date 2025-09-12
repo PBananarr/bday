@@ -131,15 +131,32 @@ export function build(root, api) {
     lb.style.display = "block";
   }
 
-  function setupCampButton() {
-    const wrap = root.querySelector("#campBtnWrap");
-    if (!wrap || wrap.querySelector(".survival-btn")) return; // schon vorhanden
-    const btn = document.createElement("button");
-    btn.className = "survival-btn";
-    btn.textContent = "Dein Survival Camp";
-    btn.addEventListener("click", openLightbox);
-    wrap.appendChild(btn);
-  }
+ function setupCampTeaser() {
+  const wrap = root.querySelector("#campBtnWrap");
+  if (!wrap || wrap.querySelector(".campcard")) return;
+
+  wrap.innerHTML = `
+    <article class="campcard" role="region" aria-label="Dein Survival Camp">
+      <div class="campcard-media">
+        <img src="img/picSurvival.png" alt="Vorschau Survival Camp" loading="lazy">
+      </div>
+      <div class="campcard-body">
+        <h4 class="campcard-title">Dein Survival Camp</h4>
+        <p class="campcard-sub">Finale Belohnung – tippe zum Öffnen</p>
+        <button class="btn campcard-cta" id="campOpenBtn">Ansehen</button>
+      </div>
+    </article>
+  `;
+
+  const openBtn = wrap.querySelector("#campOpenBtn");
+  openBtn.addEventListener("click", openLightbox);
+
+  // Fokus & Sichtbarkeit erhöhen
+  wrap.scrollIntoView({ behavior: "smooth", block: "center" });
+  openBtn.focus();
+  wrap.classList.add("pulse-once"); // sanfter Fokusrahmen, siehe CSS
+}
+
 
   /* ===== Helpers ===== */
   const $ = (s, p = root) => p.querySelector(s);
@@ -782,7 +799,7 @@ export function build(root, api) {
     const allOk = ["stepA", "stepB", "stepC", "stepD"].every(id => $("#" + id).classList.contains("done"));
     if (allOk) {
       $("#surv-success").classList.add("show");
-      setupCampButton();
+      setupCampTeaser();
       api.solved();
     }
   };

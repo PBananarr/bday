@@ -3,7 +3,7 @@ import { ACCEPT, HINTS } from "./sternbild_data.js";
 export function build(root, api){
   root.innerHTML = `
     <section class="card">
-      <h2>Das Sternbild im Wohnzimmer</h2>
+      <h2>Dein Sternenbild im Wohnzimmer</h2>
       <div class="riddle" aria-describedby="out">
         Ich trage Sterne auf der Haut, doch bin kein Himmelwesen.<br>
         Mein Kleid aus Creme auf Grün—geboren nicht aus Lesen,<br>

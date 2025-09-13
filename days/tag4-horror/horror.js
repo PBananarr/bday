@@ -43,9 +43,23 @@ export function build(host, api) {
 
   <div id="age-gate" class="overlay" role="dialog" aria-modal="true" aria-labelledby="age-title">
     <div class="overlay__panel">
-      <h1 id="age-title">FSK&nbsp;18 – Betreten auf eigene Gefahr</h1>
-      <p>Mutig genug für die nächste Aufgabe? Dann mach deinen Ton an!</p>
-      <p><strong>Gesundheitshinweis:</strong> Nicht geeignet bei Herzproblemen, Epilepsie oder empfindlicher Psyche.</p>
+      <h1 id="age-title">🩸 Prophezeiung der Verbotenen Gasse 🩸</h1>
+      <p class="prophecy">
+        Vier Flüche binden dich an diesen Ort,<br>
+        gebannt in Dingen, verborgen dort.<br>
+        Hinter Symbolen, hinter Türen,<br>
+        musst du sie mit Mut erspüren.<br><br>
+
+        Drücke Tasten – doch sei gewarnt,<br>
+        manches Spiel ist höllisch, nicht gebannt.<br>
+        Nur wer hört, erkennt den Sinn,<br>
+        der Klang weist dir den rechten Gewinn.<br><br>
+
+        Schalte laut, verbanne Ruh’,<br>
+        sonst schweigt der Fluch und bleibt im Nu.<br>
+        Findest du die vier im Bann,<br>
+        so endet, was nicht enden kann.
+      </p>
       <div class="overlay__actions">
         <button id="age-enter" class="btn btn--red" type="button">Ich bin 18+ und will rein</button>
         <button id="age-exit" class="btn btn--ghost" type="button">Ich hab die Hosen voll und Hau ab</button>
@@ -403,6 +417,8 @@ export function build(host, api) {
       on(el, 'click', (e) => { if (e.target === el) close(); });
       on(document, 'keydown', (e) => { if (e.key === 'Escape' && el.classList.contains('visible')) close(); });
 
+      // Beim Verlassen des Tags DOM-Node entsorgen
+      _cleanups.push(() => { try { el.remove(); } catch (_) { } });
       return { open, close };
     })();
 
@@ -869,6 +885,9 @@ export function build(host, api) {
       state.blood = false;
       document.body.classList.remove('flicker');
       _stopAllAudio(audioCtxRef);
+
+      const lb = document.getElementById('lightbox');
+      if (lb) { try { lb.remove(); } catch (_) { } }
     };
 
   })();

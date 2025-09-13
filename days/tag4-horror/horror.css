@@ -1,4 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Creepster&family=Inter:wght@300;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&display=swap');
+
 /* ========== horror.css ========== */
 
 /* ========== Base (responsive) ========== */
@@ -872,3 +874,49 @@ body {
     padding: .35rem .6rem;
   }
 }
+
+
+.overlay__panel .prophecy {
+  font-style: italic;
+  line-height: 1.6;
+  color: #f0d6d6; /* blasses Rot-Weiß */
+  text-shadow: 0 0 6px rgba(255,0,0,0.4);
+  text-align: center;
+}
+
+/* Age-Gate Überschrift */
+#age-title {
+  font-family: "Cinzel Decorative", serif; /* wirkt wie alte Inschrift, optional */
+  font-size: clamp(1.4rem, 4vw, 2.2rem);
+  text-align: center;
+  color: #ff4d4d; /* helles Blutrot */
+  letter-spacing: 1px;
+  text-shadow:
+    0 0 8px rgba(255, 0, 0, 0.6),
+    0 0 18px rgba(150, 0, 0, 0.7);
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+/* kleine Bluttropfen-Illusion unten */
+#age-title::after {
+  content: "";
+  display: block;
+  width: 6px;
+  height: 16px;
+  background: #b30000;
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  margin: 0.3rem auto 0;
+  box-shadow:
+    0 8px 0 -2px #660000,
+    0 14px 0 -4px rgba(80,0,0,0.7);
+  animation: drip 2.4s infinite ease-in-out;
+}
+
+/* Tropfen-Animation */
+@keyframes drip {
+  0%   { transform: translateY(0) scaleY(1); opacity: 1; }
+  70%  { transform: translateY(8px) scaleY(1.2); opacity: 0.8; }
+  100% { transform: translateY(14px) scaleY(0.8); opacity: 0; }
+}
+

@@ -32,4 +32,3 @@ export const HORROR_CONFIG = {
     img: cfg.IMG_BASE ? withV(cfg.IMG_BASE + it.img) : withV(it.img)
   }));
 })(HORROR_CONFIG);
-

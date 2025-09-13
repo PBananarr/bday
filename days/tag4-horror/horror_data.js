@@ -9,7 +9,7 @@ export const HORROR_CONFIG = {
   RANDOM_SCARE_MAX_MS: 22000,
 
   // Wohin führt "Exit" im Age-Gate?
-  AGE_EXIT_URL: 'https://pbananarr.github.io/bday-countdown/',
+  AGE_EXIT_URL: 'https://pbananarr.github.io/bday/',
 
   // (optional, für später) Item-Bilder & -Namen
   USE_ITEM_IMAGES: true,
@@ -32,3 +32,4 @@ export const HORROR_CONFIG = {
     img: cfg.IMG_BASE ? withV(cfg.IMG_BASE + it.img) : withV(it.img)
   }));
 })(HORROR_CONFIG);
+

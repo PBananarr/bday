@@ -1,3 +1,6 @@
+/* ===================== escape_data.js ===================== */
+
+
 export const escape_STORY = {
   meta: {
     title: "Sunny Hollow – Letzte Visite",
@@ -123,7 +126,13 @@ export const escape_STORY = {
     },
 
     /* ===================== 24 EINZELTODE ===================== */
-    d1:  death("Allein auf dem Gang", "Die Ausgangstür ist offen – für etwas, das genau auf dich gewartet hat."),
+    d1:  death(
+      "Allein auf dem Gang", "Du sprintest aus der Tür und findest dich auf einem langen Gang wieder." +
+      " Du siehst dich panisch um, und hörst von links erneut diesen dämonischen Schrei." +
+      " Du fliest nach rechts und folgst panisch der Dunkelheit." +
+      " Plötzlich stehst du in einer Sackgasse vor einer Tür. Du reist Sie auf und stürmst hinein." +
+      " Ein leises, kraftloses Ächzen begrüßt dich – du bemerkst das du im selben Raum gelandet bist, aus dem du zu fliehen versucht hast."
+    ),
     d2:  death("Hilfe… gehört dich", "Dein Ruf hallt. Jemand antwortet aus deinem Rücken."),
     d3:  death("Lauschangriff", "Du bleibst still. Es nicht."),
     d4:  death("Wachküssen verboten", "Er schlägt die Augen auf – aber nicht seine."),

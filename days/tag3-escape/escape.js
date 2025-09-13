@@ -1,8 +1,5 @@
-// days/tag3-escape/escape.js
-// Day-Adapter + Engine in EINER Datei
-// - Dein Loader ruft build(host, api) auf
-// - Die Engine rendert die Story aus ./escape_data.js
-// - Beim Erreichen der Final-Szene (s8) wird api.solved() genau 1× aufgerufen
+/* ========================== escape.js =========================== */
+
 
 import { escape_STORY } from "./escape_data.js";
 

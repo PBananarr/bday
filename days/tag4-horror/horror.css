@@ -1,0 +1,874 @@
+@import url('https://fonts.googleapis.com/css2?family=Creepster&family=Inter:wght@300;600&display=swap');
+/* ========== horror.css ========== */
+
+/* ========== Base (responsive) ========== */
+:root {
+  --bg: #0a0a0d;
+  --ink: #d6d6e7;
+  --muted: #8a8aa3;
+  --red: #e10600;
+  --panel: #121218;
+  --tile: #121016;
+  --tile-2: #17131d;
+  --glow: 0 0 20px rgba(225, 6, 0, .45), 0 0 50px rgba(225, 6, 0, .15);
+
+  /* Fluid sizing */
+  --space: clamp(0.75rem, 2.2vw, 1.25rem);
+  --radius: clamp(14px, 2.2vw, 22px);
+  --switch-h: clamp(38px, 5vw, 44px);
+}
+
+* {
+  box-sizing: border-box
+}
+
+html,
+body {
+  height: 100%
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(1200px 600px at 80% -10%, rgba(225, 6, 0, .12), transparent 60%),
+    radial-gradient(1000px 700px at -20% 120%, rgba(100, 0, 30, .25), transparent 60%),
+    var(--bg);
+  color: var(--ink);
+  font: clamp(15px, 1.2vw, 16px)/1.5 Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Noto Sans, Helvetica, Arial;
+  overflow-x: hidden;
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+/* Utility */
+.hidden {
+  display: none !important
+}
+
+.sep {
+  opacity: .35
+}
+
+/* ===== Header ===== */
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space);
+  padding: calc(var(--space) * 1.6) calc(var(--space)) calc(var(--space) * .9);
+  position: relative;
+}
+
+.logo {
+  font-family: "Creepster", serif;
+  font-size: clamp(2rem, 5vw, 4.4rem);
+  margin: 0;
+  letter-spacing: .03em;
+  color: #fff;
+  text-shadow: 0 0 2px #fff, 0 0 40px rgba(255, 255, 255, .15), 0 0 60px rgba(225, 6, 0, .35);
+  filter: drop-shadow(0 5px 15px rgba(225, 6, 0, .35));
+}
+
+.tag {
+  margin: .2rem 0 0;
+  color: var(--muted);
+  font-size: clamp(.9rem, 1.4vw, 1rem)
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  gap: .25rem;
+  min-width: 0
+}
+
+.controls {
+  display: flex;
+  gap: .6rem;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end
+}
+
+/* Switch buttons */
+.switch {
+  --h: var(--switch-h);
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+  border: 1px solid #2a2028;
+  border-radius: 999px;
+  padding: .25rem .35rem .25rem .6rem;
+  position: relative;
+  background: linear-gradient(180deg, #1b151e, #0e0b10);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .03);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.switch:focus-visible {
+  outline: 2px solid var(--red)
+}
+
+.switch__label {
+  color: var(--muted);
+  font-size: clamp(.85rem, 1.6vw, .95rem)
+}
+
+.switch__thumb {
+  display: inline-grid;
+  place-items: center;
+  width: var(--h);
+  height: var(--h);
+  background: radial-gradient(50% 80% at 50% 30%, #ff655a, #a30000);
+  border-radius: 50%;
+  color: #fff;
+  font-weight: 700;
+  font-size: .8rem;
+  box-shadow: var(--glow), 0 6px 14px rgba(0, 0, 0, .6);
+  transition: transform .2s ease;
+}
+
+[aria-pressed="false"] .switch__thumb {
+  transform: translateX(-4px)
+}
+
+[aria-pressed="true"] .switch__thumb {
+  transform: translateX(4px)
+}
+
+/* Buttons */
+.btn {
+  --bg1: #1a1014;
+  --bg2: #0b080b;
+  border: 1px solid #2a2028;
+  background: linear-gradient(180deg, var(--bg1), var(--bg2));
+  color: #fff;
+  padding: .75rem 1rem;
+  border-radius: 16px;
+  cursor: pointer;
+  position: relative;
+  isolation: isolate;
+  transition: transform .08s ease;
+  touch-action: manipulation;
+}
+
+.btn:active {
+  transform: translateY(1px)
+}
+
+.btn.small {
+  padding: .5rem .8rem;
+  border-radius: 12px;
+  font-size: clamp(.9rem, 1.6vw, .95rem)
+}
+
+.btn--red {
+  --bg1: #3a0000;
+  --bg2: #120203;
+  box-shadow: 0 0 0 1px rgba(225, 6, 0, .25), var(--glow);
+}
+
+.btn--ghost {
+  background: transparent;
+  border-color: #2a2a36;
+  color: var(--muted)
+}
+
+/* ===== Tiles grid ===== */
+.tiles {
+  --min: clamp(150px, 42vw, 260px);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--min), 1fr));
+  gap: clamp(.75rem, 2vw, 1rem);
+  padding: clamp(.75rem, 2vw, 1rem) clamp(.75rem, 2vw, 1.25rem) clamp(1.25rem, 3vw, 2rem);
+  perspective: 1000px;
+}
+
+.tile {
+  --pad: clamp(.9rem, 2.2vw, 1.1rem);
+  background:
+    radial-gradient(100% 140% at 120% -20%, rgba(225, 6, 0, .25), transparent 50%),
+    radial-gradient(60% 100% at -10% 120%, rgba(225, 6, 0, .15), transparent 50%),
+    linear-gradient(180deg, var(--tile), var(--tile-2));
+  border: 1px solid #241b24;
+  border-radius: var(--radius);
+  color: #fff;
+  padding: var(--pad);
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  min-height: clamp(120px, 24vw, 160px);
+  outline-offset: 2px;
+  transition: transform .15s ease, box-shadow .15s ease, border-color .2s ease;
+}
+
+.tile:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .5)
+}
+
+.tile:focus-visible {
+  outline: 2px solid var(--red)
+}
+
+.tile:active {
+  transform: translateY(0) scale(.99)
+}
+
+.tile::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  background: radial-gradient(200px 100px at var(--mx, 50%) var(--my, 50%), rgba(225, 6, 0, .12), transparent 50%);
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.tile__title {
+  font-family: "Creepster", serif;
+  font-size: clamp(1.4rem, 4.8vw, 1.8rem);
+  letter-spacing: .02em;
+  text-shadow: 0 0 1px #fff2, 0 0 18px rgba(225, 6, 0, .35);
+}
+
+.tile__sub {
+  color: var(--muted);
+  display: block;
+  margin-top: .25rem;
+  font-size: clamp(.9rem, 2.8vw, 1rem)
+}
+
+.tile--dont .tile__title {
+  color: #fff;
+  text-shadow: 0 0 2px #fff, 0 0 16px #f33a;
+}
+
+.tile--void {
+  filter: saturate(.85) contrast(1.1)
+}
+
+.tile--eyes {
+  background-image: radial-gradient(12px 7px at 25% 40%, #fff, transparent 60%), radial-gradient(12px 7px at 30% 43%, #fff, transparent 60%);
+  background-repeat: no-repeat;
+  background-size: auto
+}
+
+/* ===== Overlay (age gate) ===== */
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(4, 4, 8, .9);
+  backdrop-filter: blur(6px);
+  z-index: 60;
+  padding: env(safe-area-inset-top) var(--space) var(--space);
+}
+
+/* Age-Gate Panel als Grid mit großzügigen Abständen */
+.overlay__panel {
+  width: min(880px, 100%);
+  display: grid;
+  grid-template-columns: 1fr;
+  align-content: start;
+  gap: clamp(0.9rem, 2.2vw, 1.2rem);
+  /* Grundabstand zwischen Bereichen */
+  padding: clamp(1.25rem, 3vw, 1.75rem) clamp(1.25rem, 3vw, 1.75rem) clamp(1.6rem, 3.2vw, 2rem);
+  /* unten etwas mehr für die Buttons */
+  background: linear-gradient(180deg, #0c0a0e, #09080b);
+  border: 1px solid #2a2028;
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, .7), var(--glow);
+}
+
+/* Größerer Abstand vom Titel zu den Texten */
+.overlay__panel h1 {
+  margin: 0 0 clamp(0.9rem, 2.2vw, 1.25rem);
+  font: 700 clamp(1.6rem, 4.6vw, 2rem)/1.2 Inter, system-ui;
+}
+
+.overlay__panel p {
+  margin: 0;
+  /* Grundabstand über grid-gap */
+  color: var(--muted);
+  font-size: clamp(.95rem, 2.8vw, 1rem);
+}
+
+/* Kleiner Zwischenabstand zwischen den beiden Absätzen */
+.overlay__panel p+p {
+  margin-top: .35rem;
+}
+
+/* Buttons mobil untereinander, Desktop nebeneinander */
+.overlay__actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  /* mobil: volle Breite */
+  gap: .9rem;
+  margin-top: clamp(1.1rem, 3vw, 1.8rem);
+  /* “tiefer” setzen */
+}
+
+.overlay__actions .btn {
+  width: 100%;
+  padding-block: .9rem;
+  /* etwas höher für bessere Tap-Fläche */
+}
+
+/* Ab ~560px nebeneinander */
+@media (min-width:560px) {
+  .overlay__actions {
+    grid-template-columns: auto auto;
+    justify-content: start;
+    gap: 1rem 0.9rem;
+  }
+
+  .overlay__actions .btn {
+    width: auto;
+    min-width: 260px;
+    /* wirkt “gleichgewichtiger” */
+  }
+}
+
+
+/* ===== Screamer Overlay ===== */
+.screamer {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(60% 60% at 50% 50%, rgba(0, 0, 0, .0), rgba(0, 0, 0, .92));
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s ease;
+  z-index: 80;
+}
+
+.screamer.visible {
+  opacity: 1;
+  pointer-events: auto
+}
+
+.screamer>.content {
+  position: relative;
+  display: grid;
+  place-items: center
+}
+
+/* VARIANT A: Pale Face (klassisch) */
+.face {
+  position: relative;
+  width: min(90vmin, 900px);
+  height: min(90vmin, 900px);
+  background: radial-gradient(70% 90% at 50% 55%, #f5f5f5, #ddd 60%, #111 61%);
+  border-radius: 50%;
+  box-shadow: 0 0 160px 30px rgba(255, 255, 255, .08), inset 0 -120px 200px rgba(0, 0, 0, .8);
+  animation: pulse .9s cubic-bezier(.2, .95, .2, 1) both;
+  filter: contrast(1.6) saturate(.6);
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(.2) rotate(-6deg)
+  }
+
+  100% {
+    transform: scale(1) rotate(0deg)
+  }
+}
+
+.eye {
+  position: absolute;
+  top: 32%;
+  width: 19%;
+  height: 18%;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 40px 10px rgba(255, 255, 255, .4);
+}
+
+.eye.left {
+  left: 21%
+}
+
+.eye.right {
+  right: 21%
+}
+
+.eye::after {
+  content: "";
+  position: absolute;
+  inset: 22% 25%;
+  background: radial-gradient(70% 70% at 50% 50%, #000, #100 45%, #c00 55%, #000 66%);
+  border-radius: 50%;
+  animation: eye .9s ease both;
+}
+
+@keyframes eye {
+  from {
+    transform: scale(.2)
+  }
+
+  to {
+    transform: scale(1)
+  }
+}
+
+.mouth {
+  position: absolute;
+  left: 50%;
+  top: 62%;
+  transform: translateX(-50%);
+  width: 52%;
+  height: 22%;
+  background: radial-gradient(60% 80% at 50% 40%, #200, #000 60%);
+  border-bottom-left-radius: 120px 80px;
+  border-bottom-right-radius: 120px 80px;
+  border-top-left-radius: 200px 100px;
+  border-top-right-radius: 200px 100px;
+  overflow: hidden;
+  box-shadow: inset 0 -20px 60px rgba(255, 0, 0, .35);
+}
+
+.mouth::after {
+  content: "";
+  position: absolute;
+  inset: -10% -10% 40%;
+  background: radial-gradient(60% 90% at 50% 50%, rgba(200, 0, 0, .8), transparent 60%);
+  filter: blur(6px);
+}
+
+/* VARIANT B: Shadow Silhouette */
+.shadow {
+  width: min(90vmin, 900px);
+  height: min(90vmin, 900px);
+  border-radius: 50%;
+  background:
+    radial-gradient(40% 60% at 50% 35%, #000, #000 60%, transparent 61%),
+    radial-gradient(70% 90% at 50% 55%, #020202, #0a0a0a 70%, #000 71%);
+  box-shadow: 0 0 90px rgba(0, 0, 0, .8);
+  position: relative;
+  overflow: hidden;
+  animation: zoom .6s cubic-bezier(.2, .95, .2, 1) both;
+}
+
+.shadow::before,
+.shadow::after {
+  content: "";
+  position: absolute;
+  top: 33%;
+  width: 9%;
+  height: 8%;
+  background: #fff;
+  border-radius: 50%;
+  filter: drop-shadow(0 0 12px #fff);
+}
+
+.shadow::before {
+  left: 33%
+}
+
+.shadow::after {
+  right: 33%
+}
+
+@keyframes zoom {
+  0% {
+    transform: scale(.3);
+    filter: blur(6px)
+  }
+
+  100% {
+    transform: scale(1);
+    filter: none
+  }
+}
+
+/* VARIANT C: Text Shock */
+.textshock {
+  font-family: "Creepster", serif;
+  font-size: min(22vw, 220px);
+  line-height: .9;
+  color: #fff;
+  text-align: center;
+  text-shadow: 1px 0 0 #f00, -1px 0 0 #0ff, 0 0 30px #fff4;
+  padding: 0 .5rem;
+  animation: slam .5s ease-out both;
+}
+
+@keyframes slam {
+  from {
+    transform: scale(.1) rotate(-15deg)
+  }
+
+  to {
+    transform: scale(1) rotate(0)
+  }
+}
+
+/* VARIANT D: TV Static */
+.tv {
+  position: relative;
+  width: 100dvw;
+  max-width: 100%;
+  height: 100dvh;
+  max-height: 100%;
+  overflow: hidden;
+  background: repeating-linear-gradient(0deg, #111 0 2px, #222 2px 4px);
+}
+
+.tv::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, #fff1 0%, #000 70%);
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.noise {
+  position: absolute;
+  inset: -20%;
+  background:
+    repeating-conic-gradient(#fff2 0% 0.25%, #0002 0.25% 0.5%);
+  animation: noise 120ms steps(6) infinite;
+  opacity: .6;
+}
+
+@keyframes noise {
+  to {
+    transform: translate3d(-10px, 10px, 0)
+  }
+}
+
+.scanlines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, transparent 0 2px, #000 2px 3px);
+  opacity: .2;
+  mix-blend-mode: multiply;
+}
+
+/* Flash / Strobe */
+.flash {
+  animation: flash .5s both
+}
+
+@keyframes flash {
+  0% {
+    background: #fff;
+  }
+
+  100% {
+    background: radial-gradient(60% 60% at 50% 50%, rgba(0, 0, 0, .0), rgba(0, 0, 0, .92));
+  }
+}
+
+/* Blood canvas */
+#blood-canvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 20;
+  mix-blend-mode: screen;
+}
+
+/* Flicker */
+.flicker * {
+  animation: flicker .08s infinite alternate;
+}
+
+@keyframes flicker {
+  from {
+    opacity: .94
+  }
+
+  to {
+    opacity: .74
+  }
+}
+
+/* Body shake when scared */
+.shake {
+  animation: shake .25s linear 4
+}
+
+@keyframes shake {
+
+  0%,
+  100% {
+    transform: translate(0, 0)
+  }
+
+  25% {
+    transform: translate(-8px, 2px)
+  }
+
+  50% {
+    transform: translate(6px, -4px)
+  }
+
+  75% {
+    transform: translate(-4px, 3px)
+  }
+}
+
+/* Footer */
+.foot {
+  padding: 0 var(--space) calc(var(--space) * 2);
+  color: var(--muted)
+}
+
+/* Hover spotlight coords */
+.tile:hover,
+.tile:focus-visible {
+  --mx: var(--_mx, 50%);
+  --my: var(--_my, 50%)
+}
+
+/* Glitch text */
+.glitch {
+  position: relative;
+  display: inline-block;
+  text-shadow: 1px 0 0 #f00, -1px 0 0 #0ff;
+  animation: glitch-shift 600ms infinite;
+}
+
+@keyframes glitch-shift {
+
+  0%,
+  100% {
+    transform: translate(0)
+  }
+
+  33% {
+    transform: translate(1px, -1px)
+  }
+
+  66% {
+    transform: translate(-1px, 1px)
+  }
+}
+
+/* ===== Responsive tweaks ===== */
+@media (max-width: 900px) {
+  .top {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .controls {
+    justify-content: space-between
+  }
+}
+
+@media (max-width: 560px) {
+  .top {
+    padding: calc(var(--space) * 1.2) var(--space) calc(var(--space) * .6)
+  }
+
+  .tiles {
+    --min: clamp(150px, 80vw, 1fr)
+  }
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+
+  .shake,
+  .flicker *,
+  .glitch,
+  .screamer .face,
+  .shadow,
+  .tv .noise {
+    animation: none !important
+  }
+}
+
+
+/* === Hidden Objects (Bilder hinter Kacheln) === */
+.tile {
+  transform-style: preserve-3d;
+  transition: transform 0.9s cubic-bezier(.2, .8, .2, 1);
+  /* langsamer Flip */
+}
+
+/* Frontseite in eine eigene 3D-Ebene zwingen, damit die Rückseite sichtbar wird */
+.tile>*:not(.item-card) {
+  backface-visibility: hidden;
+  transform: rotateY(0deg);
+  /* Wichtig: eigene Transform, sonst greift backface-visibility nicht */
+}
+
+.tile--flipped {
+  transform: rotateY(180deg);
+}
+
+
+.item-card {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 1rem;
+  border-radius: var(--radius);
+  background: radial-gradient(120% 120% at 50% 50%, rgba(0, 0, 0, .82), rgba(0, 0, 0, .92));
+  border: 1px solid #2a2028;
+  transform: rotateY(180deg);
+  /* zeigt korrekt, wenn Tile 180° gedreht ist */
+  z-index: 2;
+  user-select: none;
+}
+
+.item-card__img {
+  width: min(100px, 28vw);
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 0 12px rgba(255, 255, 255, .15));
+  cursor: pointer;
+}
+
+.item-card__name {
+  margin-top: .4rem;
+  font-weight: 700;
+}
+
+.tile--found {
+  outline: 2px dashed rgba(225, 6, 0, .35);
+  outline-offset: -4px
+}
+
+/* ===== Lightbox (Fullscreen-Ansicht der gefundenen PNGs) ===== */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  display: none;
+  /* per Klasse sichtbar */
+  place-items: center;
+  background: rgba(0, 0, 0, .9);
+  z-index: 75;
+  /* unter Screamer (80), über Seite/Age-Gate */
+}
+
+.lightbox.visible {
+  display: grid;
+}
+
+.lightbox__img {
+  max-width: min(92vw, 1100px);
+  max-height: 88vh;
+  width: auto;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, .6);
+}
+
+.lightbox__close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: #111a;
+  color: #fff;
+  border: 1px solid #333;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.lightbox__close:hover {
+  background: #222c;
+}
+
+/* ===== Lightbox-Caption ===== */
+.lightbox__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .6rem;
+  padding: 0 1rem;
+}
+
+.lightbox__caption {
+  color: #fff;
+  font-weight: 700;
+  text-align: center;
+  font-size: clamp(1rem, 2.6vw, 1.25rem);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .6);
+  max-width: min(92vw, 1100px);
+}
+
+/* === Visuelles Feedback während Cooldown === */
+#app.is-locked {
+  cursor: not-allowed;
+}
+
+#app.is-locked .tile {
+  opacity: .55;
+  filter: grayscale(.2);
+  pointer-events: none;
+  /* blockt schnelle Klickorgien */
+  transition: opacity .2s ease, filter .2s ease;
+}
+
+/* Blut-Switch etwas breiter machen */
+#toggle-blood {
+  min-width: clamp(140px, 22vw, 190px);
+  /* Breite anpassen */
+  justify-content: space-between;
+  /* Label links, Thumb rechts */
+  padding-left: .8rem;
+  /* etwas Luft links/rechts */
+  padding-right: .8rem;
+}
+
+/* HUD: Gefunden-Zähler – Pill neben dem Blut-Schalter */
+.found-counter {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  padding: .4rem .7rem;
+  border-radius: 14px;
+  border: 1px solid #2a2028;
+  background: linear-gradient(180deg, #141018, #0c0a0e);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, .04), 0 6px 14px rgba(0, 0, 0, .5), var(--glow);
+  font-weight: 700;
+  letter-spacing: .02em;
+}
+
+.found-label {
+  color: var(--muted);
+}
+
+#found-counter {
+  padding: .15rem .5rem;
+  background: #0b0a0d;
+  border-radius: 10px;
+}
+
+.found-counter::before {
+  font-weight: 700;
+  letter-spacing: .04em;
+  color: var(--muted);
+  /* oder #fff, wenn du mehr Kontrast willst */
+  /* optional: text-transform: uppercase; */
+}
+
+.controls .found-counter { margin-left:.6rem; }
+
+@media (max-width: 560px) {
+  .controls {
+    gap: .5rem;
+    flex-wrap: wrap;
+  }
+
+  .found-counter {
+    font-size: .95rem;
+    padding: .35rem .6rem;
+  }
+}

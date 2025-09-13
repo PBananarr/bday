@@ -14,7 +14,7 @@ export const escape_STORY = {
       title: "Aufwachen im Ostflügel",
       text: "Kalter Linoleum, abblätternde Farbe. Du öffnest die Augen: verlassene Nervenheilanstalt. Neben dir liegt dein bester Freund – bewusstlos, Atem flach. Aus den Korridoren kriecht ein dämonischer Schrei, der die Notlichter flackern lässt.",
       choices: [
-        { label: "Freund prüfen und in Sicherheit bringen", to: "s1", effect: "blood" },
+        { label: "March-Schema anwenden – Freund auf Gang zerren!", to: "s1", effect: "blood" },
         { label: "Allein fliehen – raus hier!", to: "d1", effect: "scare" },
         { label: "Nach Hilfe rufen", to: "d2", effect: "scare" },
         { label: "Reglos lauschen, ob „es“ näher kommt", to: "d3", effect: "blood" }
@@ -38,7 +38,7 @@ export const escape_STORY = {
       type: "room",
       id: "s2",
       title: "Stationsplan",
-      text: "Ein verblasster Gebäudeplan: Kapelle, Verwaltung, Therapieräume, Heizungskeller, „Isoliertrakt“. Ein fett umrandeter Korridor trägt die Handnotiz: „Ritualreste → Kapelle“. Draußen heult etwas wie Wind – oder Atmen.",
+      text: "Ein verblasster Gebäudeplan: Kapelle, Verwaltung, Therapieräume, Heizungskeller, „Isoliertrakt“. Ein fett umrandeter Korridor trägt die Handnotiz: „Ritualreste → Kapelle“. Draußen heult etwas wie Wind – oder Atmen?",
       choices: [
         { label: "Zur Kapelle – vielleicht ein Schutzritual", to: "s3", effect: "door" },
         { label: "In den Heizungskeller", to: "d7", effect: "blood" },
@@ -51,9 +51,9 @@ export const escape_STORY = {
       type: "room",
       id: "s3",
       title: "Kapelle – Reste eines Bannkreises",
-      text: "Wachsflecken, Kreidereste, verkohlte Seiten aus einer Bibel. Auf dem Boden ein zerrissener Bannkreis. Dein Freund stöhnt. Ein Randnotizfetzen: „Kreis erneuern → Herz nicht berühren.“",
+      text: "Wachsflecken, Kreidereste, verkohlte Seiten aus einer Bibel. Auf dem Boden ein zerrissener Bannkreis. Dein Freund stöhnt plötzlich: Hi...iilf mir! Ein Randnotizfetzen: „Kreis erneuern → Herz nicht berühren.“",
       choices: [
-        { label: "Kerzen anzünden und hoffen", to: "d10", effect: "blood" },
+        { label: "Besten Freund ansprechen!", to: "d10", effect: "blood" },
         { label: "Kreidezeichen sauber nachziehen", to: "s4", effect: "door" },
         { label: "Auf der Orgel Töne spielen", to: "d11", effect: "scare" },
         { label: "Fenster öffnen, frische Luft reinlassen", to: "d12", effect: "blood" }
@@ -132,7 +132,12 @@ export const escape_STORY = {
     d7:  death("Heizungskeller", "Die Treppe endet. Nicht da, wo du dachtest."),
     d8:  death("Verwaltung", "Das Telefon hat Wählton. Es wählt dich."),
     d9:  death("Kellergang", "Abkürzungen sind Kreidezeichnungen in Fleisch."),
-    d10: death("Kerzenopfer", "Flamme zieht Luft – und etwas anderes."),
+    d10: death(
+      "Dämonisch", "Er reist die Augen auf – Sein lauter Schrei durchdringt den Raum. " +
+      "Blut läuft aus seinen Augen, den Ohren und der Nase. " +
+      "Er zuckt besessen am Boden, wühlt wild umher und kriegt eine Glasscherbe zu fassen. " +
+      "Er umklammert sie so fest, das er fast seine Finger verliert und schlitzt dir damit den Hals auf."
+    ),
     d11: death("Orgelpunkt", "Der Ton hält an, auch wenn du es nicht mehr tust."),
     d12: death("Frische Luft", "Etwas kriecht mit herein und bleibt."),
     d13: death("Spiegelwelt", "Du zerbrichst das Glas. Es setzt dich anders zusammen."),

@@ -109,7 +109,7 @@ export function build(host, api) {
         const btn = el('#show-badge'); if (btn) btn.disabled = false;
         // solved einmalig melden
         if (!updateProgress._fired && api && typeof api.solved === 'function') {
-          try { api.solved(); } catch (_) {}
+          try { api.solved(); } catch (_) { }
           updateProgress._fired = true;
         }
         openBadgeModal();
@@ -200,7 +200,7 @@ export function build(host, api) {
           if (interval) return; interval = setInterval(() => {
             if (!pressing) { clearInterval(interval); interval = null; reset(); return; }
             t++; el('#hold-timer').textContent = String(t);
-            if (t >= secs) { clearInterval(interval); interval = null; completeStation(st.id, area, 'Stabil wie ein Brett – geschafft.'); }
+            if (t >= secs) { clearInterval(interval); interval = null; completeStation(st.id, area, 'Stabil wie ein Brett.'); }
           }, 1000);
         };
         ring.addEventListener('pointerdown', () => { pressing = true; startCount(); });
@@ -215,12 +215,12 @@ export function build(host, api) {
         const areaBtns = document.createElement('div');
         Object.assign(areaBtns.style, { display: 'flex', gap: '8px', justifyContent: 'center' });
 
-        const leftB  = document.createElement('button'); leftB.className  = 'btn'; leftB.textContent  = '👊 Links';
+        const leftB = document.createElement('button'); leftB.className = 'btn'; leftB.textContent = '👊 Links';
         const rightB = document.createElement('button'); rightB.className = 'btn'; rightB.textContent = '🥊 Rechts';
         areaBtns.append(leftB, rightB); wrap.appendChild(areaBtns);
 
         // >>> Option A: Zoom/Pinch während der Challenge erlauben
-        leftB.style.touchAction  = 'auto';
+        leftB.style.touchAction = 'auto';
         rightB.style.touchAction = 'auto';
         enableZoomForChallenge();
 
@@ -292,46 +292,117 @@ export function build(host, api) {
               <button class="btn" id="btn37" ${done ? 'disabled' : ''}>Klick</button>
             </div>
             <div class="progressline"><b id="cbar" style="width:0%"></b></div>
-            <p class="muted" id="ctimeleft">Zeit: ${ch.seconds}s</p>`;
+            <p class="muted" id="ctimeleft">Zeit: ${ch.seconds}s</p>
+            <p class="muted" id="rhythm-hint" style="text-align:center;opacity:.85">
+              Halte den Rhythmus: <b>100–135&nbsp;ms</b> zwischen Klicks
+            </p>`;
           cont.appendChild(card);
 
-          let c = 0, t = ch.seconds, timer = null, started = false;
+          // === Rhythmus-Parameter ===
+          const MIN_MS = 100;
+          const MAX_MS = 135;
+
+          // State
+          let c = 0;
+          let started = false;
+          let lastTap = 0;
+
+          // Zeitsteuerung (echtzeitbasiert)
+          let startTS = 0;          // performance.now() beim Start
+          let tickId = null;       // Intervall-ID für Anzeige
+          const DURATION_MS = ch.seconds * 1000;
+
           const btn = card.querySelector('#btn37');
           const barEl = card.querySelector('#cbar');
           const timeEl = card.querySelector('#ctimeleft');
           const countEl = card.querySelector('#c37');
 
-          function resetTry() {
-            c = 0; t = ch.seconds; started = false;
+          function pulse(el) {
+            el.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.06)' }, { transform: 'scale(1)' }], {
+              duration: 120, easing: 'ease-out'
+            });
+          }
+
+          function stopClock() {
+            if (tickId) { clearInterval(tickId); tickId = null; }
+          }
+
+          function resetTry(reason) {
+            stopClock();
+            started = false;
+            c = 0;
+            lastTap = 0;
+            startTS = 0;
             countEl.textContent = '0';
             barEl.style.width = '0%';
-            timeEl.textContent = 'Zeit: ' + t + 's';
+            timeEl.textContent = 'Zeit: ' + ch.seconds + 's';
             btn.disabled = false;
+            if (reason) toast(reason, 'warn');
           }
-          function startTimer() {
-            if (started) return;
-            started = true;
-            timer = setInterval(() => {
-              t--; timeEl.textContent = 'Zeit: ' + t + 's';
-              if (t <= 0) {
-                clearInterval(timer); timer = null;
-                toast('Zeit abgelaufen – versuch es erneut.', 'warn');
-                resetTry();
+
+          function startClock() {
+            startTS = performance.now();
+            // Anzeige alle 100 ms aktualisieren, aber Wert aus echter Zeit ableiten
+            tickId = setInterval(() => {
+              const elapsed = performance.now() - startTS;
+              const remaining = Math.max(0, DURATION_MS - elapsed);
+              // Sekunden-Anzeige (ganzzahlig, wie zuvor)
+              timeEl.textContent = 'Zeit: ' + Math.ceil(remaining / 1000) + 's';
+              if (remaining <= 0) {
+                stopClock();
+                btn.disabled = true;
+                resetTry('Zeit abgelaufen – versuch es erneut.');
               }
-            }, 1000);
+            }, 100);
           }
 
           btn.addEventListener('click', () => {
             if (done || state.challengeDone.has(ch.id)) return;
-            startTimer();
-            c++; countEl.textContent = String(c);
+
+            const now = performance.now();
+
+            // Erster Klick: Start
+            if (!started) {
+              started = true;
+              startClock();
+              lastTap = now;
+              c = 1;
+              countEl.textContent = '1';
+              barEl.style.width = (Math.min(100, Math.round(1 / ch.target * 100))) + '%';
+              pulse(btn);
+              if (c >= ch.target) {
+                finishChallenge(ch.id, card, '37 im Takt! 👏');
+                stopClock();
+              }
+              return;
+            }
+
+            // Folge-Klicks: Rhythmusfenster prüfen
+            const delta = now - lastTap;
+            if (delta < MIN_MS) {
+              resetTry('Zu schnell! Rhythmus gebrochen.');
+              return;
+            }
+            if (delta > MAX_MS) {
+              resetTry('Zu langsam! Rhythmus verloren.');
+              return;
+            }
+
+            // gültig
+            lastTap = now;
+            c++;
+            countEl.textContent = String(c);
             barEl.style.width = (Math.min(100, Math.round(c / ch.target * 100))) + '%';
+            pulse(btn);
+
             if (c >= ch.target) {
-              finishChallenge(ch.id, card, '37 erreicht. Strong!');
-              clearInterval(timer); timer = null;
+              finishChallenge(ch.id, card, '37 im Takt! 👏');
+              stopClock();
             }
           });
         }
+
+
 
         else if (ch.id === 'moving37') {
           card.innerHTML = `
@@ -454,11 +525,11 @@ export function build(host, api) {
 
     // Teardown (bei Tagwechsel)
     build._teardown = () => {
-      try { el('#badge-modal')?.close(); } catch (_) {}
+      try { el('#badge-modal')?.close(); } catch (_) { }
       restoreViewport();
     };
   })();
 
   // Rückgabe: Teardown-Funktion
-  return () => { try { build._teardown?.(); } catch (_) {} };
+  return () => { try { build._teardown?.(); } catch (_) { } };
 }

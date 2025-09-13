@@ -32,11 +32,11 @@ export const SPORT_DATA = {
       id: "boxing",
       name: "Boxsack",
       chip: "Kombi",
-      description: "Treffe 3× Links u. 7× Rechts <br>... in 5 Sekunden. 😁",
+      description: "Treffe 3x Links u. 7x Rechts <br>... in 3 Sekunden. 😁",
       type: "combo",
       left: 3,
       right: 7,
-      seconds: 5
+      seconds: 3
     }
   ],
   challenge37: [

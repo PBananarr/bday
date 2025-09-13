@@ -1,6 +1,6 @@
 /* sw.js — Globaler Service Worker für Birthday-Quest */
 
-const VERSION = "v0.0.3.A.";               // <<< bei jedem Release anpassen
+const VERSION = "v0.0.4.8.";               // <<< bei jedem Release anpassen
 self.VERSION = VERSION;
 const STATIC_CACHE = `bq-static-${VERSION}`;
 const RUNTIME_CACHE = `bq-runtime-${VERSION}`;
@@ -32,6 +32,10 @@ const PRECACHE = [
   "./days/tag5-sport/sport_data.js",
   "./days/tag5-sport/sport.css",
   "./days/tag5-sport/sport.js",
+  // Tag 6
+  "./days/tag6-puzzle/puzzle_data.js",
+  "./days/tag6-puzzle/puzzle.css",
+  "./days/tag6-puzzle/puzzle.js",
 ];
 
 // Hilfsfunktion: nur gleiche Origin cachen

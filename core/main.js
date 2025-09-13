@@ -6,7 +6,7 @@ export const DAYS = [
   { key: "tag3-escape", date: "2025-09-18", title: "Tag 3 · FLIEH", badge: "👻 Mutig" },
   { key: "tag4-horror", date: "2025-09-19", title: "Tag 4 · FINDE-UNS", badge: "🩸 Verrückt" },
   { key: "tag5-sport", date: "2025-09-20", title: "Tag 5 · Sport-Boost", badge: "💪 Durchzieherin" },
-  { key: "tag6-moto", date: "2025-09-21", title: "Tag 6 · Motorrad-Safety", badge: "🏍️ Safety First" },
+  { key: "tag6-puzzle", date: "2025-09-21", title: "Tag 6 · Saufnässchen", badge: "🍾 Wein-Liebhaberin" },
   { key: "tag7-planets", date: "2025-09-22", title: "Tag 7 · Planeten", badge: "🪐 Space-Rangerin" },
   { key: "tag8-finale", date: "2025-09-23", title: "Tag 8 · Finale", badge: "🎖️ Missionsabschluss" },
 ];

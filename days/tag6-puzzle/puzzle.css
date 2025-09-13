@@ -1,0 +1,253 @@
+/* ===== Tag 6 – Puzzle (scoped) ===== */
+
+.day-puzzle {
+  --bg: #0b0b0b;
+  --panel: #151515;
+  --ink: #eaeaea;
+  --accent: #ffd166;
+  --piece-shadow: 0 6px 16px rgba(0,0,0,.35);
+  --snap-outline: 2px dashed #3a3a3a;
+  --radius: 14px;
+  --shadow: 0 12px 38px rgba(0,0,0,.45);
+
+  position: relative;
+  isolation: isolate; /* eigener Stacking-Context */
+}
+
+.day-puzzle * { box-sizing: border-box; }
+
+.day-puzzle { height: 100%; }
+
+.day-puzzle {
+  margin: 0;
+  font: 16px/1.4 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Arial, sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.day-puzzle #app {
+  min-height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+/* Toolbar / Footer */
+.day-puzzle .toolbar,
+.day-puzzle .footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: .75rem;
+  padding: .6rem .9rem;
+  background: var(--panel);
+  border-bottom: 1px solid #222;
+}
+
+.day-puzzle .footer {
+  border-top: 1px solid #222;
+  border-bottom: none;
+  opacity: .8;
+}
+
+/* === Responsive Button-Bar (Grid) === */
+.day-puzzle .btnbar {
+  width: min(960px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: .6rem;
+}
+
+/* Einheitliche Buttons – Optik näher an core.css */
+.day-puzzle .btn.tool {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .55rem;
+  height: 44px;
+  padding: 0 1rem;
+  font-weight: 700;
+  letter-spacing: .2px;
+  border-radius: 12px;
+  border: 1px solid var(--border, #23314f);
+  background: #19223c;
+  color: var(--text, #E6ECFF);
+  box-shadow: var(--shadow);
+  transition: transform .05s ease, background .2s ease, border-color .2s ease, opacity .2s;
+}
+.day-puzzle .btn.tool:hover { background:#1b2542; }
+.day-puzzle .btn.tool:active { transform: translateY(1px); }
+.day-puzzle .btn.tool[disabled] { opacity:.5; cursor:not-allowed; }
+
+.day-puzzle .btn.tool .ic {
+  display:inline-block;
+  font-size: 1.05rem;
+  line-height: 1;
+  transform: translateY(1px);
+}
+
+/* Primär-Button (Start) */
+.day-puzzle .btn.tool.primary {
+  background: linear-gradient(180deg,#2a5fff,#1e40af);
+  border-color:#284b92;
+}
+
+/* Kompakter auf sehr kleinen Screens */
+@media (max-width: 380px){
+  .day-puzzle .btnbar{ grid-template-columns: 1fr 1fr; }
+  .day-puzzle .btn.tool{ height: 42px; padding: 0 .85rem; }
+}
+
+/* Toolbar optisch ruhiger */
+.day-puzzle .toolbar {
+  background: #121a2e;
+  border-bottom: 1px solid #1f2a44;
+}
+
+/* Stage Wrapper */
+.day-puzzle #stageWrapper {
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding: clamp(.5rem, 2vmin, 1rem);
+  overflow: clip;
+}
+@supports not (overflow: clip) { .day-puzzle #stageWrapper { overflow: hidden; } }
+
+/* Puzzle-Modus: Header & Footer ausblenden, Teile frei schweben */
+.puzzle-active .topbar { display: none; }
+.puzzle-active .foot { display: none; }
+.puzzle-active #about { display: none; }
+.puzzle-active .day-puzzle #stageWrapper { overflow: visible; }
+
+/* Board */
+.day-puzzle .stage {
+  position: relative;
+  width: min(92vmin, 1100px);
+  aspect-ratio: 3/2;
+  background: #0d0d0d;
+  border-radius: calc(var(--radius) + 4px);
+  outline: var(--snap-outline);
+  overflow: visible;
+  touch-action: none;
+  z-index: 1;
+}
+
+/* Geist-Hintergrund */
+.day-puzzle .ghost {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s ease;
+  filter: saturate(.85) contrast(.95) brightness(.8);
+}
+
+/* Pieces */
+.day-puzzle .piece {
+  position: absolute;
+  width: var(--piece-w);
+  height: var(--piece-h);
+  background-repeat: no-repeat;
+  background-size: var(--bg-w) var(--bg-h);
+  border-radius: 10px;
+  box-shadow: var(--piece-shadow);
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  transition: box-shadow .2s ease, transform .12s ease;
+  z-index: 2;
+}
+.day-puzzle .piece:active { cursor: grabbing; transform: scale(1.015); }
+.day-puzzle .piece.locked { box-shadow: none; cursor: default; }
+.day-puzzle .piece.outline { outline: 1px solid rgba(255,255,255,.15); }
+
+/* ========= Globaler Regen-Layer ========= */
+#rain-global {
+  position: fixed;
+  inset: 0;
+  z-index: 5000;
+  pointer-events: none;
+}
+
+/* Flaschenregen */
+.day-puzzle .bottle {
+  position: fixed;
+  top: -8vh;
+  width: clamp(22px, 3.2vmin, 40px);
+  height: auto;
+  opacity: .9;
+  transform: translateY(-100vh) rotate(0deg) scaleX(var(--mirror, 1)) scale(var(--sx, 1));
+  animation-name: drop;
+  animation-timing-function: linear;
+  pointer-events: none;
+  filter: drop-shadow(0 6px 8px rgba(0,0,0,.35));
+}
+@keyframes drop {
+  to {
+    transform: translateY(120vh) rotate(360deg) scaleX(var(--mirror, 1)) scale(var(--sx, 1));
+    opacity: .95;
+  }
+}
+
+/* ===== Badge Dialog ===== */
+.day-puzzle dialog {
+  border: none;
+  padding: 0;
+  background: transparent;
+}
+.day-puzzle dialog::backdrop {
+  background: rgba(5,6,12,.6);
+  backdrop-filter: blur(6px);
+}
+.day-puzzle .badge-wrap {
+  background: #121212;
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 20px;
+  padding: 16px;
+  width: min(520px, 92vw);
+  box-shadow: var(--shadow);
+  display: grid;
+  gap: 14px;
+}
+.day-puzzle .badge-hero {
+  display: grid;
+  place-items: center;
+  background: radial-gradient(600px 240px at 50% 0%, rgba(255, 209, 102, .10), transparent 60%);
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.06);
+  padding: 8px;
+}
+.day-puzzle .badge-hero img {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  display: block;
+  box-shadow: 0 10px 30px rgba(0,0,0,.35);
+}
+.day-puzzle .badge-title {
+  margin: 0 6px;
+  text-align: center;
+  font-size: clamp(1.25rem, 4.2vw, 2rem);
+  line-height: 1.15;
+  letter-spacing: .3px;
+  background: linear-gradient(180deg, #fff, #ffe9a8 70%, #ffcf5a);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 2px 20px rgba(255,215,0,.10);
+}
+.day-puzzle .modal-actions {
+  display: flex;
+  justify-content: center;
+}
+
+@media (pointer: coarse) {
+  .day-puzzle .btn.tool { height: 48px; }
+  .day-puzzle .piece { border-radius: 12px; }
+}

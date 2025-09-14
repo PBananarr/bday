@@ -1,14 +1,14 @@
 /* ====== Kalender & Konfiguration ====== */
 const BIRTHDAY_ISO = "2025-09-23T00:00:00+02:00";
 export const DAYS = [
-  { key: "tag1-sternbild", date: "2025-09-16", title: "Tag 1 · Sternbild", badge: "🪴 Pflanzen-Profi" },
-  { key: "tag2-survival", date: "2025-09-17", title: "Tag 2 · Survival", badge: "🧭 Survivalistin" },
-  { key: "tag3-escape", date: "2025-09-18", title: "Tag 3 · FLIEH", badge: "👻 Mutig" },
-  { key: "tag4-horror", date: "2025-09-19", title: "Tag 4 · FINDE-UNS", badge: "🩸 Verrückt" },
-  { key: "tag5-sport", date: "2025-09-20", title: "Tag 5 · Sport-Boost", badge: "💪 Durchzieherin" },
-  { key: "tag6-puzzle", date: "2025-09-21", title: "Tag 6 · Saufnässchen", badge: "🍾 Wein-Liebhaberin" },
-  { key: "tag7-planets", date: "2025-09-22", title: "Tag 7 · Planeten", badge: "🪐 Space-Rangerin" },
-  { key: "tag8-finale", date: "2025-09-23", title: "Tag 8 · Finale", badge: "🎖️ Missionsabschluss" },
+  { key: "tag1-sternbild", date: "2025-09-17", title: "Tag 1 · Sternbild", badge: "🪴 Pflanzen-Profi" },
+  { key: "tag2-survival", date: "2025-09-18", title: "Tag 2 · Survival", badge: "🧭 Survivalistin" },
+  { key: "tag3-escape", date: "2025-09-19", title: "Tag 3 · FLIEH", badge: "👻 Mutig" },
+  { key: "tag4-horror", date: "2025-09-20", title: "Tag 4 · FINDE-UNS", badge: "🩸 Verrückt" },
+  { key: "tag5-sport", date: "2025-09-21", title: "Tag 5 · Sport-Boost", badge: "💪 Durchzieherin" },
+  { key: "tag6-puzzle", date: "2025-09-22", title: "Tag 6 · Saufnässchen", badge: "🍾 Wein-Liebhaberin" },
+  //{ key: "tag7-planets", date: "2025-09-22", title: "Tag 7 · Planeten", badge: "🪐 Space-Rangerin" },
+  { key: "tag7-finale", date: "2025-09-23", title: "Tag 7 · Finale", badge: "🎖️ Missionsabschluss" },
 ];
 const TOTAL = DAYS.length;
 const DEV = new URLSearchParams(location.search).get("dev") === "1";

@@ -20,8 +20,6 @@ export function build(root, api) {
   root.innerHTML = `
     <section class="card finale-card">
       <h2>Tag 7 · Finale</h2>
-      <p class="lead">Letzte Etappe! Wenn alle Badges grün sind, kannst du hier die Geburtstagsüberraschung abholen.</p>
-
       <div class="cta-wrap">
         <button class="finale-cta" id="finaleCta" type="button" aria-live="polite">
           <span class="aurora" aria-hidden="true"></span>
@@ -44,7 +42,7 @@ export function build(root, api) {
         <p class="hint" id="finaleMsg" hidden></p>
       </div>
 
-      <div class="tiny-note">Tipp: Du kannst Tag 7 am Geburtstag auch direkt öffnen.</div>
+      <div class="tiny-note">Tipp: Drücken, wenn alle Challenges absolviert wurden.</div>
     </section>
   `;
 
@@ -65,11 +63,9 @@ export function build(root, api) {
     }));
 
     function measure(){
-      // Größe des Buttons
       const s = Math.min(btn.clientWidth, btn.clientHeight);
       R = s / 2;
 
-      // Chip-Größe erst jetzt (nach Layout) sauber messen
       CHIP_R = chips[0]?.offsetWidth ? (chips[0].offsetWidth / 2) : Math.max(14, parseFloat(getComputedStyle(chips[0]).width) / 2) || 14;
 
       const outerLimit = Math.max(0, R - CHIP_R - PADDING);
@@ -78,7 +74,6 @@ export function build(root, api) {
         const limit = Math.max(outerLimit, 1);
 
         if (!c.speed){
-          // Start: nicht im Zentrum, mind. 35% des Flugradius
           const a = Math.random()*Math.PI*2;
           const minD = limit * 0.35;
           const d = minD + Math.random()*(Math.max(0, limit - minD));
@@ -90,7 +85,6 @@ export function build(root, api) {
           c.vx = Math.cos(dir)*c.speed;
           c.vy = Math.sin(dir)*c.speed;
         } else {
-          // bei Resize einklemmen
           const dist = Math.hypot(c.x, c.y);
           if (dist > limit){
             const k = limit / (dist || 1);
@@ -102,11 +96,9 @@ export function build(root, api) {
       });
     }
 
-    // Reflektion an der Rand-Normale; robust gegen dist≈0
     function reflect(c, nx, ny){
       let dist = Math.hypot(nx, ny);
       if (dist < 1e-3) {
-        // zufällige Normale, falls exakt im Zentrum gelandet
         const a = Math.random()*Math.PI*2;
         nx = Math.cos(a); ny = Math.sin(a); dist = 1;
       }
@@ -125,12 +117,10 @@ export function build(root, api) {
       dt = Math.min(dt, 0.05);
       last = t;
 
-      // Wenn der Button noch nicht gemessen ist (z.B. erste Frames), nichts tun
       const outer = R - CHIP_R - PADDING;
       if (!(outer > 10)) { raf = requestAnimationFrame(tick); return; }
 
       state.forEach((c) => {
-        // leichte Richtungsänderung alle 1–3 s
         c.lastTurn += (dt*1000);
         if (c.lastTurn > c.nextTurn){
           const rot = (Math.random()*30 - 15) * (Math.PI/180);
@@ -141,13 +131,11 @@ export function build(root, api) {
           c.lastTurn = 0; c.nextTurn = 1000 + Math.random()*2000;
         }
 
-        // nächste Position
         let nx = c.x + c.vx*dt;
         let ny = c.y + c.vy*dt;
 
         const dist = Math.hypot(nx, ny);
 
-        // Bounce nur am äußeren Rand des Buttons
         if (dist > outer){
           reflect(c, nx, ny);
           const k = (outer - 0.5) / (dist || 1);
@@ -162,11 +150,9 @@ export function build(root, api) {
       raf = requestAnimationFrame(tick);
     }
 
-    // Größe beobachten (sicherer als nur window.resize)
     const ro = new ResizeObserver(measure);
     ro.observe(btn);
 
-    // Initial: zwei Frames warten, dann messen & starten (Layout stabil)
     requestAnimationFrame(() => {
       measure();
       requestAnimationFrame(() => {
@@ -175,7 +161,6 @@ export function build(root, api) {
       });
     });
 
-    // Teardown
     return () => {
       cancelAnimationFrame(raf);
       ro.disconnect();
@@ -193,7 +178,6 @@ export function build(root, api) {
     const wrap = root.querySelector('.cta-wrap');
     if (!wrap) return false;
 
-    // Original-Position merken
     const originalParent = globalFinal.parentNode;
     const originalNext   = globalFinal.nextSibling;
     const prevHidden     = globalFinal.hidden;
@@ -206,18 +190,15 @@ export function build(root, api) {
         return setTimeout(() => tryShow(tries + 1), 40);
       }
 
-      // CTA weich ausblenden, Chips stoppen
       const btnEl = wrap.querySelector('.finale-cta');
       if (btnEl) btnEl.classList.add('fadeOut');
       stopFloat?.();
 
       setTimeout(() => {
-        // Element an neue Stelle verschieben (nicht klonen)
         wrap.replaceWith(globalFinal);
         globalFinal.hidden = false;
         globalFinal.style.display = '';
 
-        // Restore-Funktion vormerken
         restoreFinal = () => {
           if (!originalParent) return;
           globalFinal.hidden = prevHidden;
@@ -259,10 +240,12 @@ export function build(root, api) {
       btn.classList.add("boom");
       try { api.solved?.(); } catch {}
 
-      // ✅ echtes #final nach oben an Stelle des CTA verschieben
+      // 🔔 Expliziten Trigger feuern (main.js zeigt Finale erst dann an)
+      window.dispatchEvent(new CustomEvent("final:trigger"));
+
+      // ✅ echtes #final nach oben an Stelle des CTA verschieben (sobald sichtbar)
       const moved = moveGlobalFinalInline(stopFloat);
 
-      // Fallback: falls nicht möglich → zum echten #final scrollen
       if (!moved) {
         setTimeout(() => {
           document.querySelector('#final')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -289,7 +272,6 @@ export function build(root, api) {
   return () => {
     btn.removeEventListener("click", onClick);
     stopFloat?.();
-    // #final an seinen ursprünglichen Platz zurücksetzen (falls verschoben)
     restoreFinal?.();
   };
 }

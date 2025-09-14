@@ -3,7 +3,7 @@ const BIRTHDAY_ISO = "2025-09-23T00:00:00+02:00";
 export const DAYS = [
   { key: "tag1-sternbild", date: "2025-09-17", title: "Tag 1 · Sternbild", badge: "🪴 Pflanzen-Profi" },
   { key: "tag2-survival", date: "2025-09-18", title: "Tag 2 · Survival", badge: "🧭 Survivalistin" },
-  { key: "tag3-escape", date: "2025-09-19", title: "Tag 3 · FLIEH", badge: "👻 Mutig" },
+  { key: "tag3-escape", date: "2025-09-19", title: "Tag 3 · Dämonisch", badge: "👻 Mutig" },
   { key: "tag4-horror", date: "2025-09-20", title: "Tag 4 · FINDE-UNS", badge: "🩸 Verrückt" },
   { key: "tag5-sport", date: "2025-09-21", title: "Tag 5 · Sport-Boost", badge: "💪 Durchzieherin" },
   { key: "tag6-puzzle", date: "2025-09-22", title: "Tag 6 · Saufnässchen", badge: "🍾 Wein-Liebhaberin" },
@@ -94,14 +94,32 @@ function confetti(count = 120) {
     setTimeout(() => p.remove(), (dur + delay) * 1000 + 500);
   }
 }
+
+/*
+  Finale anzeigen NUR wenn:
+  - alle Tage 1–6 erledigt sind (state[tagX] === true)
+  - UND ein expliziter Trigger gesetzt wurde (state.__finalTrigger === true)
+*/
 function maybeShowFinal() {
   const allDone = DAYS.every(d => state[d.key]);
-  const reached = todayISO() >= "2025-09-23";
+  const triggered = !!state.__finalTrigger;
   const final = qs("#final");
-  if ((allDone || reached) && final.hidden) {
-    final.hidden = false; badgesRender(); confetti();
+
+  if (allDone && triggered && final.hidden) {
+    final.hidden = false;
+    badgesRender();
+    confetti();
+  } else if (!(allDone && triggered) && !final.hidden) {
+    final.hidden = true;
   }
 }
+
+/* Globale Reaktion auf den Tag-7-Klick (wird aus finale.js gefeuert) */
+window.addEventListener("final:trigger", () => {
+  state.__finalTrigger = true; // persistenter Trigger
+  save();
+  maybeShowFinal();
+});
 
 /* ====== Day Loader (dynamic import + CSS Umschalten) ====== */
 let currentCleanup = null;
@@ -163,38 +181,54 @@ function initActions() {
   qs("#resetBtn").addEventListener("click", () => { localStorage.removeItem("bdayModState"); location.reload(); });
   qs("#replayBtn").addEventListener("click", () => { localStorage.removeItem("bdayModState"); location.reload(); });
   qs("#shareBtn").addEventListener("click", async () => {
-    const text = "Ich habe die Geburtstags-Quest gelöst! 🎉";
-    const url = location.href;
-    if (navigator.share) { try { await navigator.share({ title: document.title, text, url }); } catch (e) { } }
-    else { navigator.clipboard?.writeText(url); alert("Link kopiert!"); }
-  });
+  const text = "Ich habe die Geburtstags-Quest gelöst! 🎉";
+  const url = location.href;
+
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: document.title, text, url });
+    } catch (e) { /* noop */ }
+  } else {
+    navigator.clipboard?.writeText(url);
+    alert("Link kopiert!");
+  }
+});
   qs("#aboutBtn").addEventListener("click", () => qs("#about").showModal());
 }
 
-/* ====== Dev: Footer-Button "Autocomplete 1–6" (nur mit ?dev=1) ====== */
-function installDevAutoSolveButton(){
-  if (!DEV) return; // nur im Dev-Modus (?dev=1)
+/* ====== Footer-Button „Autocomplete 1–6“ ======
+   Sichtbar wenn:
+   - ?dev=1  (wie bisher), ODER
+   - Datum >= 2025-09-23 (Tag 7) – unabhängig vom DEV-Param
+*/
+function installDevAutoSolveButton() {
+  const isFinalDayReached = todayISO() >= "2025-09-23";
+  if (!(DEV || isFinalDayReached)) return; // weder Dev noch Tag7 → kein Button
+
   // Footer-Fallbacks: .site-footer, .foot oder <footer>
-  const footer = document.querySelector('.site-footer, .foot, footer');
-  if (!footer || footer.querySelector('.dev-autosolve')) return;
+  const footer = document.querySelector(".site-footer, .foot, footer");
+  if (!footer) return;
 
-  const btn = document.createElement('button');
-  btn.type = 'button';
-  btn.className = 'dev-autosolve';
-  btn.textContent = '✔︎ Autocomplete 1–6';
-  btn.title = 'Alle Challenges (Tag 1–6) als gelöst markieren';
+  // Doppelte Buttons vermeiden
+  if (footer.querySelector(".dev-autosolve")) return;
 
-  btn.addEventListener('click', () => {
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "dev-autosolve";
+  btn.textContent = isFinalDayReached && !DEV ? "✔︎ Autocomplete 1–6 (Tag 7)" : "✔︎ Autocomplete 1–6";
+  btn.title = "Alle Challenges (Tag 1–6) als gelöst markieren";
+
+  btn.addEventListener("click", () => {
     try {
-      const st = JSON.parse(localStorage.getItem('bdayModState') || '{}');
-      ['tag1-sternbild','tag2-survival','tag3-escape','tag4-horror','tag5-sport','tag6-puzzle']
+      const st = JSON.parse(localStorage.getItem("bdayModState") || "{}");
+      ["tag1-sternbild", "tag2-survival", "tag3-escape", "tag4-horror", "tag5-sport", "tag6-puzzle"]
         .forEach(k => st[k] = true);
-      localStorage.setItem('bdayModState', JSON.stringify(st));
-      btn.textContent = '✓ Markiert – lade neu …';
+      localStorage.setItem("bdayModState", JSON.stringify(st));
+      btn.textContent = "✓ Markiert – lade neu …";
       setTimeout(() => location.reload(), 400);
     } catch (e) {
       console.error(e);
-      alert('Fehler beim Setzen des Fortschritts.');
+      alert("Fehler beim Setzen des Fortschritts.");
     }
   });
 
@@ -213,7 +247,7 @@ document.addEventListener("DOMContentLoaded", () => {
   currentIndex = Math.max(0, Math.min(unlockedIndex(), DAYS.length - 1));
   mount();
 
-  // Dev-Footer-Button installieren
+  // Footer-Button einhängen (DEV oder ab Tag 7)
   installDevAutoSolveButton();
 
   // Service Worker Version im Footer anzeigen (robust)
@@ -223,11 +257,8 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(reg => reg.active?.postMessage({ type: "GET_VERSION" }))
         .catch(() => { });
     }
-    // 1) sobald ready
     requestVersion();
-    // 2) wenn ein neuer Controller aktiv wird (Update)
     navigator.serviceWorker.addEventListener("controllerchange", requestVersion);
-    // 3) Antwort entgegennehmen
     navigator.serviceWorker.addEventListener("message", (e) => {
       if (e.data?.type === "VERSION") {
         const span = document.getElementById("sw-version");

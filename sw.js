@@ -1,6 +1,6 @@
 /* sw.js — Globaler Service Worker für Birthday-Quest */
 
-const VERSION = "v6.0.";               // <<< bei jedem Release anpassen
+const VERSION = "v6.6.";               // <<< bei jedem Release anpassen
 self.VERSION = VERSION;
 const STATIC_CACHE = `bq-static-${VERSION}`;
 const RUNTIME_CACHE = `bq-runtime-${VERSION}`;

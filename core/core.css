@@ -105,3 +105,31 @@ button, input, .choice{ touch-action:manipulation }
 
 #sw-version { margin-left:.5rem; font-size:.8rem; color:var(--muted); opacity:.85; }
 
+/* Dev-Button im Footer (nur sichtbar mit ?dev=1) */
+.site-footer .dev-autosolve,
+.foot .dev-autosolve,
+footer .dev-autosolve{
+  font: 600 12px/1.2 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.06));
+  color: rgba(255,255,255,.95);
+  border: 1px solid rgba(255,255,255,.18);
+  opacity: .32;
+  transition: opacity .2s, transform .15s;
+  margin-left: auto;
+}
+
+.site-footer .dev-autosolve:hover,
+.foot .dev-autosolve:hover,
+footer .dev-autosolve:hover{ opacity:.85; transform: translateY(-1px); }
+
+.site-footer .dev-autosolve:active,
+.foot .dev-autosolve:active,
+footer .dev-autosolve:active{ transform: translateY(0); opacity:.95; }
+
+@media (max-width:480px){
+  .site-footer .dev-autosolve,
+  .foot .dev-autosolve,
+  footer .dev-autosolve{ font-size:11px; padding:5px 8px; }
+}

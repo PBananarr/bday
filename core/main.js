@@ -7,8 +7,7 @@ export const DAYS = [
   { key: "tag4-horror", date: "2025-09-20", title: "Tag 4 · FINDE-UNS", badge: "🩸 Verrückt" },
   { key: "tag5-sport", date: "2025-09-21", title: "Tag 5 · Sport-Boost", badge: "💪 Durchzieherin" },
   { key: "tag6-puzzle", date: "2025-09-22", title: "Tag 6 · Saufnässchen", badge: "🍾 Wein-Liebhaberin" },
-  //{ key: "tag7-planets", date: "2025-09-22", title: "Tag 7 · Planeten", badge: "🪐 Space-Rangerin" },
-  { key: "tag7-finale", date: "2025-09-23", title: "Tag 7 · Finale", badge: "🎖️ Missionsabschluss" },
+  { key: "tag7-finale", date: "2025-09-23", title: "Tag 7 · Finale", badge: "🎖️ Missionsabschluss" }
 ];
 const TOTAL = DAYS.length;
 const DEV = new URLSearchParams(location.search).get("dev") === "1";
@@ -172,6 +171,36 @@ function initActions() {
   qs("#aboutBtn").addEventListener("click", () => qs("#about").showModal());
 }
 
+/* ====== Dev: Footer-Button "Autocomplete 1–6" (nur mit ?dev=1) ====== */
+function installDevAutoSolveButton(){
+  if (!DEV) return; // nur im Dev-Modus (?dev=1)
+  // Footer-Fallbacks: .site-footer, .foot oder <footer>
+  const footer = document.querySelector('.site-footer, .foot, footer');
+  if (!footer || footer.querySelector('.dev-autosolve')) return;
+
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'dev-autosolve';
+  btn.textContent = '✔︎ Autocomplete 1–6';
+  btn.title = 'Alle Challenges (Tag 1–6) als gelöst markieren';
+
+  btn.addEventListener('click', () => {
+    try {
+      const st = JSON.parse(localStorage.getItem('bdayModState') || '{}');
+      ['tag1-sternbild','tag2-survival','tag3-escape','tag4-horror','tag5-sport','tag6-puzzle']
+        .forEach(k => st[k] = true);
+      localStorage.setItem('bdayModState', JSON.stringify(st));
+      btn.textContent = '✓ Markiert – lade neu …';
+      setTimeout(() => location.reload(), 400);
+    } catch (e) {
+      console.error(e);
+      alert('Fehler beim Setzen des Fortschritts.');
+    }
+  });
+
+  footer.appendChild(btn);
+}
+
 /* ====== Mount / Init ====== */
 async function mount() {
   renderNav(); renderProgress();
@@ -183,6 +212,10 @@ document.addEventListener("DOMContentLoaded", () => {
   initActions();
   currentIndex = Math.max(0, Math.min(unlockedIndex(), DAYS.length - 1));
   mount();
+
+  // Dev-Footer-Button installieren
+  installDevAutoSolveButton();
+
   // Service Worker Version im Footer anzeigen (robust)
   if ("serviceWorker" in navigator) {
     function requestVersion() {
@@ -190,13 +223,10 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(reg => reg.active?.postMessage({ type: "GET_VERSION" }))
         .catch(() => { });
     }
-
     // 1) sobald ready
     requestVersion();
-
     // 2) wenn ein neuer Controller aktiv wird (Update)
     navigator.serviceWorker.addEventListener("controllerchange", requestVersion);
-
     // 3) Antwort entgegennehmen
     navigator.serviceWorker.addEventListener("message", (e) => {
       if (e.data?.type === "VERSION") {
@@ -205,5 +235,4 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
-
 });

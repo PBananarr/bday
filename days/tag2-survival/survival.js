@@ -78,7 +78,11 @@ export function build(root, api) {
       <!-- Step D: Profi – Pflanzenerkennung (Drag & Drop Tabelle) -->
       <div class="step" id="stepD">
         <h3>Profi – Pflanzenerkennung</h3>
-        <p class="hint">Ziehe die Bilder in die passende Spalte. Richtig ist eine Zeile, wenn links (Essbar/Heilpflanze) und rechts (Giftig) liegen <em>und</em> beide Bilder zum selben Paar gehören. Dann erscheint der Pflanzenname.</p>
+        <p class="hint">
+          In Deutschland gibt es viele essbare Pflanzen. Doch Vorsicht, viele von denen haben einen giftigen Gegenspieler.
+          Ordne die untenstehenden Pflanzen den Kategorien zu.
+          Richtig ist eine Zeile, wenn links (Essbar/Heilpflanze) und rechts (Giftiger Doppelgänger) liegen <em>und</em> beide Bilder zum selben Paar gehören.
+          </p>
 
         <!-- Bilderbank -->
         <div id="dBank" class="plant-bank"></div>
@@ -105,7 +109,92 @@ export function build(root, api) {
     </section>
   `;
 
-    // --- Lightbox (einmalig) ---
+  // --- Hint-Popup für Step D (Pflanzenerkennung) ---
+// --- Hint-Popup für Step D (Pflanzenerkennung) ---
+(function initPlantHintModal(){
+  let shown = sessionStorage.getItem("survStepDHintShown") === "1";
+  const supportsDialog = typeof HTMLDialogElement !== "undefined" && !!HTMLDialogElement.prototype.showModal;
+
+  // Dialog + (Fallback-)Backdrop bauen
+  const dlg = document.createElement("dialog");
+  dlg.id = "plant-hint-modal";
+  dlg.innerHTML = `
+    <article class="ph-card" role="document" aria-labelledby="ph-title">
+      <h4 id="ph-title">Profi – Pflanzenerkennung</h4>
+      <p class="ph-line">• Bewege die Pflanzen per <strong>Drag &amp; Drop</strong></p>
+      <p class="ph-line">• <strong>Bilder tippen</strong> zum Öffnen</p>
+      <div class="ph-actions">
+        <button class="btn" id="ph-ok">Verstanden</button>
+      </div>
+    </article>
+  `;
+  document.body.appendChild(dlg);
+
+  // Fallback-Backdrop (für Browser ohne native ::backdrop)
+  let fbBackdrop = null;
+  if (!supportsDialog) {
+    fbBackdrop = document.createElement("div");
+    fbBackdrop.className = "ph-fallback-backdrop";
+    document.body.appendChild(fbBackdrop);
+  }
+
+  // Open/Close Helpers (mit Fallback)
+  const openDlg = () => {
+    if (shown) return;
+    if (supportsDialog) {
+      if (!dlg.open) dlg.showModal();
+    } else {
+      dlg.setAttribute("open", "");
+      fbBackdrop?.classList.add("show");
+    }
+  };
+  const closeDlg = () => {
+    if (supportsDialog) dlg.close();
+    else { dlg.removeAttribute("open"); fbBackdrop?.classList.remove("show"); }
+  };
+
+  // Schließen: Button, Klick neben Karte, ESC
+  dlg.querySelector("#ph-ok")?.addEventListener("click", closeDlg);
+  dlg.addEventListener("click", (e) => {
+    const card = dlg.querySelector(".ph-card")?.getBoundingClientRect();
+    if (!card) return;
+    if (e.clientX < card.left || e.clientX > card.right || e.clientY < card.top || e.clientY > card.bottom) {
+      closeDlg();
+    }
+  });
+  window.addEventListener("keydown", (e) => { if (e.key === "Escape") closeDlg(); });
+  dlg.addEventListener("close", () => { sessionStorage.setItem("survStepDHintShown", "1"); shown = true; });
+  // Fallback "close"-Äquivalent
+  if (!supportsDialog) {
+    const obsAttr = new MutationObserver(() => {
+      if (!dlg.hasAttribute("open")) { sessionStorage.setItem("survStepDHintShown", "1"); shown = true; }
+    });
+    obsAttr.observe(dlg, { attributes: true, attributeFilter: ["open"] });
+  }
+
+  // Intersection Observer – mobiler freundlicher (niedrigere Schwelle + früherer Root-Margin)
+  const stepD = root.querySelector("#stepD");
+  if (!stepD) return;
+  const io = new IntersectionObserver((entries) => {
+    const ent = entries[0];
+    if (ent.isIntersecting && !shown) {
+      openDlg();
+      io.disconnect();
+    }
+  }, { threshold: 0.2, rootMargin: "0px 0px -20% 0px" }); // früher & sensibler
+  io.observe(stepD);
+
+  // Sicherheitsnetz: erster Tap in Step D öffnet ebenfalls einmalig
+  const tapOnce = (ev) => {
+    if (!shown) openDlg();
+    stepD.removeEventListener("pointerdown", tapOnce, { passive: true });
+  };
+  stepD.addEventListener("pointerdown", tapOnce, { passive: true });
+})();
+
+
+
+  // --- Lightbox (einmalig) ---
   function ensureLightbox() {
     if (document.getElementById("lightbox")) return;
     const lb = document.createElement("div");
@@ -113,50 +202,53 @@ export function build(root, api) {
     lb.className = "lightbox";
     lb.innerHTML = `
       <button class="close" aria-label="Schließen">×</button>
-      <img class="lightbox-content" id="lightbox-img" alt="Survival Camp">
+      <img class="lightbox-content" id="lightbox-img" alt="">
     `;
     document.body.appendChild(lb);
 
-    const close = () => { lb.style.display = "none"; document.getElementById("lightbox-img").removeAttribute("src"); };
+    const close = () => {
+      lb.style.display = "none";
+      const im = document.getElementById("lightbox-img");
+      if (im) im.removeAttribute("src");
+    };
     lb.querySelector(".close").addEventListener("click", close);
     lb.addEventListener("click", (e) => { if (e.target === lb) close(); });
     window.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
   }
 
-  function openLightbox() {
+  function openLightbox(src) {
     ensureLightbox();
     const lb = document.getElementById("lightbox");
     const img = document.getElementById("lightbox-img");
-    img.src = "img/picSurvival.png";         // <-- dein Bild
+    if (src) img.src = src;
     lb.style.display = "block";
   }
 
- function setupCampTeaser() {
-  const wrap = root.querySelector("#campBtnWrap");
-  if (!wrap || wrap.querySelector(".campcard")) return;
+  function setupCampTeaser() {
+    const wrap = root.querySelector("#campBtnWrap");
+    if (!wrap || wrap.querySelector(".campcard")) return;
 
-  wrap.innerHTML = `
-    <article class="campcard" role="region" aria-label="Dein Survival Camp">
-      <div class="campcard-media">
-        <img src="img/picSurvival.png" alt="Vorschau Survival Camp" loading="lazy">
-      </div>
-      <div class="campcard-body">
-        <h4 class="campcard-title">Dein Survival Camp</h4>
-        <p class="campcard-sub">Finale Belohnung – tippe zum Öffnen</p>
-        <button class="btn campcard-cta" id="campOpenBtn">Ansehen</button>
-      </div>
-    </article>
-  `;
+    wrap.innerHTML = `
+      <article class="campcard" role="region" aria-label="Dein Survival Camp">
+        <div class="campcard-media">
+          <img src="img/picSurvival.png" alt="Vorschau Survival Camp" loading="lazy">
+        </div>
+        <div class="campcard-body">
+          <h4 class="campcard-title">Dein Survival Camp</h4>
+          <p class="campcard-sub">Finale Belohnung – tippe zum Öffnen</p>
+          <button class="btn campcard-cta" id="campOpenBtn">Ansehen</button>
+        </div>
+      </article>
+    `;
 
-  const openBtn = wrap.querySelector("#campOpenBtn");
-  openBtn.addEventListener("click", openLightbox);
+    const openBtn = wrap.querySelector("#campOpenBtn");
+    openBtn.addEventListener("click", () => openLightbox("img/picSurvival.png"));
 
-  // Fokus & Sichtbarkeit erhöhen
-  wrap.scrollIntoView({ behavior: "smooth", block: "center" });
-  openBtn.focus();
-  wrap.classList.add("pulse-once"); // sanfter Fokusrahmen, siehe CSS
-}
-
+    // Fokus & Sichtbarkeit erhöhen
+    wrap.scrollIntoView({ behavior: "smooth", block: "center" });
+    openBtn.focus();
+    wrap.classList.add("pulse-once");
+  }
 
   /* ===== Helpers ===== */
   const $ = (s, p = root) => p.querySelector(s);
@@ -170,26 +262,21 @@ export function build(root, api) {
   };
 
   // ===== Auto-Scroll beim Drag in Randnähe =====
-  const AUTOSCROLL_EDGE = 80;   // px Abstand zum Rand, ab dem gescrollt wird
-  const AUTOSCROLL_MAX = 22;   // maximale Scrollgeschwindigkeit pro Move
+  const AUTOSCROLL_EDGE = 80;
+  const AUTOSCROLL_MAX = 22;
 
   function autoScrollIfNeeded(clientY) {
     const vh = window.innerHeight;
     let delta = 0;
-
     if (clientY < AUTOSCROLL_EDGE) {
-      // oben: je näher am Rand, desto schneller
       const factor = (AUTOSCROLL_EDGE - clientY) / AUTOSCROLL_EDGE;
       delta = -Math.ceil(factor * AUTOSCROLL_MAX);
     } else if ((vh - clientY) < AUTOSCROLL_EDGE) {
-      // unten
       const factor = (AUTOSCROLL_EDGE - (vh - clientY)) / AUTOSCROLL_EDGE;
       delta = Math.ceil(factor * AUTOSCROLL_MAX);
     }
-
     if (delta !== 0) window.scrollBy(0, delta);
   }
-
 
   /* ===== Step A – Regel der 3 ===== */
   const orderList = $("#orderList");
@@ -279,7 +366,6 @@ export function build(root, api) {
     if (!drag.el) return;
     drag.el.style.left = (e.clientX - drag.ox) + "px";
     drag.el.style.top = (e.clientY - drag.oy) + "px";
-
     autoScrollIfNeeded(e.clientY);
   }
   function onUp(e) {
@@ -362,21 +448,16 @@ export function build(root, api) {
   (function wrapCAsGrid() {
     const stepC = document.getElementById("stepC");
     const btnRow = stepC.querySelector(".btnrow"); // Grid vor dem Button einfügen
-
-    // Grid erstellen und an die richtige Stelle setzen
     const grid = document.createElement("div");
     grid.className = "c-grid";
     stepC.insertBefore(grid, btnRow);
-
-    // c1..c4 in Karten packen und INS GRID verschieben
     [c1Host, c2Host, c3Host, c4Host].forEach(h => {
       const card = document.createElement("div");
       card.className = "c-card";
-      card.appendChild(h);     // Host in die Card verschieben
-      grid.appendChild(card);  // Card ins Grid
+      card.appendChild(h);
+      grid.appendChild(card);
     });
   })();
-
 
   /* C1 — Wasserquellen erkennen (Chip-Toggles) */
   (function renderC1() {
@@ -415,7 +496,7 @@ export function build(root, api) {
     <div class="c-head">
       <span class="c-badge">C2</span>
       <h4>Improvisierter Filter</h4>
-      <p class="c-sub">Ordne die Schichten (1 = oben / zuerst)</p>
+      <p class="c-sub">Leere PET-Flasche - Boden abgeschnitten<br>Flasche hängt mit Hals nach unten<br><strong>Ordne die Schichten von Boden -> Hals</strong></p>
     </div>
     <div class="c-order">
       ${C2_FILTER_LAYERS.map(layer => `
@@ -512,16 +593,15 @@ export function build(root, api) {
 
   /* ===== Step C – Auswertung (Prüfen-Button) ===== */
   $("#checkC").addEventListener("click", () => {
-    // --- C1: Checkboxen (verläßliche Anzeichen) ---
+    // --- C1 ---
     const chosenC1 = new Set(
-      Array.from(c1Host.querySelectorAll('input[type="checkbox"]:checked'))
-        .map(i => i.dataset.key)
+      Array.from(c1Host.querySelectorAll('input[type="checkbox"]:checked')).map(i => i.dataset.key)
     );
     const correctC1 = new Set(C1_SIGNS.filter(x => x.correct).map(x => x.key));
     const allC1 = new Set(C1_SIGNS.map(x => x.key));
     const okC1 = [...allC1].every(k => correctC1.has(k) === chosenC1.has(k));
 
-    // --- C2: Select-Rangfolge ---
+    // --- C2 ---
     const selMap = {};
     let validC2 = true;
     c2Host.querySelectorAll("select[data-key]").forEach(sel => {
@@ -534,22 +614,20 @@ export function build(root, api) {
       selMap["3"] === C2_FILTER_ORDER[2] &&
       selMap["4"] === C2_FILTER_ORDER[3];
 
-    // --- C3: Radios pro Szenario ---
+    // --- C3 ---
     const okC3 = C3_SCENARIOS.every(sc => {
       const selected = (c3Host.querySelector(`input[name="sc_${sc.key}"]:checked`) || {}).value;
       return selected === sc.answer;
     });
 
-    // --- C4: Checkboxen (Tipps) ---
+    // --- C4 ---
     const chosenC4 = new Set(
-      Array.from(c4Host.querySelectorAll('input[type="checkbox"]:checked'))
-        .map(i => i.dataset.key)
+      Array.from(c4Host.querySelectorAll('input[type="checkbox"]:checked')).map(i => i.dataset.key)
     );
     const correctC4 = new Set(C4_TIPS.filter(x => x.correct).map(x => x.key));
     const allC4 = new Set(C4_TIPS.map(x => x.key));
     const okC4 = [...allC4].every(k => correctC4.has(k) === chosenC4.has(k));
 
-    // --- Gesamtergebnis & Feedback ---
     const ok = okC1 && okC2 && okC3 && okC4;
     markDone($("#stepC"), ok);
 
@@ -568,9 +646,7 @@ export function build(root, api) {
     }
   });
 
-
-
-  /* ===== Step D – Profi: Pflanzenerkennung (Drag & Drop, freie Paarbildung) ===== */
+  /* ===== Step D – Profi: Pflanzenerkennung ===== */
   const dBank = $("#dBank");
   const dTable = $("#dTable");
   const fbD = $("#fbD");
@@ -620,16 +696,20 @@ export function build(root, api) {
   })();
 
   // Drag per Pointer Events
-  let dDrag = { el: null, ox: 0, oy: 0, from: null };
+  let dDrag = { el: null, ox: 0, oy: 0, from: null, startX: 0, startY: 0 };
+  let dDidDrag = false; // <— verhindert Lightbox bei Drag
 
   function dDown(e) {
     const chip = e.target.closest(".plant-chip");
     if (!chip) return;
+    dDidDrag = false;
     dDrag.el = chip;
-    dDrag.from = chip.parentElement; // Ursprung merken
+    dDrag.from = chip.parentElement;
     const r = chip.getBoundingClientRect();
     dDrag.ox = e.clientX - r.left;
     dDrag.oy = e.clientY - r.top;
+    dDrag.startX = e.clientX;
+    dDrag.startY = e.clientY;
     chip.style.position = "fixed";
     chip.style.left = r.left + "px";
     chip.style.top = r.top + "px";
@@ -640,6 +720,10 @@ export function build(root, api) {
 
   function dMove(e) {
     if (!dDrag.el) return;
+    // Ab ~4px Bewegung als Drag werten
+    if (!dDidDrag && (Math.abs(e.clientX - dDrag.startX) > 4 || Math.abs(e.clientY - dDrag.startY) > 4)) {
+      dDidDrag = true;
+    }
     dDrag.el.style.left = (e.clientX - dDrag.ox) + "px";
     dDrag.el.style.top = (e.clientY - dDrag.oy) + "px";
     autoScrollIfNeeded(e.clientY);
@@ -759,12 +843,23 @@ export function build(root, api) {
     }
 
     dDrag.el = null; dDrag.from = null;
+    // nach Up sofort wieder "kein Drag" → Klick danach darf Lightbox öffnen
+    setTimeout(() => { dDidDrag = false; }, 0);
   }
 
   $("#stepD").addEventListener("pointerdown", dDown);
   $("#stepD").addEventListener("pointermove", dMove);
   $("#stepD").addEventListener("pointerup", dUp);
   $("#stepD").addEventListener("pointercancel", dUp);
+
+  // >>> NEU: Klick/Tap auf Pflanzenbild = Lightbox öffnen <<<
+  $("#stepD").addEventListener("click", (e) => {
+    const img = e.target.closest(".plant-chip img");
+    if (!img) return;
+    // Wenn vorher gezogen wurde, kein Zoom-Klick
+    if (dDidDrag) { dDidDrag = false; return; }
+    openLightbox(img.getAttribute("src"));
+  });
 
   // Prüfen-Button
   $("#checkD").addEventListener("click", () => {

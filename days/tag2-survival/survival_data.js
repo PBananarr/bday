@@ -21,7 +21,7 @@ export const B_TOOL_BUCKETS = [
   { key: "cut",      label: "🪨 Schneidwerkzeuge" },
   { key: "cordage",  label: "🌿 Schnüre & Seile" },
   { key: "impact",   label: "🔨 Schlag- & Grabwerkzeuge" },
-  { key: "firecook", label: "🪵 Feuer- & Kochwerkzeuge" },
+  { key: "firecook", label: "🔥 Feuer- & Kochwerkzeuge" },
   { key: "multi",    label: "🛠 Multipurpose" },
 ];
 
@@ -39,7 +39,7 @@ export const B_ITEMS = [
   { key: "digstick",   label: "Grabstock (zugespitzter Ast)",              accepts: ["impact"] },
   { key: "hammer",     label: "Steinhammer",                                accepts: ["impact"] },
 
-  { key: "woodbowl",   label: "Holzgefäß + heiße Steine (Wasser kochen)",  accepts: ["firecook"] },
+  { key: "woodbowl",   label: "Holzgefäß + heiße Steine",  accepts: ["firecook"] },
   { key: "torch",      label: "Fackel (Harz / Öl / Fett)",                 accepts: ["firecook"] },
   { key: "handdrill",  label: "Feuerbohrer / Handdrill",                    accepts: ["firecook"] },
 
@@ -70,9 +70,9 @@ export const C1_SIGNS = [
 ];
 
 export const C2_FILTER_LAYERS = [
-  { key: "coarse_sand", label: "Grober Sand" },
   { key: "fine_sand",   label: "Feiner Sand" },
   { key: "charcoal",    label: "Holzkohle" },
+  { key: "coarse_sand", label: "Grober Sand" },
   { key: "cloth",       label: "Stoff / Tuch" },
 ];
 // Korrekte Reihenfolge (1 → 4)

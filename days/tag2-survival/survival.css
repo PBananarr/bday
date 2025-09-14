@@ -287,7 +287,7 @@ input.choice, .choice input, .order-item select{ color:var(--text) }
   background:#0f1a13; border:1px solid var(--border);
   color: var(--muted); font-weight:700; font-size:.9rem;
 }
-.c-head h4{ margin:0; font-size:1.02rem; color:var(--accent); }
+.c-head h4{ margin:0;margin-bottom: 0.2rem; font-size:1.02rem; color:var(--accent); }
 .c-sub{ margin:0; color:var(--muted); font-size:.92rem; }
 
 /* ----- C1/C4: Antwortchips als gleichmäßiges Grid ----- */
@@ -582,3 +582,62 @@ body.tag-tag2-survival .c-cardradio input:checked ~ .c-cardradio__body{
 #stepC .c-cardradio__label::before{
   color: #38bdf8; /* Häkchen blau */
 }
+
+
+/* --- Hint-Popup (Profi – Pflanzenerkennung) --- */
+#plant-hint-modal{
+  border: 1px solid var(--border);
+  background: rgba(10, 15, 20, .95);
+  color: var(--text);
+  border-radius: 16px;
+  padding: 0;
+  width: min(92vw, 460px);
+  box-shadow: 0 24px 80px rgba(0,0,0,.55);
+}
+#plant-hint-modal::backdrop{
+  background: radial-gradient(120vw 120vh at 50% 50%, rgba(0,0,0,.45), rgba(0,0,0,.85));
+  backdrop-filter: blur(2px);
+}
+#plant-hint-modal .ph-card{
+  padding: 14px 16px;
+}
+#plant-hint-modal h4{
+  margin: 0 0 .5rem 0;
+  text-align: center;
+  font-weight: 800;
+  letter-spacing: .02em;
+  background: linear-gradient(90deg, #ffb45a, #ffd38a);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+#plant-hint-modal .ph-line{
+  margin: .35rem 0;
+  color: var(--muted);
+  line-height: 1.55;
+  text-align: center;
+}
+#plant-hint-modal .ph-actions{
+  margin-top: .75rem;
+  display: flex; justify-content: center;
+}
+#plant-hint-modal .btn{
+  background: linear-gradient(180deg,#ff9a44,#ea580c);
+  border-color:#b45309; color:#1a130c;
+}
+
+/* Fallback-Backdrop für Browser ohne <dialog>::backdrop */
+.ph-fallback-backdrop{
+  display:none;
+  position:fixed; inset:0; z-index:1000;
+  background: radial-gradient(120vw 120vh at 50% 50%, rgba(0,0,0,.45), rgba(0,0,0,.85));
+  -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px);
+}
+.ph-fallback-backdrop.show{ display:block; }
+
+/* Sicherstellen, dass der Dialog über der Fallback-Backdrop sitzt */
+#plant-hint-modal[open]{ display:block; z-index:1001; }
+
+@media (max-width:480px){
+  #plant-hint-modal .ph-card{ padding: 12px 12px; }
+  #plant-hint-modal .ph-line{ font-size: .98rem; }
+}
+

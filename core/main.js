@@ -3,7 +3,7 @@ const BIRTHDAY_ISO = "2025-09-23T00:00:00+02:00";
 export const DAYS = [
   { key: "tag1-sternbild", date: "2025-09-17", title: "Tag 1 · Sternbild", badge: "🪴 Pflanzen-Profi" },
   { key: "tag2-survival", date: "2025-09-18", title: "Tag 2 · Survival", badge: "🧭 Survivalistin" },
-  { key: "tag3-escape", date: "2025-09-19", title: "Tag 3 · Dämonisch", badge: "👻 Mutig" },
+  { key: "tag3-escape", date: "2025-09-19", title: "Tag 3 · Sunny-Meadow", badge: "👻 Mutig" },
   { key: "tag4-horror", date: "2025-09-20", title: "Tag 4 · FINDE-UNS", badge: "🩸 Verrückt" },
   { key: "tag5-sport", date: "2025-09-21", title: "Tag 5 · Sport-Boost", badge: "💪 Durchzieherin" },
   { key: "tag6-puzzle", date: "2025-09-22", title: "Tag 6 · Saufnässchen", badge: "🍾 Wein-Liebhaberin" },
@@ -141,7 +141,7 @@ async function loadDay(i) {
 
   // Stylesheet umschalten
   const base = short(DAYS[i].key);
-  qs("#day-style").href = `days/${DAYS[i].key}/${base}.css`;
+  qs("#day-style").href = `days/${DAYS[i].key}/${base}.css?v=${cacheBust()}`;
 
   // Body-Klasse pro Tag für Themes
   setBodyTagClass(DAYS[i].key);

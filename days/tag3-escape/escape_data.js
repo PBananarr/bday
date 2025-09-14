@@ -3,7 +3,7 @@
 
 export const escape_STORY = {
   meta: {
-    title: "Sunny Hollow – Letzte Visite",
+    title: "Sunny-Meadow – Letzte Visite",
     maxStepsToWin: 8
   },
 
@@ -17,7 +17,7 @@ export const escape_STORY = {
       title: "Aufwachen im Ostflügel",
       text: "Kalter Linoleum, abblätternde Farbe. Du öffnest die Augen: verlassene Nervenheilanstalt. Neben dir liegt dein bester Freund – bewusstlos, Atem flach. Aus den Korridoren kriecht ein dämonischer Schrei, der die Notlichter flackern lässt.",
       choices: [
-        { label: "March-Schema anwenden – Freund auf Gang zerren!", to: "s1", effect: "blood" },
+        { label: "March-Schema anwenden – Freund auf Gang zerren!", to: "s1", effect: "door" },
         { label: "Allein fliehen – raus hier!", to: "d1", effect: "scare" },
         { label: "Nach Hilfe rufen", to: "d2", effect: "scare" },
         { label: "Reglos lauschen, ob „es“ näher kommt", to: "d3", effect: "blood" }
@@ -28,7 +28,7 @@ export const escape_STORY = {
       type: "room",
       id: "s1",
       title: "Pflegestation A – Rollwagen",
-      text: "Ein rostiger Rollstuhl, verstreute Akten, ein altes Namensschild: „Sunny Hollow – Restricted“. Auf einem Klemmbrett steht: „Patient X – Bindung an Auslöser, Berührung verstärkt Phänomen.“ Dein Freund zuckt im Schlaf, die Schatten zucken mit.",
+      text: "Ein rostiger Rollstuhl, verstreute Akten, ein altes Namensschild: „Sunny Meadows Mental Institution“. Auf einem Klemmbrett steht: „Patient X – Bindung an Auslöser, Berührung verstärkt Phänomen.“ Dein Freund zuckt im Schlaf, die Schatten zucken mit.",
       choices: [
         { label: "Wasser suchen, ihn aufwecken", to: "d4", effect: "blood" },
         { label: "Laut die Schränke durchsuchen", to: "d5", effect: "scare" },
@@ -170,7 +170,5 @@ function death(title, text) {
     type: "death",
     title,
     text,
-    // Optionales Bild für spätere Einbindung
-    scareImage: "./img/daemonJumpscare.png" // Platzhalter – kann ersetzt werden
   };
 }

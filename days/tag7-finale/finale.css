@@ -2,228 +2,366 @@
    Tag 7 – Finale: Challenge-Ring Button
    ——————————————————————————————— */
 
-.finale-card .lead{
-  opacity:.9;
-  margin-bottom:1rem;
+.finale-card .lead {
+  opacity: .9;
+  margin-bottom: 1rem;
 }
 
-.cta-wrap{
-  display:grid;
-  place-items:center;
-  gap:1rem;
-  margin:1.25rem 0 .5rem;
+.cta-wrap {
+  display: grid;
+  place-items: center;
+  gap: 1rem;
+  margin: 1.25rem 0 .5rem;
 }
 
 /* Karte kompakt halten */
-.finale-card{
+.finale-card {
   max-width: 960px;
   margin-inline: auto;
   padding: clamp(14px, 2.6vw, 24px) clamp(14px, 4vw, 32px);
 }
 
 /* Grundform & responsive Geometrie + Typo-Variablen */
-.finale-cta{
-  --size: min( clamp(220px, 58vmin, 520px), 62svh );
+.finale-cta {
+  --size: min(clamp(220px, 58vmin, 520px), 62svh);
   --chip: clamp(30px, 5.2vmin, 50px);
   --safe: calc(var(--chip) * 0.72);
   --ring: calc((var(--size) / 2) - var(--safe));
   --fs-number: clamp(40px, calc(var(--size) / 4.3), 140px);
-  --fs-label:  clamp(12px, calc(var(--size) / 18), 24px);
+  --fs-label: clamp(12px, calc(var(--size) / 18), 24px);
   --gap-center: clamp(.08rem, calc(var(--size)/180), .35rem);
   --mb-number: clamp(.6rem, calc(var(--size)/36), 1.6rem);
   --blur: 44px;
 
-  width:var(--size);
-  height:var(--size);
-  border-radius:999px;
-  border:none;
-  cursor:pointer;
-  position:relative;
-  isolation:isolate;
-  overflow:hidden;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
 
-  display:grid;
-  place-items:center;
-  padding:0;
+  display: grid;
+  place-items: center;
+  padding: 0;
 
   background:
-    radial-gradient(60% 60% at 35% 30%, rgba(255,255,255,.10), rgba(255,255,255,0) 60%),
+    radial-gradient(60% 60% at 35% 30%, rgba(255, 255, 255, .10), rgba(255, 255, 255, 0) 60%),
     linear-gradient(135deg, #0f172a, #0b1020 55%, #0a0f1c);
   box-shadow:
-    0 0 0 1px rgba(255,255,255,.06) inset,
-    0 24px 60px rgba(0,0,0,.55);
+    0 0 0 1px rgba(255, 255, 255, .06) inset,
+    0 24px 60px rgba(0, 0, 0, .55);
   transition: transform .18s ease, filter .18s ease, box-shadow .18s ease;
 }
 
-.finale-cta:is(:hover,:focus-visible){
+.finale-cta:is(:hover, :focus-visible) {
   transform: translateY(-2px);
   filter: brightness(1.03);
 }
 
 /* zarter Orbit-Ring innen */
-.finale-cta::before{
-  content:"";
-  position:absolute; inset:0;
-  border-radius:inherit;
-  box-shadow: 0 0 0 1px rgba(255,255,255,.06) inset;
+.finale-cta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, .06) inset;
   background:
-    radial-gradient(closest-side, rgba(255,255,255,.06), transparent 65%) center/100% 100% no-repeat;
-  z-index:1; pointer-events:none;
+    radial-gradient(closest-side, rgba(255, 255, 255, .06), transparent 65%) center/100% 100% no-repeat;
+  z-index: 1;
+  pointer-events: none;
 }
 
 /* Aurora */
-.finale-cta .aurora{
-  position:absolute; inset:-6%;
+.finale-cta .aurora {
+  position: absolute;
+  inset: -6%;
   background:
-    radial-gradient(120% 90% at 12% 22%, rgba(59,130,246,.32), transparent 55%),
-    radial-gradient(100% 70% at 86% 28%, rgba(236,72,153,.26), transparent 60%),
-    radial-gradient(90% 80% at 50% 92%, rgba(34,197,94,.24), transparent 60%);
+    radial-gradient(120% 90% at 12% 22%, rgba(59, 130, 246, .32), transparent 55%),
+    radial-gradient(100% 70% at 86% 28%, rgba(236, 72, 153, .26), transparent 60%),
+    radial-gradient(90% 80% at 50% 92%, rgba(34, 197, 94, .24), transparent 60%);
   filter: blur(var(--blur));
-  opacity:.9;
-  z-index:0; pointer-events:none;
+  opacity: .9;
+  z-index: 0;
+  pointer-events: none;
   animation: drift 12s ease-in-out infinite alternate;
 }
-@keyframes drift{ 0%{transform:translate(-2%,-1%) scale(1)} 100%{transform:translate(2%,1%) scale(1.05)} }
+
+@keyframes drift {
+  0% {
+    transform: translate(-2%, -1%) scale(1)
+  }
+
+  100% {
+    transform: translate(2%, 1%) scale(1.05)
+  }
+}
 
 /* Ring mit Chips (Challenges) */
-.badge-ring{ position:absolute; inset:0; z-index:2; pointer-events:none; }
+.badge-ring {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
 
-.badge-ring .chip{
-  position:absolute; left:50%; top:50%;
-  width:var(--chip); height:var(--chip);
-  display:grid; place-items:center;
-  border-radius:999px;
+.badge-ring .chip {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--chip);
+  height: var(--chip);
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
   backdrop-filter: blur(6px);
-  background: linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,.04));
-  box-shadow: 0 0 0 1px rgba(255,255,255,.12) inset, 0 10px 24px rgba(0,0,0,.45);
+  background: linear-gradient(180deg, rgba(255, 255, 255, .18), rgba(255, 255, 255, .04));
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, .12) inset, 0 10px 24px rgba(0, 0, 0, .45);
   transform-origin: center;
   font-size: calc(var(--chip) * .64);
-  color: rgba(255,255,255,.96);
+  color: rgba(255, 255, 255, .96);
 }
 
 /* Positionen auf dem Kreis (für Fallback wenn Float deaktiviert)
    – werden von .float überschrieben */
-.chip-1{ transform: rotate(  -90deg) translate(var(--ring)) rotate( 90deg); }
-.chip-2{ transform: rotate(  -30deg) translate(var(--ring)) rotate( 30deg); }
-.chip-3{ transform: rotate(   30deg) translate(var(--ring)) rotate(-30deg); }
-.chip-4{ transform: rotate(   90deg) translate(var(--ring)) rotate(-90deg); }
-.chip-5{ transform: rotate(  150deg) translate(var(--ring)) rotate(-150deg); }
-.chip-6{ transform: rotate( -150deg) translate(var(--ring)) rotate(150deg); }
-.chip-7{ transform: rotate(  180deg) translate(var(--ring)) rotate(-180deg); }
+.chip-1 {
+  transform: rotate(-90deg) translate(var(--ring)) rotate(90deg);
+}
+
+.chip-2 {
+  transform: rotate(-30deg) translate(var(--ring)) rotate(30deg);
+}
+
+.chip-3 {
+  transform: rotate(30deg) translate(var(--ring)) rotate(-30deg);
+}
+
+.chip-4 {
+  transform: rotate(90deg) translate(var(--ring)) rotate(-90deg);
+}
+
+.chip-5 {
+  transform: rotate(150deg) translate(var(--ring)) rotate(-150deg);
+}
+
+.chip-6 {
+  transform: rotate(-150deg) translate(var(--ring)) rotate(150deg);
+}
+
+.chip-7 {
+  transform: rotate(180deg) translate(var(--ring)) rotate(-180deg);
+}
 
 /* Zentrum: 37 + Label */
-.center{
-  position:relative; z-index:3;
-  display:grid; place-items:center;
+.center {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  place-items: center;
   gap: var(--gap-center);
-  text-align:center;
-  padding:0 1rem;
-  max-width: calc(100% - (var(--chip) * 3.0)); /* großzügige Safe-Area */
+  text-align: center;
+  padding: 0 1rem;
+  max-width: calc(100% - (var(--chip) * 3.0));
+  /* großzügige Safe-Area */
 }
-.number{
+
+.number {
   font-size: var(--fs-number);
   font-weight: 900;
   letter-spacing: .02em;
   line-height: .9;
-  background: linear-gradient(180deg,#ffffff,#e7edff 55%,#b6c7ff);
-  -webkit-background-clip: text; background-clip: text; color: transparent;
-  text-shadow: 0 6px 30px rgba(80,120,255,.35), 0 1px 0 rgba(255,255,255,.28);
+  background: linear-gradient(180deg, #ffffff, #e7edff 55%, #b6c7ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 6px 30px rgba(80, 120, 255, .35), 0 1px 0 rgba(255, 255, 255, .28);
   margin-bottom: var(--mb-number);
 }
-.cta-label{
-  display:inline-block;
+
+.cta-label {
+  display: inline-block;
   max-width: 100%;
   margin-top: -.05rem;
-  padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
 
   font-weight: 900;
   font-size: var(--fs-label);
   line-height: 1.08;
   letter-spacing: .015em;
   text-wrap: balance;
-  white-space: normal; word-break: keep-all;
+  white-space: normal;
+  word-break: keep-all;
 
-  background: linear-gradient(180deg,#ffffff,#eaf0ff 50%,#c2d1ff);
-  -webkit-background-clip: text; background-clip: text; color: transparent;
-  text-shadow: 0 0 1px rgba(255,255,255,.35), 0 8px 26px rgba(20,40,120,.35);
+  background: linear-gradient(180deg, #ffffff, #eaf0ff 50%, #c2d1ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 1px rgba(255, 255, 255, .35), 0 8px 26px rgba(20, 40, 120, .35);
   position: relative;
 }
-.cta-label::after{
-  content:""; display:block;
+
+.cta-label::after {
+  content: "";
+  display: block;
   width: clamp(42%, calc(var(--size)/8.8), 72%);
   max-width: 440px;
   height: clamp(2px, calc(var(--size)/160), 3px);
   margin: .28rem auto 0;
   border-radius: 999px;
-  background: linear-gradient(90deg, rgba(255,255,255,0), rgba(99,102,241,.55), rgba(16,185,129,.65), rgba(255,255,255,0));
-  opacity:.85; filter: blur(.2px);
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(99, 102, 241, .55), rgba(16, 185, 129, .65), rgba(255, 255, 255, 0));
+  opacity: .85;
+  filter: blur(.2px);
 }
 
 /* Zustände */
-.finale-cta.is-ready{
+.finale-cta.is-ready {
   box-shadow:
-    0 0 0 1px rgba(255,255,255,.10) inset,
+    0 0 0 1px rgba(255, 255, 255, .10) inset,
     0 28px 70px rgba(31, 122, 72, .45),
     0 0 70px rgba(46, 204, 113, .16);
 }
-.finale-cta.is-locked{ filter: saturate(.88) opacity(.98); }
-.finale-cta.is-locked .cta-label{
-  background: linear-gradient(180deg,#e8ecf9,#cbd5e1 60%,#a8b2c7);
-  -webkit-background-clip:text; background-clip:text; color:transparent;
+
+.finale-cta.is-locked {
+  filter: saturate(.88) opacity(.98);
 }
-.finale-cta.is-locked .cta-label::after{
-  background: linear-gradient(90deg, rgba(255,255,255,0), rgba(148,163,184,.7), rgba(148,163,184,.7), rgba(255,255,255,0));
-  opacity:.7;
+
+.finale-cta.is-locked .cta-label {
+  background: linear-gradient(180deg, #e8ecf9, #cbd5e1 60%, #a8b2c7);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.finale-cta.is-locked .cta-label::after {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(148, 163, 184, .7), rgba(148, 163, 184, .7), rgba(255, 255, 255, 0));
+  opacity: .7;
 }
 
 /* kleine Effekte */
-.finale-cta.boom { animation: pulse .5s ease-in-out 1; }
-.finale-cta.shake{ animation: shake .5s ease 1; }
-@keyframes pulse{ 0%{transform:scale(1)} 40%{transform:scale(1.04)} 100%{transform:scale(1)} }
-@keyframes shake{ 0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
+.finale-cta.boom {
+  animation: pulse .5s ease-in-out 1;
+}
 
-.hint{ font-size:.98rem; opacity:.95; text-align:center; }
-.tiny-note{ opacity:.6; font-size:.9rem; text-align:center; }
+.finale-cta.shake {
+  animation: shake .5s ease 1;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1)
+  }
+
+  40% {
+    transform: scale(1.04)
+  }
+
+  100% {
+    transform: scale(1)
+  }
+}
+
+@keyframes shake {
+
+  0%,
+  100% {
+    transform: translateX(0)
+  }
+
+  20% {
+    transform: translateX(-6px)
+  }
+
+  40% {
+    transform: translateX(6px)
+  }
+
+  60% {
+    transform: translateX(-4px)
+  }
+
+  80% {
+    transform: translateX(4px)
+  }
+}
+
+.hint {
+  font-size: .98rem;
+  opacity: .95;
+  text-align: center;
+}
+
+.tiny-note {
+  opacity: .6;
+  font-size: .9rem;
+  text-align: center;
+  margin-top: 1.5rem;
+}
 
 /* sehr niedrige Viewports kompakter */
-@media (max-height: 680px){
-  .finale-cta{ --size: min( clamp(200px, 54vmin, 480px), 56svh ); }
+@media (max-height: 680px) {
+  .finale-cta {
+    --size: min(clamp(200px, 54vmin, 480px), 56svh);
+  }
 }
-@media (max-height: 560px){
-  .finale-cta{ --size: min( clamp(180px, 50vmin, 440px), 50svh ); }
+
+@media (max-height: 560px) {
+  .finale-cta {
+    --size: min(clamp(180px, 50vmin, 440px), 50svh);
+  }
 }
+
 /* Landscape mit wenig Höhe */
-@media (orientation: landscape) and (max-height: 500px){
-  .finale-cta{ --size: min( clamp(180px, 44vmin, 420px), 50svh ); }
-  .center{ max-width: calc(100% - (var(--chip) * 3.4)); }
-  .cta-label::after{ width: clamp(38%, calc(var(--size)/10.5), 60%); }
+@media (orientation: landscape) and (max-height: 500px) {
+  .finale-cta {
+    --size: min(clamp(180px, 44vmin, 420px), 50svh);
+  }
+
+  .center {
+    max-width: calc(100% - (var(--chip) * 3.4));
+  }
+
+  .cta-label::after {
+    width: clamp(38%, calc(var(--size)/10.5), 60%);
+  }
 }
 
 /* Floating-Chips aktivieren (überschreibt Ring-Layout) */
-.finale-cta.float .badge-ring { pointer-events:none; z-index:2; }
-.finale-cta.float .badge-ring .chip{
-  left:50%; top:50%;
+.finale-cta.float .badge-ring {
+  pointer-events: none;
+  z-index: 2;
+}
+
+.finale-cta.float .badge-ring .chip {
+  left: 50%;
+  top: 50%;
   transform: translate(calc(-50% + var(--x, 0px)), calc(-50% + var(--y, 0px))) !important;
-  transition:none; will-change: transform;
+  transition: none;
+  will-change: transform;
 }
 
 
 /* Kürzerer Ready-Text: etwas größer & Underline kompakter */
-.finale-cta.is-ready .cta-label{
+.finale-cta.is-ready .cta-label {
   font-size: clamp(13px, calc(var(--size) / 17), 26px);
 }
-.finale-cta.is-ready .cta-label::after{
+
+.finale-cta.is-ready .cta-label::after {
   width: clamp(36%, calc(var(--size) / 11), 56%);
 }
 
 /* Zahl etwas dichter ans Label, wirkt knackiger beim kurzen Text */
-.finale-cta.is-ready .number{
+.finale-cta.is-ready .number {
   margin-bottom: clamp(.7rem, calc(var(--size) / 34), 1.8rem);
 }
 
 
 /* CTA weich ausblenden, bevor "Geschafft!" inline erscheint */
-.finale-cta.fadeOut{
+.finale-cta.fadeOut {
   opacity: 0;
   transform: scale(.98);
   pointer-events: none;
@@ -231,12 +369,20 @@
 }
 
 /*Inline-Version von #final (Nutze dein globales .final-Design) */
-.final-inline{
+.final-inline {
   margin: 0.25rem auto 0;
   max-width: 920px;
   animation: finalIn .24s ease-out both;
 }
-@keyframes finalIn{
-  from{ opacity: 0; transform: translateY(6px) scale(.995); }
-  to  { opacity: 1; transform: translateY(0)    scale(1); }
+
+@keyframes finalIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(.995);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }

@@ -288,7 +288,7 @@ input.choice, .choice input, .order-item select{ color:var(--text) }
   color: var(--muted); font-weight:700; font-size:.9rem;
 }
 .c-head h4{ margin:0;margin-bottom: 0.2rem; font-size:1.02rem; color:var(--accent); }
-.c-sub{ margin:0; color:var(--muted); font-size:.92rem; }
+c-sub{ margin:0; color:var(--muted); font-size:.92rem; }
 
 /* ----- C1/C4: Antwortchips als gleichmäßiges Grid ----- */
 .c-chiprow{
@@ -640,4 +640,3 @@ body.tag-tag2-survival .c-cardradio input:checked ~ .c-cardradio__body{
   #plant-hint-modal .ph-card{ padding: 12px 12px; }
   #plant-hint-modal .ph-line{ font-size: .98rem; }
 }
-

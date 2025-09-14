@@ -212,4 +212,3 @@ export const D_PLANT_CATEGORIES = {
   edible: "Essbare / Heilpflanze",
   toxic: "Giftiger Doppelgänger",
 };
-

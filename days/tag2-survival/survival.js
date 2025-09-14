@@ -110,89 +110,86 @@ export function build(root, api) {
   `;
 
   // --- Hint-Popup für Step D (Pflanzenerkennung) ---
-// --- Hint-Popup für Step D (Pflanzenerkennung) ---
-(function initPlantHintModal(){
-  let shown = sessionStorage.getItem("survStepDHintShown") === "1";
-  const supportsDialog = typeof HTMLDialogElement !== "undefined" && !!HTMLDialogElement.prototype.showModal;
+  (function initPlantHintModal(){
+    let shown = sessionStorage.getItem("survStepDHintShown") === "1";
+    const supportsDialog = typeof HTMLDialogElement !== "undefined" && !!HTMLDialogElement.prototype.showModal;
 
-  // Dialog + (Fallback-)Backdrop bauen
-  const dlg = document.createElement("dialog");
-  dlg.id = "plant-hint-modal";
-  dlg.innerHTML = `
-    <article class="ph-card" role="document" aria-labelledby="ph-title">
-      <h4 id="ph-title">Profi – Pflanzenerkennung</h4>
-      <p class="ph-line">• Bewege die Pflanzen per <strong>Drag &amp; Drop</strong></p>
-      <p class="ph-line">• <strong>Bilder tippen</strong> zum Öffnen</p>
-      <div class="ph-actions">
-        <button class="btn" id="ph-ok">Verstanden</button>
-      </div>
-    </article>
-  `;
-  document.body.appendChild(dlg);
+    // Dialog + (Fallback-)Backdrop bauen
+    const dlg = document.createElement("dialog");
+    dlg.id = "plant-hint-modal";
+    dlg.innerHTML = `
+      <article class="ph-card" role="document" aria-labelledby="ph-title">
+        <h4 id="ph-title">Profi – Pflanzenerkennung</h4>
+        <p class="ph-line">• Bewege die Pflanzen per <strong>Drag &amp; Drop</strong></p>
+        <p class="ph-line">• <strong>Bilder tippen</strong> zum Öffnen</p>
+        <div class="ph-actions">
+          <button class="btn" id="ph-ok">Verstanden</button>
+        </div>
+      </article>
+    `;
+    document.body.appendChild(dlg);
 
-  // Fallback-Backdrop (für Browser ohne native ::backdrop)
-  let fbBackdrop = null;
-  if (!supportsDialog) {
-    fbBackdrop = document.createElement("div");
-    fbBackdrop.className = "ph-fallback-backdrop";
-    document.body.appendChild(fbBackdrop);
-  }
-
-  // Open/Close Helpers (mit Fallback)
-  const openDlg = () => {
-    if (shown) return;
-    if (supportsDialog) {
-      if (!dlg.open) dlg.showModal();
-    } else {
-      dlg.setAttribute("open", "");
-      fbBackdrop?.classList.add("show");
+    // Fallback-Backdrop (für Browser ohne native ::backdrop)
+    let fbBackdrop = null;
+    if (!supportsDialog) {
+      fbBackdrop = document.createElement("div");
+      fbBackdrop.className = "ph-fallback-backdrop";
+      document.body.appendChild(fbBackdrop);
     }
-  };
-  const closeDlg = () => {
-    if (supportsDialog) dlg.close();
-    else { dlg.removeAttribute("open"); fbBackdrop?.classList.remove("show"); }
-  };
 
-  // Schließen: Button, Klick neben Karte, ESC
-  dlg.querySelector("#ph-ok")?.addEventListener("click", closeDlg);
-  dlg.addEventListener("click", (e) => {
-    const card = dlg.querySelector(".ph-card")?.getBoundingClientRect();
-    if (!card) return;
-    if (e.clientX < card.left || e.clientX > card.right || e.clientY < card.top || e.clientY > card.bottom) {
-      closeDlg();
-    }
-  });
-  window.addEventListener("keydown", (e) => { if (e.key === "Escape") closeDlg(); });
-  dlg.addEventListener("close", () => { sessionStorage.setItem("survStepDHintShown", "1"); shown = true; });
-  // Fallback "close"-Äquivalent
-  if (!supportsDialog) {
-    const obsAttr = new MutationObserver(() => {
-      if (!dlg.hasAttribute("open")) { sessionStorage.setItem("survStepDHintShown", "1"); shown = true; }
+    // Open/Close Helpers (mit Fallback)
+    const openDlg = () => {
+      if (shown) return;
+      if (supportsDialog) {
+        if (!dlg.open) dlg.showModal();
+      } else {
+        dlg.setAttribute("open", "");
+        fbBackdrop?.classList.add("show");
+      }
+    };
+    const closeDlg = () => {
+      if (supportsDialog) dlg.close();
+      else { dlg.removeAttribute("open"); fbBackdrop?.classList.remove("show"); }
+    };
+
+    // Schließen: Button, Klick neben Karte, ESC
+    dlg.querySelector("#ph-ok")?.addEventListener("click", closeDlg);
+    dlg.addEventListener("click", (e) => {
+      const card = dlg.querySelector(".ph-card")?.getBoundingClientRect();
+      if (!card) return;
+      if (e.clientX < card.left || e.clientX > card.right || e.clientY < card.top || e.clientY > card.bottom) {
+        closeDlg();
+      }
     });
-    obsAttr.observe(dlg, { attributes: true, attributeFilter: ["open"] });
-  }
-
-  // Intersection Observer – mobiler freundlicher (niedrigere Schwelle + früherer Root-Margin)
-  const stepD = root.querySelector("#stepD");
-  if (!stepD) return;
-  const io = new IntersectionObserver((entries) => {
-    const ent = entries[0];
-    if (ent.isIntersecting && !shown) {
-      openDlg();
-      io.disconnect();
+    window.addEventListener("keydown", (e) => { if (e.key === "Escape") closeDlg(); });
+    dlg.addEventListener("close", () => { sessionStorage.setItem("survStepDHintShown", "1"); shown = true; });
+    // Fallback "close"-Äquivalent
+    if (!supportsDialog) {
+      const obsAttr = new MutationObserver(() => {
+        if (!dlg.hasAttribute("open")) { sessionStorage.setItem("survStepDHintShown", "1"); shown = true; }
+      });
+      obsAttr.observe(dlg, { attributes: true, attributeFilter: ["open"] });
     }
-  }, { threshold: 0.2, rootMargin: "0px 0px -20% 0px" }); // früher & sensibler
-  io.observe(stepD);
 
-  // Sicherheitsnetz: erster Tap in Step D öffnet ebenfalls einmalig
-  const tapOnce = (ev) => {
-    if (!shown) openDlg();
-    stepD.removeEventListener("pointerdown", tapOnce, { passive: true });
-  };
-  stepD.addEventListener("pointerdown", tapOnce, { passive: true });
-})();
+    // Intersection Observer – mobiler freundlicher
+    const stepD = root.querySelector("#stepD");
+    if (!stepD) return;
+    const io = new IntersectionObserver((entries) => {
+      const ent = entries[0];
+      if (ent.isIntersecting && !shown) {
+        openDlg();
+        io.disconnect();
+      }
+    }, { threshold: 0.2, rootMargin: "0px 0px -20% 0px" });
+    io.observe(stepD);
 
-
+    // Sicherheitsnetz: erster Tap in Step D öffnet ebenfalls einmalig
+    const tapOnce = (ev) => {
+      if (!shown) openDlg();
+      stepD.removeEventListener("pointerdown", tapOnce, { passive: true });
+    };
+    stepD.addEventListener("pointerdown", tapOnce, { passive: true });
+  })();
 
   // --- Lightbox (einmalig) ---
   function ensureLightbox() {
@@ -447,7 +444,7 @@ export function build(root, api) {
   /* C-Wrapper: 2-spaltiges Grid (mobil 1-spaltig) */
   (function wrapCAsGrid() {
     const stepC = document.getElementById("stepC");
-    const btnRow = stepC.querySelector(".btnrow"); // Grid vor dem Button einfügen
+    const btnRow = stepC.querySelector(".btnrow");
     const grid = document.createElement("div");
     grid.className = "c-grid";
     stepC.insertBefore(grid, btnRow);
@@ -782,8 +779,23 @@ export function build(root, api) {
 
   function dUp(e) {
     if (!dDrag.el) return;
+
+    // --- WICHTIGER FIX: Wenn nicht wirklich gezogen wurde, NICHT umhängen ---
+    const moved = dDidDrag;
+
     dDrag.el.releasePointerCapture?.(e.pointerId);
     const chip = dDrag.el;
+
+    // Styles zurücksetzen & Drag-Ende markieren
+    chip.style.position = ""; chip.style.left = ""; chip.style.top = ""; chip.style.zIndex = "";
+    chip.classList.remove("dragging");
+
+    if (!moved) {
+      // Nur Tap/Klick: nichts verschieben – Lightbox darf danach öffnen
+      dDrag.el = null; dDrag.from = null;
+      // dDidDrag bleibt false, damit der Click-Handler die Lightbox öffnet
+      return;
+    }
 
     const drops = $$(".pt-drop", dTable);
     let placed = false, targetCell = null;
@@ -826,11 +838,9 @@ export function build(root, api) {
       break;
     }
 
-    // Position reset
-    chip.style.position = ""; chip.style.left = ""; chip.style.top = ""; chip.style.zIndex = "";
-    chip.classList.remove("dragging");
-
     if (!placed) {
+      // zurück an Ursprung, aber OHNE Reihenfolge zu verändern: wenn aus Bank, zurück an gleiche Position
+      // (vereinfachend: zurück in Bank ans Ende)
       dBank.appendChild(chip);
       if (dDrag.from && dDrag.from.classList?.contains("pt-drop")) {
         resetCell(dDrag.from);
@@ -843,7 +853,7 @@ export function build(root, api) {
     }
 
     dDrag.el = null; dDrag.from = null;
-    // nach Up sofort wieder "kein Drag" → Klick danach darf Lightbox öffnen
+    // nach Up Drag-Flag zurücksetzen
     setTimeout(() => { dDidDrag = false; }, 0);
   }
 
@@ -852,11 +862,10 @@ export function build(root, api) {
   $("#stepD").addEventListener("pointerup", dUp);
   $("#stepD").addEventListener("pointercancel", dUp);
 
-  // >>> NEU: Klick/Tap auf Pflanzenbild = Lightbox öffnen <<<
+  // Klick/Tap auf Pflanzenbild = Lightbox öffnen
   $("#stepD").addEventListener("click", (e) => {
     const img = e.target.closest(".plant-chip img");
     if (!img) return;
-    // Wenn vorher gezogen wurde, kein Zoom-Klick
     if (dDidDrag) { dDidDrag = false; return; }
     openLightbox(img.getAttribute("src"));
   });

@@ -9,6 +9,9 @@ const setT = (fn, ms) => { const id = setTimeout(fn, ms); _timeouts.add(id); ret
 const setI = (fn, ms) => { const id = setInterval(fn, ms); _intervals.add(id); return id; };
 const setR = (fn) => { const id = requestAnimationFrame(fn); _rafs.add(id); return id; };
 
+/* Lokaler Key, damit der Hinweis optional nicht jedes Mal erscheint */
+const HINT_KEY = "puzzle6_hint_dismissed";
+
 export function build(host, api) {
   host.innerHTML = `
     <div class="day-puzzle">
@@ -23,6 +26,29 @@ export function build(host, api) {
         <main id="stageWrapper">
           <div id="stage" class="stage" aria-label="Puzzlebrett" role="application"></div>
         </main>
+
+        <!-- Hinweis-Popup (zeigt sich automatisch) -->
+        <dialog id="puzzle-hint" aria-labelledby="puzzle-hint-title">
+          <div class="badge-wrap">
+            <h3 id="puzzle-hint-title" class="badge-title">Kurzer Hinweis zum Puzzle 🧩</h3>
+            <div style="color:#dbe6ff; line-height:1.45; margin: 4px 4px 8px;">
+              <p style="margin:.3rem 0;">
+                Zieh die Teile von außerhalb der Matte aufs Bild.<br><br>
+                <strong>Zum Lösen des Puzzles eignet sich dein Handy im Querformat am besten.</strong><br><br>
+              </p>
+              <p style="margin:.3rem 0;">
+                Mit <strong>Mischen</strong> platzierst du ungelöste Teile neu, <strong>Hint</strong> blendet die Vorlage dezent ein.
+              </p>
+            </div>
+            <label style="display:flex; align-items:center; gap:.5rem; color:#9db0d6; font-size:.95rem; margin:2px 4px 10px;">
+              <input type="checkbox" id="puzzle-hint-dontshow" />
+              Diesen Hinweis nicht mehr anzeigen
+            </label>
+            <div class="modal-actions">
+              <button class="btn btn-lg" id="puzzle-hint-close">Okay</button>
+            </div>
+          </div>
+        </dialog>
 
         <!-- Abschluss -->
         <dialog id="badge-modal" aria-labelledby="badge-title">
@@ -52,6 +78,11 @@ export function build(host, api) {
 
   const startBtn   = $('#startBtn');
   const shuffleBtn = $('#shuffleBtn');
+
+  // Hinweis-Dialog
+  const hintDlg        = $('#puzzle-hint');
+  const hintCloseBtn   = $('#puzzle-hint-close');
+  const hintDontShowCb = $('#puzzle-hint-dontshow');
 
   // Badge-Modal
   const badgeDlg   = $('#badge-modal');
@@ -83,6 +114,9 @@ export function build(host, api) {
     stage.style.aspectRatio = `${img.width}/${img.height}`;
     buildPuzzle(COLS, ROWS);
     bindUI();
+
+    // Hinweis automatisch zeigen (sofern nicht dauerhaft ausgeblendet)
+    showHintIfNeeded();
   }
 
   function bindUI() {
@@ -90,9 +124,26 @@ export function build(host, api) {
     shuffleBtn?.addEventListener('click', () => shuffleVisible());
     badgeClose?.addEventListener('click', () => badgeDlg?.close());
 
+    // Hinweis-Dialog steuern
+    hintCloseBtn?.addEventListener('click', () => {
+      try { if (hintDontShowCb?.checked) localStorage.setItem(HINT_KEY, "1"); } catch {}
+      hintDlg?.close();
+    });
+
     const onResize = () => { recomputeLayout(); shuffleVisible(); };
     window.addEventListener('resize', onResize);
     _cleanups.push(() => window.removeEventListener('resize', onResize));
+  }
+
+  /* ===== Hinweis-Dialog ===== */
+  function showHintIfNeeded() {
+    try {
+      const dismissed = localStorage.getItem(HINT_KEY) === "1";
+      if (!dismissed && hintDlg && !hintDlg.open) hintDlg.showModal();
+    } catch {
+      // Fallback: wenn localStorage nicht verfügbar ist
+      if (hintDlg && !hintDlg.open) hintDlg.showModal();
+    }
   }
 
   /* ===== Puzzle-Vollmodus ===== */
@@ -102,6 +153,9 @@ export function build(host, api) {
     // Falls „Hinweise“ (global) offen ist, schließen
     const about = document.getElementById('about');
     try { if (about?.open) about.close(); } catch {}
+
+    // Falls unser Hinweis offen ist, schließen
+    try { if (hintDlg?.open) hintDlg.close(); } catch {}
 
     setT(() => stage.scrollIntoView({ block: 'center', behavior: 'smooth' }), 50);
   }
@@ -345,5 +399,6 @@ export function build(host, api) {
     _intervals.forEach(clearInterval); _intervals.clear();
     _rafs.forEach(cancelAnimationFrame); _rafs.clear();
     try { const d = host.querySelector('#badge-modal'); d && d.open && d.close(); } catch (_) {}
+    try { const h = host.querySelector('#puzzle-hint'); h && h.open && h.close(); } catch (_) {}
   };
 }

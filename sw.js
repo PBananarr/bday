@@ -1,6 +1,6 @@
 /* sw.js — Globaler Service Worker für Birthday-Quest */
 
-const VERSION = "v1.36.";               // <<< bei jedem Release anpassen
+const VERSION = "v1.41.";               // <<< bei jedem Release anpassen
 self.VERSION = VERSION;
 const STATIC_CACHE = `bq-static-${VERSION}`;
 const RUNTIME_CACHE = `bq-runtime-${VERSION}`;
@@ -13,6 +13,7 @@ const PRECACHE = [
   "./core/main.js",
 
   // Tag 1
+  "./days/tag1-sternbild/picSternbild/thaiMonsteraThemeStars.png",
   "./days/tag1-sternbild/sternbild.js",
   "./days/tag1-sternbild/sternbild.css",
   "./days/tag1-sternbild/sternbild_data.js",

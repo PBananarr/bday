@@ -181,8 +181,6 @@ export const D_PLANT_PAIRS = [
         src: "./img/survival/p3Maiglocke.png",
         category: "toxic",
       },
-      // Optionaler zweiter Doppelgänger (falls du ihn nutzen willst):
-      // { key: "herbstzeitlose", label: "Herbstzeitlose", latin: "Colchicum autumnale", src: "./img/survival/p3Herbstzeitlose.png", category: "toxic" },
     ],
   },
   {

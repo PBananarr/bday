@@ -126,7 +126,7 @@ body.tag-tag1-sternbild .riddle.solved {
   position: relative;
   min-height: 220px;
   border-radius: 12px;
-  background: url("../../img/thaiMonsteraThemeStars.png") center / cover no-repeat;
+  background: url("./picSternbild/thaiMonsteraThemeStars.png") center / cover no-repeat;
   color: transparent;
   -webkit-text-fill-color: transparent;
   transition: background .3s ease, opacity .3s ease;

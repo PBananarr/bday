@@ -121,8 +121,8 @@ export function build(root, api){
       const img = dlg.querySelector("#stern-badge-img");
       if (img) {
         // Nutzt vorhandenes Asset – leicht zu ändern:
-        img.src = "../../img/thaiMonsteraThemeStars.png";
-        img.onerror = () => { img.alt = "Badge-Bild fehlt (../../img/thaiMonsteraThemeStars.png)"; };
+        img.src = 'days/tag1-sternbild/picSternbild/thaiMonsteraThemeStars.png';
+        img.onerror = () => { img.alt = "Badge-Bild fehlt (days/tag1-sternbild/picSternbild/thaiMonsteraThemeStars.png)"; };
       }
       if (!dlg.open) dlg.showModal();
     };

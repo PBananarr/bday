@@ -693,7 +693,8 @@ export function build(root, api) {
   })();
 
   // Drag per Pointer Events
-  let dDrag = { el: null, ox: 0, oy: 0, from: null, startX: 0, startY: 0 };
+  // >>> PATCH: letzte Pointer-Koordinaten puffern, um 0/0-Bug bei pointerup (manche Browser) zu umgehen
+  let dDrag = { el: null, ox: 0, oy: 0, from: null, startX: 0, startY: 0, lastX: 0, lastY: 0 };
   let dDidDrag = false; // <— verhindert Lightbox bei Drag
 
   function dDown(e) {
@@ -707,6 +708,9 @@ export function build(root, api) {
     dDrag.oy = e.clientY - r.top;
     dDrag.startX = e.clientX;
     dDrag.startY = e.clientY;
+    // >>> PATCH: initiale lastX/lastY setzen
+    dDrag.lastX = e.clientX;
+    dDrag.lastY = e.clientY;
     chip.style.position = "fixed";
     chip.style.left = r.left + "px";
     chip.style.top = r.top + "px";
@@ -723,6 +727,9 @@ export function build(root, api) {
     }
     dDrag.el.style.left = (e.clientX - dDrag.ox) + "px";
     dDrag.el.style.top = (e.clientY - dDrag.oy) + "px";
+    // >>> PATCH: letzte validierte Koordinaten puffern
+    dDrag.lastX = e.clientX;
+    dDrag.lastY = e.clientY;
     autoScrollIfNeeded(e.clientY);
   }
 
@@ -786,6 +793,10 @@ export function build(root, api) {
     dDrag.el.releasePointerCapture?.(e.pointerId);
     const chip = dDrag.el;
 
+    // >>> PATCH: stabile Pointer-Position verwenden (Workaround für e.clientX/Y === 0)
+    const px = dDrag.lastX || e.clientX;
+    const py = dDrag.lastY || e.clientY;
+
     // Styles zurücksetzen & Drag-Ende markieren
     chip.style.position = ""; chip.style.left = ""; chip.style.top = ""; chip.style.zIndex = "";
     chip.classList.remove("dragging");
@@ -802,7 +813,7 @@ export function build(root, api) {
 
     for (const cell of drops) {
       const r = cell.getBoundingClientRect();
-      const hit = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+      const hit = px >= r.left && px <= r.right && py >= r.top && py <= r.bottom; // <<< PATCH nutzt px/py
       if (!hit) continue;
 
       const okCat = (cell.dataset.accept === chip.dataset.ans); // nur Spaltenregel

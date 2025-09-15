@@ -135,19 +135,6 @@
   z-index: 1;
 }
 
-/* Geist-Hintergrund */
-.day-puzzle .ghost {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity .25s ease;
-  filter: saturate(.85) contrast(.95) brightness(.8);
-}
-
 /* Pieces */
 .day-puzzle .piece {
   position: absolute;

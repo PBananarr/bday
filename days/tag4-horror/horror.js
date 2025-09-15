@@ -192,16 +192,124 @@ export function build(host, api) {
 
     let completionShown = false;
 
-    function showCompletionPopup() {
-      // Unser eigenes Abschlussbild aus picHorror
-      const imgSrc = CFG.withV(CFG.IMG_BASE + 'gefunden.png');
-      const title = '🩸 Verrückt';
-      const caption = 'Du bist endlich frei und erhältst diesen Badge: " 🩸 Verrückt "';
+    // ===== Item-Lightbox (mit optionalem Badge-CTA) =====
+    function createItemLightbox() {
+      const dlg = document.createElement("dialog");
+      dlg.id = "item-lightbox";
+      dlg.className = "item-lightbox";
+      dlg.innerHTML = `
+        <div class="lb-content">
+          <button class="lb-close" aria-label="Schließen">×</button>
+          <img class="lb-img" alt="Gefundenes Objekt" />
+          <div class="lb-caption"></div>
+          <div class="lb-actions" hidden>
+            <button class="btn btn--red lb-btn" id="lb-badge-btn">Badge holen</button>
+          </div>
+        </div>
+      `;
 
-      // Badge-Popup anzeigen
-      lightbox.open(imgSrc, title, caption);
+      // Close interactions
+      dlg.querySelector(".lb-close")?.addEventListener("click", () => dlg.close());
+      dlg.addEventListener("click", (e) => {
+        const card = dlg.querySelector(".lb-content");
+        const r = card?.getBoundingClientRect();
+        if (!r) return;
+        if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) {
+          dlg.close();
+        }
+      });
+
+      // Beim Schließen: CTA sauber zurücksetzen
+      dlg.addEventListener("close", () => {
+        const actions = dlg.querySelector(".lb-actions");
+        const btn = dlg.querySelector("#lb-badge-btn");
+        if (actions) actions.hidden = true;
+        if (btn) btn.onclick = null;
+      });
+
+      // API
+      const open = ({ src, name, showBadgeCTA = false, onBadgeClick = null }) => {
+        const img = dlg.querySelector(".lb-img");
+        const cap = dlg.querySelector(".lb-caption");
+        const actions = dlg.querySelector(".lb-actions");
+        const btn = dlg.querySelector("#lb-badge-btn");
+
+        if (img) img.src = src;
+        if (cap) cap.textContent = name || "";
+
+        if (actions) {
+          if (showBadgeCTA) {
+            actions.hidden = false;
+            if (btn) {
+              btn.onclick = (ev) => {
+                ev.preventDefault();
+                if (typeof onBadgeClick === "function") onBadgeClick();
+                dlg.close();
+              };
+            }
+          } else {
+            actions.hidden = true;
+            if (btn) btn.onclick = null;
+          }
+        }
+
+        if (!dlg.open) dlg.showModal();
+      };
+
+      document.body.appendChild(dlg);
+      return { dialog: dlg, open };
+    }
+    const itemLightbox = createItemLightbox();
+
+    // ===== Badge-Modal (Horror) =====
+    function createBadgeModalHorror() {
+      const dlg = document.createElement("dialog");
+      dlg.id = "horror-badge-modal";
+      dlg.className = "badge-modal";
+      dlg.innerHTML = `
+        <article class="badge-card">
+          <div class="badge-frame">
+            <img id="horror-badge-img" alt="Horror-Badge" />
+          </div>
+          <div class="badge-caption">
+            <div class="t1">Glückwunsch</div>
+            <div class="t2">Die Fluchgegenstände gehören dir!</div>
+          </div>
+          <div class="badge-actions">
+            <button class="btn btn--red" id="horror-badge-close">Schließen</button>
+          </div>
+        </article>
+      `;
+
+      // Schließen bei Klick außerhalb der Karte
+      dlg.addEventListener("click", (e) => {
+        const card = dlg.querySelector(".badge-card");
+        const r = card?.getBoundingClientRect();
+        if (!r) return;
+        const outside = (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom);
+        if (outside) dlg.close();
+      });
+      dlg.querySelector("#horror-badge-close")?.addEventListener("click", () => dlg.close());
+
+      const open = (imgSrc) => {
+        const img = dlg.querySelector("#horror-badge-img");
+        if (img) {
+          img.src = imgSrc;
+          img.onerror = () => { img.alt = "Badge-Bild fehlt (" + imgSrc + ")"; };
+        }
+        if (!dlg.open) dlg.showModal();
+      };
+
+      document.body.appendChild(dlg);
+      return { dialog: dlg, open };
     }
 
+    const badgeModal = createBadgeModalHorror();
+
+    function showCompletionPopup() {
+      const imgSrc = CFG.withV(CFG.IMG_BASE + 'gefunden.png');
+      badgeModal.open(imgSrc);
+    }
 
     function updateFoundCounter() {
       const el = $('#found-counter');
@@ -247,38 +355,18 @@ export function build(host, api) {
       card.appendChild(label);
       tile.appendChild(card);
 
-      // Lightbox für das gefundene Item
-      // Merke dir, ob dieser Fund die Sammlung voll macht
-      const willBeComplete = !foundSet.has(itemKey) && (foundSet.size + 1) === ITEMS.length;
-
-      lightbox.open(
-        it.img,
-        it.name,
-        `Du hast den Fluchgegenstand ${it.name} gefunden.`,
-        () => {
-          // erst nach dem Schließen der Item-Lightbox
-          startGlobalCooldown();
-
-          // Wenn jetzt alle Items gefunden sind: Badge-Popup einmalig zeigen
-          if (willBeComplete && !completionShown) {
-            completionShown = true;
-            setT(() => showCompletionPopup(), 120);  // kleiner Delay für smoothness
-          }
-        }
-      );
+      // Neuen Zählerstand berechnen (ohne Nebenwirkungen)
+      const alreadyHad = foundSet.has(itemKey);
+      const newCount = alreadyHad ? foundSet.size : (foundSet.size + 1);
+      const willBeComplete = (newCount === ITEMS.length) && !completionShown;
 
       // Zähler nur einmal pro Item erhöhen
-      if (!foundSet.has(itemKey)) {
+      if (!alreadyHad) {
         foundSet.add(itemKey);
         updateFoundCounter();
       }
 
-
-      if (!foundSet.has(itemKey)) {
-        foundSet.add(itemKey);
-        updateFoundCounter();
-      }
-
+      // Item-Card click: Tile zurückklappen
       card.addEventListener('click', (e) => {
         if (e.target === img) {
           e.stopPropagation();
@@ -287,6 +375,31 @@ export function build(host, api) {
           card.remove();
         }
       }, { passive: true });
+
+      // Item-Lightbox öffnen – CTA nur im "letzten Fund"-Fall
+      if (willBeComplete) {
+        const badgeImg = CFG.withV(CFG.IMG_BASE + 'gefunden.png');
+        itemLightbox.open({
+          src: it.img,
+          name: it.name,
+          showBadgeCTA: true,
+          onBadgeClick: () => {
+            if (!completionShown) {
+              completionShown = true; // nur einmal
+              showCompletionPopup();
+            }
+          }
+        });
+      } else {
+        itemLightbox.open({
+          src: it.img,
+          name: it.name,
+          showBadgeCTA: false
+        });
+      }
+
+      // globaler Cooldown
+      startGlobalCooldown();
     }
 
     function initHiddenObjects() {
@@ -371,56 +484,6 @@ export function build(host, api) {
         overlay.innerHTML = '';
       }, after);
     }
-
-    // ======= LIGHTBOX (Fullscreen Bildanzeige) =======
-    const lightbox = (() => {
-      const el = document.createElement('div');
-      el.id = 'lightbox';
-      el.className = 'lightbox';
-      el.setAttribute('aria-hidden', 'true');
-      el.innerHTML = `
-        <button class="lightbox__close" aria-label="Schließen">×</button>
-        <div class="lightbox__content">
-          <img class="lightbox__img" alt="">
-          <div class="lightbox__caption" role="status" aria-live="polite"></div>
-        </div>
-      `;
-      document.body.appendChild(el);
-
-      const img = el.querySelector('.lightbox__img');
-      const btn = el.querySelector('.lightbox__close');
-      const cap = el.querySelector('.lightbox__caption');
-
-      let onCloseCb = null;
-
-      const close = () => {
-        el.classList.remove('visible');
-        el.setAttribute('aria-hidden', 'true');
-        img.src = '';
-        img.alt = '';
-        cap.textContent = '';
-        if (typeof onCloseCb === 'function') {
-          const cb = onCloseCb; onCloseCb = null; cb();
-        }
-      };
-
-      const open = (src, alt = '', caption = '', onClose) => {
-        img.src = src;
-        img.alt = alt;
-        cap.textContent = caption;
-        el.classList.add('visible');
-        el.setAttribute('aria-hidden', 'false');
-        onCloseCb = typeof onClose === 'function' ? onClose : null;
-      };
-
-      on(btn, 'click', close);
-      on(el, 'click', (e) => { if (e.target === el) close(); });
-      on(document, 'keydown', (e) => { if (e.key === 'Escape' && el.classList.contains('visible')) close(); });
-
-      // Beim Verlassen des Tags DOM-Node entsorgen
-      _cleanups.push(() => { try { el.remove(); } catch (_) { } });
-      return { open, close };
-    })();
 
     // Visual variants
     const visuals = {
@@ -573,7 +636,6 @@ export function build(host, api) {
 
     // Random Scares
     function scheduleRandomScare() {
-      // nicht mehr clearTimeout(state.scaryTimer) nötig, wir tracken selbst
       if (!state.scares) return;
       const min = CFG.RANDOM_SCARE_MIN_MS ?? 8000;
       const max = CFG.RANDOM_SCARE_MAX_MS ?? 22000;
@@ -886,7 +948,10 @@ export function build(host, api) {
       document.body.classList.remove('flicker');
       _stopAllAudio(audioCtxRef);
 
-      const lb = document.getElementById('lightbox');
+      // Dialoge entfernen (falls noch vorhanden)
+      const bm = document.getElementById('horror-badge-modal');
+      if (bm) { try { bm.remove(); } catch (_) { } }
+      const lb = document.getElementById('item-lightbox');
       if (lb) { try { lb.remove(); } catch (_) { } }
     };
 

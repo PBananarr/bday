@@ -33,11 +33,11 @@ export function build(host, api) {
             <h3 id="puzzle-hint-title" class="badge-title">Kurzer Hinweis zum Puzzle 🧩</h3>
             <div style="color:#dbe6ff; line-height:1.45; margin: 4px 4px 8px;">
               <p style="margin:.3rem 0;">
-                Zieh die Teile von außerhalb der Matte aufs Bild.<br><br>
+                Zieh die Teile von außerhalb der Matte per Drag & Drop aufs Bild.<br><br>
                 <strong>Zum Lösen des Puzzles eignet sich dein Handy im Querformat am besten.</strong><br><br>
               </p>
               <p style="margin:.3rem 0;">
-                Mit <strong>Mischen</strong> platzierst du ungelöste Teile neu, <strong>Hint</strong> blendet die Vorlage dezent ein.
+                Mit <strong>Mischen</strong> platzierst du ungelöste Teile neu.
               </p>
             </div>
             <label style="display:flex; align-items:center; gap:.5rem; color:#9db0d6; font-size:.95rem; margin:2px 4px 10px;">

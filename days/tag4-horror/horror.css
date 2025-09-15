@@ -269,23 +269,20 @@ body {
   padding: env(safe-area-inset-top) var(--space) var(--space);
 }
 
-/* Age-Gate Panel als Grid mit großzügigen Abständen */
+/* Age-Gate Panel */
 .overlay__panel {
   width: min(880px, 100%);
   display: grid;
   grid-template-columns: 1fr;
   align-content: start;
   gap: clamp(0.9rem, 2.2vw, 1.2rem);
-  /* Grundabstand zwischen Bereichen */
   padding: clamp(1.25rem, 3vw, 1.75rem) clamp(1.25rem, 3vw, 1.75rem) clamp(1.6rem, 3.2vw, 2rem);
-  /* unten etwas mehr für die Buttons */
   background: linear-gradient(180deg, #0c0a0e, #09080b);
   border: 1px solid #2a2028;
   border-radius: 24px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, .7), var(--glow);
 }
 
-/* Größerer Abstand vom Titel zu den Texten */
 .overlay__panel h1 {
   margin: 0 0 clamp(0.9rem, 2.2vw, 1.25rem);
   font: 700 clamp(1.6rem, 4.6vw, 2rem)/1.2 Inter, system-ui;
@@ -293,44 +290,35 @@ body {
 
 .overlay__panel p {
   margin: 0;
-  /* Grundabstand über grid-gap */
   color: var(--muted);
   font-size: clamp(.95rem, 2.8vw, 1rem);
 }
 
-/* Kleiner Zwischenabstand zwischen den beiden Absätzen */
 .overlay__panel p+p {
   margin-top: .35rem;
 }
 
-/* Buttons mobil untereinander, Desktop nebeneinander */
 .overlay__actions {
   display: grid;
   grid-template-columns: 1fr;
-  /* mobil: volle Breite */
   gap: .9rem;
   margin-top: clamp(1.1rem, 3vw, 1.8rem);
-  /* “tiefer” setzen */
 }
 
 .overlay__actions .btn {
   width: 100%;
   padding-block: .9rem;
-  /* etwas höher für bessere Tap-Fläche */
 }
 
-/* Ab ~560px nebeneinander */
 @media (min-width:560px) {
   .overlay__actions {
     grid-template-columns: auto auto;
     justify-content: start;
     gap: 1rem 0.9rem;
   }
-
   .overlay__actions .btn {
     width: auto;
     min-width: 260px;
-    /* wirkt “gleichgewichtiger” */
   }
 }
 
@@ -359,7 +347,7 @@ body {
   place-items: center
 }
 
-/* VARIANT A: Pale Face (klassisch) */
+/* VARIANT A: Pale Face */
 .face {
   position: relative;
   width: min(90vmin, 900px);
@@ -372,13 +360,8 @@ body {
 }
 
 @keyframes pulse {
-  0% {
-    transform: scale(.2) rotate(-6deg)
-  }
-
-  100% {
-    transform: scale(1) rotate(0deg)
-  }
+  0% { transform: scale(.2) rotate(-6deg) }
+  100% { transform: scale(1) rotate(0deg) }
 }
 
 .eye {
@@ -391,13 +374,8 @@ body {
   box-shadow: 0 0 40px 10px rgba(255, 255, 255, .4);
 }
 
-.eye.left {
-  left: 21%
-}
-
-.eye.right {
-  right: 21%
-}
+.eye.left { left: 21% }
+.eye.right { right: 21% }
 
 .eye::after {
   content: "";
@@ -409,13 +387,8 @@ body {
 }
 
 @keyframes eye {
-  from {
-    transform: scale(.2)
-  }
-
-  to {
-    transform: scale(1)
-  }
+  from { transform: scale(.2) }
+  to { transform: scale(1) }
 }
 
 .mouth {
@@ -468,24 +441,12 @@ body {
   filter: drop-shadow(0 0 12px #fff);
 }
 
-.shadow::before {
-  left: 33%
-}
-
-.shadow::after {
-  right: 33%
-}
+.shadow::before { left: 33% }
+.shadow::after  { right: 33% }
 
 @keyframes zoom {
-  0% {
-    transform: scale(.3);
-    filter: blur(6px)
-  }
-
-  100% {
-    transform: scale(1);
-    filter: none
-  }
+  0% { transform: scale(.3); filter: blur(6px) }
+  100% { transform: scale(1); filter: none }
 }
 
 /* VARIANT C: Text Shock */
@@ -501,13 +462,8 @@ body {
 }
 
 @keyframes slam {
-  from {
-    transform: scale(.1) rotate(-15deg)
-  }
-
-  to {
-    transform: scale(1) rotate(0)
-  }
+  from { transform: scale(.1) rotate(-15deg) }
+  to { transform: scale(1) rotate(0) }
 }
 
 /* VARIANT D: TV Static */
@@ -533,17 +489,12 @@ body {
 .noise {
   position: absolute;
   inset: -20%;
-  background:
-    repeating-conic-gradient(#fff2 0% 0.25%, #0002 0.25% 0.5%);
+  background: repeating-conic-gradient(#fff2 0% 0.25%, #0002 0.25% 0.5%);
   animation: noise 120ms steps(6) infinite;
   opacity: .6;
 }
 
-@keyframes noise {
-  to {
-    transform: translate3d(-10px, 10px, 0)
-  }
-}
+@keyframes noise { to { transform: translate3d(-10px, 10px, 0) } }
 
 .scanlines {
   position: absolute;
@@ -554,18 +505,10 @@ body {
 }
 
 /* Flash / Strobe */
-.flash {
-  animation: flash .5s both
-}
-
+.flash { animation: flash .5s both }
 @keyframes flash {
-  0% {
-    background: #fff;
-  }
-
-  100% {
-    background: radial-gradient(60% 60% at 50% 50%, rgba(0, 0, 0, .0), rgba(0, 0, 0, .92));
-  }
+  0% { background: #fff; }
+  100% { background: radial-gradient(60% 60% at 50% 50%, rgba(0, 0, 0, .0), rgba(0, 0, 0, .92)); }
 }
 
 /* Blood canvas */
@@ -578,43 +521,16 @@ body {
 }
 
 /* Flicker */
-.flicker * {
-  animation: flicker .08s infinite alternate;
-}
-
-@keyframes flicker {
-  from {
-    opacity: .94
-  }
-
-  to {
-    opacity: .74
-  }
-}
+.flicker * { animation: flicker .08s infinite alternate; }
+@keyframes flicker { from { opacity: .94 } to { opacity: .74 } }
 
 /* Body shake when scared */
-.shake {
-  animation: shake .25s linear 4
-}
-
+.shake { animation: shake .25s linear 4 }
 @keyframes shake {
-
-  0%,
-  100% {
-    transform: translate(0, 0)
-  }
-
-  25% {
-    transform: translate(-8px, 2px)
-  }
-
-  50% {
-    transform: translate(6px, -4px)
-  }
-
-  75% {
-    transform: translate(-4px, 3px)
-  }
+  0%, 100% { transform: translate(0, 0) }
+  25% { transform: translate(-8px, 2px) }
+  50% { transform: translate(6px, -4px) }
+  75% { transform: translate(-4px, 3px) }
 }
 
 /* Footer */
@@ -625,10 +541,7 @@ body {
 
 /* Hover spotlight coords */
 .tile:hover,
-.tile:focus-visible {
-  --mx: var(--_mx, 50%);
-  --my: var(--_my, 50%)
-}
+.tile:focus-visible { --mx: var(--_mx, 50%); --my: var(--_my, 50%) }
 
 /* Glitch text */
 .glitch {
@@ -637,77 +550,40 @@ body {
   text-shadow: 1px 0 0 #f00, -1px 0 0 #0ff;
   animation: glitch-shift 600ms infinite;
 }
-
 @keyframes glitch-shift {
-
-  0%,
-  100% {
-    transform: translate(0)
-  }
-
-  33% {
-    transform: translate(1px, -1px)
-  }
-
-  66% {
-    transform: translate(-1px, 1px)
-  }
+  0%, 100% { transform: translate(0) }
+  33% { transform: translate(1px, -1px) }
+  66% { transform: translate(-1px, 1px) }
 }
 
 /* ===== Responsive tweaks ===== */
 @media (max-width: 900px) {
-  .top {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .controls {
-    justify-content: space-between
-  }
+  .top { flex-direction: column; align-items: stretch; }
+  .controls { justify-content: space-between }
 }
 
 @media (max-width: 560px) {
-  .top {
-    padding: calc(var(--space) * 1.2) var(--space) calc(var(--space) * .6)
-  }
-
-  .tiles {
-    --min: clamp(150px, 80vw, 1fr)
-  }
+  .top { padding: calc(var(--space) * 1.2) var(--space) calc(var(--space) * .6) }
+  .tiles { --min: clamp(150px, 80vw, 1fr) }
 }
 
 /* Reduce motion */
 @media (prefers-reduced-motion: reduce) {
-
-  .shake,
-  .flicker *,
-  .glitch,
-  .screamer .face,
-  .shadow,
-  .tv .noise {
-    animation: none !important
-  }
+  .shake, .flicker *, .glitch, .screamer .face, .shadow, .tv .noise { animation: none !important }
 }
-
 
 /* === Hidden Objects (Bilder hinter Kacheln) === */
 .tile {
   transform-style: preserve-3d;
   transition: transform 0.9s cubic-bezier(.2, .8, .2, 1);
-  /* langsamer Flip */
 }
 
-/* Frontseite in eine eigene 3D-Ebene zwingen, damit die Rückseite sichtbar wird */
 .tile>*:not(.item-card) {
   backface-visibility: hidden;
   transform: rotateY(0deg);
-  /* Wichtig: eigene Transform, sonst greift backface-visibility nicht */
 }
 
-.tile--flipped {
-  transform: rotateY(180deg);
-}
-
+.tile--flipped { transform: rotateY(180deg); }
 
 .item-card {
   position: absolute;
@@ -720,7 +596,6 @@ body {
   background: radial-gradient(120% 120% at 50% 50%, rgba(0, 0, 0, .82), rgba(0, 0, 0, .92));
   border: 1px solid #2a2028;
   transform: rotateY(180deg);
-  /* zeigt korrekt, wenn Tile 180° gedreht ist */
   z-index: 2;
   user-select: none;
 }
@@ -733,103 +608,31 @@ body {
   cursor: pointer;
 }
 
-.item-card__name {
-  margin-top: .4rem;
-  font-weight: 700;
-}
+.item-card__name { margin-top: .4rem; font-weight: 700; }
 
 .tile--found {
   outline: 2px dashed rgba(225, 6, 0, .35);
   outline-offset: -4px
 }
 
-/* ===== Lightbox (Fullscreen-Ansicht der gefundenen PNGs) ===== */
-.lightbox {
-  position: fixed;
-  inset: 0;
-  display: none;
-  /* per Klasse sichtbar */
-  place-items: center;
-  background: rgba(0, 0, 0, .9);
-  z-index: 75;
-  /* unter Screamer (80), über Seite/Age-Gate */
-}
-
-.lightbox.visible {
-  display: grid;
-}
-
-.lightbox__img {
-  max-width: min(92vw, 1100px);
-  max-height: 88vh;
-  width: auto;
-  height: auto;
-  border-radius: 12px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, .6);
-}
-
-.lightbox__close {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  width: 44px;
-  height: 44px;
-  border-radius: 999px;
-  background: #111a;
-  color: #fff;
-  border: 1px solid #333;
-  font-size: 28px;
-  line-height: 1;
-  cursor: pointer;
-}
-
-.lightbox__close:hover {
-  background: #222c;
-}
-
-/* ===== Lightbox-Caption ===== */
-.lightbox__content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: .6rem;
-  padding: 0 1rem;
-}
-
-.lightbox__caption {
-  color: #fff;
-  font-weight: 700;
-  text-align: center;
-  font-size: clamp(1rem, 2.6vw, 1.25rem);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, .6);
-  max-width: min(92vw, 1100px);
-}
-
 /* === Visuelles Feedback während Cooldown === */
-#app.is-locked {
-  cursor: not-allowed;
-}
-
+#app.is-locked { cursor: not-allowed; }
 #app.is-locked .tile {
   opacity: .55;
   filter: grayscale(.2);
   pointer-events: none;
-  /* blockt schnelle Klickorgien */
   transition: opacity .2s ease, filter .2s ease;
 }
 
 /* Blut-Switch etwas breiter machen */
 #toggle-blood {
   min-width: clamp(140px, 22vw, 190px);
-  /* Breite anpassen */
   justify-content: space-between;
-  /* Label links, Thumb rechts */
   padding-left: .8rem;
-  /* etwas Luft links/rechts */
   padding-right: .8rem;
 }
 
-/* HUD: Gefunden-Zähler – Pill neben dem Blut-Schalter */
+/* HUD: Gefunden-Zähler */
 .found-counter {
   display: inline-flex;
   align-items: center;
@@ -842,63 +645,39 @@ body {
   font-weight: 700;
   letter-spacing: .02em;
 }
-
-.found-label {
-  color: var(--muted);
-}
-
+.found-label { color: var(--muted); }
 #found-counter {
   padding: .15rem .5rem;
   background: #0b0a0d;
   border-radius: 10px;
 }
-
-.found-counter::before {
-  font-weight: 700;
-  letter-spacing: .04em;
-  color: var(--muted);
-  /* oder #fff, wenn du mehr Kontrast willst */
-  /* optional: text-transform: uppercase; */
-}
-
 .controls .found-counter { margin-left:.6rem; }
 
 @media (max-width: 560px) {
-  .controls {
-    gap: .5rem;
-    flex-wrap: wrap;
-  }
-
-  .found-counter {
-    font-size: .95rem;
-    padding: .35rem .6rem;
-  }
+  .controls { gap: .5rem; flex-wrap: wrap; }
+  .found-counter { font-size: .95rem; padding: .35rem .6rem; }
 }
 
-
+/* Age-Gate Textstyles */
 .overlay__panel .prophecy {
   font-style: italic;
   line-height: 1.6;
-  color: #f0d6d6; /* blasses Rot-Weiß */
+  color: #f0d6d6;
   text-shadow: 0 0 6px rgba(255,0,0,0.4);
   text-align: center;
 }
 
-/* Age-Gate Überschrift */
 #age-title {
-  font-family: "Cinzel Decorative", serif; /* wirkt wie alte Inschrift, optional */
+  font-family: "Cinzel Decorative", serif;
   font-size: clamp(1.4rem, 4vw, 2.2rem);
   text-align: center;
-  color: #ff4d4d; /* helles Blutrot */
+  color: #ff4d4d;
   letter-spacing: 1px;
-  text-shadow:
-    0 0 8px rgba(255, 0, 0, 0.6),
-    0 0 18px rgba(150, 0, 0, 0.7);
+  text-shadow: 0 0 8px rgba(255, 0, 0, 0.6), 0 0 18px rgba(150, 0, 0, 0.7);
   margin-bottom: 1rem;
   position: relative;
 }
 
-/* kleine Bluttropfen-Illusion unten */
 #age-title::after {
   content: "";
   display: block;
@@ -907,16 +686,150 @@ body {
   background: #b30000;
   border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
   margin: 0.3rem auto 0;
-  box-shadow:
-    0 8px 0 -2px #660000,
-    0 14px 0 -4px rgba(80,0,0,0.7);
+  box-shadow: 0 8px 0 -2px #660000, 0 14px 0 -4px rgba(80,0,0,0.7);
   animation: drip 2.4s infinite ease-in-out;
 }
 
-/* Tropfen-Animation */
 @keyframes drip {
   0%   { transform: translateY(0) scaleY(1); opacity: 1; }
   70%  { transform: translateY(8px) scaleY(1.2); opacity: 0.8; }
   100% { transform: translateY(14px) scaleY(0.8); opacity: 0; }
 }
 
+/* ===== Badge Modal (Horror) ===== */
+.badge-modal::backdrop {
+  background: rgba(4,4,8,.85);
+  backdrop-filter: blur(6px);
+}
+
+.badge-modal {
+  border: 0;
+  padding: 0;
+  background: transparent;
+}
+
+.badge-card {
+  width: min(640px, 92vw);
+  margin: 0;
+  padding: clamp(1rem, 2.6vw, 1.4rem);
+  border-radius: 24px;
+  border: 1px solid #2a2028;
+  background: linear-gradient(180deg, #0c0a0e, #09080b);
+  box-shadow: 0 20px 60px rgba(0,0,0,.7), var(--glow);
+  display: grid;
+  grid-template-rows: auto auto auto;
+  gap: clamp(.7rem, 2vw, 1rem);
+  text-align: center;
+  animation: badge-pop .18s ease-out both;
+}
+
+.badge-frame {
+  display: grid;
+  place-items: center;
+  padding: clamp(.5rem, 1.6vw, .9rem);
+  border-radius: 16px;
+  background:
+    radial-gradient(90% 120% at 50% 10%, rgba(225,6,0,.22), transparent 60%),
+    linear-gradient(180deg, #121016, #17131d);
+  border: 1px solid #241b24;
+}
+
+.badge-frame img {
+  max-width: min(100%, 520px);
+  max-height: 60vh;
+  height: auto;
+  width: auto;
+  display: block;
+  filter: drop-shadow(0 12px 28px rgba(0,0,0,.6));
+}
+
+.badge-caption .t1 {
+  font-family: "Cinzel Decorative", serif;
+  font-weight: 700;
+  letter-spacing: .5px;
+  color: #ff4d4d;
+  text-shadow: 0 0 8px rgba(255,0,0,.35);
+  font-size: clamp(1.1rem, 3.8vw, 1.4rem);
+  line-height: 1.2;
+}
+
+.badge-caption .t2 {
+  margin-top: .25rem;
+  color: var(--ink);
+  font-weight: 700;
+  font-size: clamp(1rem, 3.4vw, 1.2rem);
+}
+
+.badge-actions {
+  margin-top: .2rem;
+  display: grid;
+  place-items: center;
+}
+
+.badge-actions .btn.btn--red { min-width: 180px; }
+
+@keyframes badge-pop { from { transform: scale(.96); opacity: .0 } to { transform: scale(1); opacity: 1 } }
+@media (prefers-reduced-motion: reduce) { .badge-card { animation: none } }
+
+/* ===== Item Lightbox (für gefundene Objekte) ===== */
+.item-lightbox::backdrop {
+  background: rgba(0,0,0,.85);
+  backdrop-filter: blur(4px);
+}
+
+.item-lightbox {
+  border: 0;
+  padding: 0;
+  background: transparent;
+}
+
+.item-lightbox .lb-content {
+  position: relative;
+  background: linear-gradient(180deg, #0c0a0e, #09080b);
+  border: 1px solid #2a2028;
+  border-radius: 20px;
+  padding: 1rem;
+  display: grid;
+  gap: .8rem;
+  text-align: center;
+  box-shadow: 0 16px 50px rgba(0,0,0,.6), var(--glow);
+  width: min(520px, 92vw);
+  animation: badge-pop .18s ease-out both;
+}
+
+.item-lightbox .lb-img {
+  max-width: 100%;
+  max-height: 60vh;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  filter: drop-shadow(0 12px 28px rgba(0,0,0,.6));
+}
+
+.item-lightbox .lb-caption {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.item-lightbox .lb-close {
+  position: absolute;
+  top: .4rem;
+  right: .6rem;
+  border: none;
+  background: transparent;
+  color: #fff;
+  font-size: 1.6rem;
+  cursor: pointer;
+  line-height: 1;
+  text-shadow: 0 0 6px rgba(0,0,0,.7);
+}
+
+.item-lightbox .lb-actions {
+  margin-top: .2rem;
+  display: grid;
+  place-items: center;
+}
+
+.item-lightbox .lb-actions .lb-btn {
+  min-width: 180px;
+}

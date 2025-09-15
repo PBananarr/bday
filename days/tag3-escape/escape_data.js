@@ -133,11 +133,37 @@ export const escape_STORY = {
       " Plötzlich stehst du in einer Sackgasse vor einer Tür. Du reist Sie auf und stürmst hinein." +
       " Ein leises, kraftloses Ächzen begrüßt dich – du bemerkst das du im selben Raum gelandet bist, aus dem du zu fliehen versucht hast."
     ),
-    d2:  death("Hilfe… gehört dich", "Dein Ruf hallt. Jemand antwortet aus deinem Rücken."),
-    d3:  death("Lauschangriff", "Du bleibst still. Es nicht."),
-    d4:  death("Wachküssen verboten", "Er schlägt die Augen auf – aber nicht seine."),
-    d5:  death("Klappernde Schränke", "Lärm lockt. Du hast gerufen, ohne zu sprechen."),
-    d6:  death("Nur kurz weg", "Als du zurückkommst, bist du schon da – an der Decke."),
+    d2:  death(
+      "Hilfe…", "Hiiiiiilfeeee.... " +
+      "Angestrengt lauschst du zur Tür. " +
+      "Plötzlich hörst du es, erst leise, in weiter Ferne.. dann zunehmend lauter... " + 
+      "Tok...... Tok...... Tok.... Tok...Tok....TOK TOK TOk TOK TOKTOKTOTKTOTKTOK " +
+      "... .... .... die Tür springt auf, etwas packt dich und zerrt dich in den Gang. " + 
+      "Hiiiiiiillllfeeeeeeeeee... ... .. "
+    ),
+    d3:  death(
+      "Lauschangriff", "Angestrengt lauschst du Richtung Tür. " +
+      "Der dämonische Schrei, ging dir durch den ganzen Körper. " +
+      "Du spürst wie du anfängst zu zittern. Kalter Schweis, läuft deinen Körper hinab. " + 
+      "Dann... hörst du 'es' hinter dir...."
+    ),
+    d4:  death(
+      "Wachküssen verboten", "Du siehst dich um und entdeckst einen tropfenden Wasserhahn. " +
+      "Schnell eilst du dahin und drehst das zahnrad-ähnliche Ventil quitschend nach rechts. " +
+      "Ein wenig Wasser, kommt aus dem Hahn. Es hat einen beißenden Geruch. " + 
+      "Du formst deine Hände zu einer Schale und lässt ein wenig hineinlaufen. " +
+      "Als du dich umdrehen willst, bemerkst du, das dein bester Freund neben dir steht und mit einem hämischen Grinsen anstarrt. " +
+      "... Pierre?, fragst du abgehackt mit zittriger Stimme...  – die letzten Worte, die deinen Mund je verlassen haben "
+    ),
+    d5:  death(
+      "Klappernde Schränke", "Panisch beginnst du die umliegenden Schränke zu durch wühlen. " +
+      "Die Hoffnung etwas zu finden, damit das zucken endlich aufhört, lässt dich vergessen wie laut du dich im Moment verhältst. " + 
+      "Plötzlich wird dir bewusst, das nicht du es bist, die laut die Schränke durch wühlt. Etwas ... Anderes, hat ebenfalls damit begonnen. " +
+      "Wenige Sekunden, ist dein Schrei das letzte was man auf der Pflegestation A hören konnte. "
+    ),
+    d6:  death(
+      "Nur kurz weg", "Als du zurückkommst, bist du schon da – an der Decke."
+    ),
     d7:  death("Heizungskeller", "Die Treppe endet. Nicht da, wo du dachtest."),
     d8:  death("Verwaltung", "Das Telefon hat Wählton. Es wählt dich."),
     d9:  death("Kellergang", "Abkürzungen sind Kreidezeichnungen in Fleisch."),

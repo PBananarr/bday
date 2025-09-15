@@ -693,7 +693,8 @@ export function build(root, api) {
   })();
 
   // Drag per Pointer Events
-  // >>> PATCH: letzte Pointer-Koordinaten puffern, um 0/0-Bug bei pointerup (manche Browser) zu umgehen
+  // Stabilitäts-Flags: letzte Koordinaten + Drag-Schwelle
+  const DRAG_MOVE_THRESHOLD = 2; // etwas toleranter als 4px
   let dDrag = { el: null, ox: 0, oy: 0, from: null, startX: 0, startY: 0, lastX: 0, lastY: 0 };
   let dDidDrag = false; // <— verhindert Lightbox bei Drag
 
@@ -708,7 +709,6 @@ export function build(root, api) {
     dDrag.oy = e.clientY - r.top;
     dDrag.startX = e.clientX;
     dDrag.startY = e.clientY;
-    // >>> PATCH: initiale lastX/lastY setzen
     dDrag.lastX = e.clientX;
     dDrag.lastY = e.clientY;
     chip.style.position = "fixed";
@@ -721,13 +721,13 @@ export function build(root, api) {
 
   function dMove(e) {
     if (!dDrag.el) return;
-    // Ab ~4px Bewegung als Drag werten
-    if (!dDidDrag && (Math.abs(e.clientX - dDrag.startX) > 4 || Math.abs(e.clientY - dDrag.startY) > 4)) {
+    const dx = Math.abs(e.clientX - dDrag.startX);
+    const dy = Math.abs(e.clientY - dDrag.startY);
+    if (!dDidDrag && (dx > DRAG_MOVE_THRESHOLD || dy > DRAG_MOVE_THRESHOLD)) {
       dDidDrag = true;
     }
     dDrag.el.style.left = (e.clientX - dDrag.ox) + "px";
     dDrag.el.style.top = (e.clientY - dDrag.oy) + "px";
-    // >>> PATCH: letzte validierte Koordinaten puffern
     dDrag.lastX = e.clientX;
     dDrag.lastY = e.clientY;
     autoScrollIfNeeded(e.clientY);
@@ -787,71 +787,76 @@ export function build(root, api) {
   function dUp(e) {
     if (!dDrag.el) return;
 
-    // --- WICHTIGER FIX: Wenn nicht wirklich gezogen wurde, NICHT umhängen ---
-    const moved = dDidDrag;
-
-    dDrag.el.releasePointerCapture?.(e.pointerId);
     const chip = dDrag.el;
+    chip.releasePointerCapture?.(e.pointerId);
 
-    // >>> PATCH: stabile Pointer-Position verwenden (Workaround für e.clientX/Y === 0)
+    // stabile Koordinaten (Workaround für e.clientX/Y === 0)
     const px = dDrag.lastX || e.clientX;
     const py = dDrag.lastY || e.clientY;
 
-    // Styles zurücksetzen & Drag-Ende markieren
-    chip.style.position = ""; chip.style.left = ""; chip.style.top = ""; chip.style.zIndex = "";
-    chip.classList.remove("dragging");
-
-    if (!moved) {
-      // Nur Tap/Klick: nichts verschieben – Lightbox darf danach öffnen
-      dDrag.el = null; dDrag.from = null;
-      // dDidDrag bleibt false, damit der Click-Handler die Lightbox öffnet
-      return;
-    }
+    // Wurde tatsächlich gezogen?
+    const moved = dDidDrag;
 
     const drops = $$(".pt-drop", dTable);
     let placed = false, targetCell = null;
 
-    for (const cell of drops) {
-      const r = cell.getBoundingClientRect();
-      const hit = px >= r.left && px <= r.right && py >= r.top && py <= r.bottom; // <<< PATCH nutzt px/py
-      if (!hit) continue;
+    if (moved) {
+      // *** Wichtig: Hit-Test & Platzierung VOR dem Style-Reset (wie in der alten, funktionierenden Version) ***
+      for (const cell of drops) {
+        const r = cell.getBoundingClientRect();
+        const hit = px >= r.left && px <= r.right && py >= r.top && py <= r.bottom;
+        if (!hit) continue;
 
-      const okCat = (cell.dataset.accept === chip.dataset.ans); // nur Spaltenregel
-      targetCell = cell;
-      placed = true;
+        const okCat = (cell.dataset.accept === chip.dataset.ans); // nur Spaltenregel
+        targetCell = cell;
+        placed = true;
 
-      if (!okCat) {
-        flashErr(cell);
+        if (!okCat) {
+          flashErr(cell);
+          break;
+        }
+
+        // Wenn Zelle belegt: altes Bild in Bank und Zelle sauber resetten
+        const already = cell.querySelector(".plant-chip");
+        if (already) {
+          dBank.appendChild(already);
+          resetCell(cell);
+        }
+
+        // platzieren
+        cell.querySelector(".pt-dropinner")?.remove();
+        cell.appendChild(chip);
+        cell.classList.add("filled");
+
+        // Namen anzeigen
+        let name = cell.querySelector(".pt-name");
+        if (!name) {
+          name = document.createElement("div");
+          name.className = "pt-name";
+          cell.appendChild(name);
+        }
+        name.textContent = chip.dataset.label;
+
         break;
       }
+    }
 
-      // Wenn Zelle belegt: altes Bild in Bank und Zelle sauber resetten
-      const already = cell.querySelector(".plant-chip");
-      if (already) {
-        dBank.appendChild(already);
-        resetCell(cell);
-      }
+    // Styles zurücksetzen (NACH dem Platzieren/Prüfen)
+    chip.style.position = "";
+    chip.style.left = "";
+    chip.style.top = "";
+    chip.style.zIndex = "";
+    chip.classList.remove("dragging");
 
-      // platzieren
-      cell.querySelector(".pt-dropinner")?.remove();
-      cell.appendChild(chip);
-      cell.classList.add("filled");
-
-      // Namen anzeigen
-      let name = cell.querySelector(".pt-name");
-      if (!name) {
-        name = document.createElement("div");
-        name.className = "pt-name";
-        cell.appendChild(name);
-      }
-      name.textContent = chip.dataset.label;
-
-      break;
+    if (!moved) {
+      // Nur Tap/Klick: nichts verschieben – Lightbox darf danach öffnen
+      dDrag.el = null;
+      dDrag.from = null;
+      return;
     }
 
     if (!placed) {
-      // zurück an Ursprung, aber OHNE Reihenfolge zu verändern: wenn aus Bank, zurück an gleiche Position
-      // (vereinfachend: zurück in Bank ans Ende)
+      // zurück an Ursprung / Bank, Zelle ggf. resetten
       dBank.appendChild(chip);
       if (dDrag.from && dDrag.from.classList?.contains("pt-drop")) {
         resetCell(dDrag.from);
@@ -863,7 +868,8 @@ export function build(root, api) {
       evaluateRow(targetCell.closest(".pt-row"));
     }
 
-    dDrag.el = null; dDrag.from = null;
+    dDrag.el = null;
+    dDrag.from = null;
     // nach Up Drag-Flag zurücksetzen
     setTimeout(() => { dDidDrag = false; }, 0);
   }

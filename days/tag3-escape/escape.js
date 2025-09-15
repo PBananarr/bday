@@ -227,8 +227,8 @@ function initescape(host = "#escape-root", options = {}) {
     if (!dlg.isConnected) document.body.appendChild(dlg);
     const img = dlg.querySelector("#escape-badge-img");
     if (img) {
-      img.src = "../../img/escape-bg.png";
-      img.onerror = () => { img.alt = "Badge Bild fehlt (../../img/escape-bg.png)"; };
+      img.src = 'days/tag3-escape/picEscape/escape-bg.png';
+      img.onerror = () => { img.alt = "Badge Bild fehlt (days/tag3-escape/picEscape/escape-bg.png)"; };
     }
     if (!dlg.open) dlg.showModal();
   };

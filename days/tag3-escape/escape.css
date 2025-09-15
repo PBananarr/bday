@@ -38,7 +38,7 @@
 .escape-root::before{
   content:"";
   position:absolute; inset:0;
-  background: url("../../img/escape-bg.png") center/cover no-repeat;
+  background: url("./picEscape/escape-bg.png") center/cover no-repeat;
   filter: brightness(.5) contrast(1.05) blur(2px);
   mix-blend-mode: normal;
   opacity: 1;

@@ -440,34 +440,35 @@ footer .dev-autosolve:active {
 /* ===== Mobile (<=480px): Footer-Items untereinander & mittig ===== */
 @media (max-width:480px){
   .foot{
-    /* einspaltiges Grid mit benannten Reihen in gewünschter Reihenfolge */
     grid-template-columns: 1fr;
     grid-template-areas:
       "brand"
+      "meta"   /* Version bekommt eine eigene Zeile */
       "reset"
       "about"
       "auto";
-    text-align:center;
+    text-align: center;
   }
 
-  /* Trick: macht die Kinder von <small> zu direkten Grid-Items */
+  /* Kinder von <small> direkt als Grid-Items behandeln */
   .foot > small{ display: contents; }
 
-  /* 1) "Made with …" (Textknoten) landet automatisch in der ersten Zelle ("brand") */
-  /* 2) Buttons gezielt in Reihen platzieren */
-  #resetBtn{ grid-area: reset; justify-self:center; display:inline-block; }
-  #aboutBtn{ grid-area: about; justify-self:center; display:inline-block; }
+  #resetBtn{ grid-area: reset; justify-self: center; display: inline-block; }
+  #aboutBtn{ grid-area: about; justify-self: center; display: inline-block; }
 
-  /* Trenner-Punkte ausblenden */
-  .foot .sep{ display:none; }
+  .foot .sep{ display: none; }
 
-  /* Autocomplete-Button (wird per JS als .dev-autosolve direkt in <footer> gehängt) */
   .foot > .dev-autosolve{
     grid-area: auto;
-    justify-self:center;
-    margin-left:0;
+    justify-self: center;
+    margin-left: 0;
   }
 
-  /* SW-Version auf sehr kleinen Screens ausblenden (optional) */
-  #sw-version{ display:none; }
+  /* WICHTIG: Version wieder anzeigen und einordnen */
+  #sw-version{
+    grid-area: meta;
+    display: block;        /* war vorher display:none */
+    justify-self: center;  /* mittig statt rechts */
+    margin-left: 0;
+  }
 }

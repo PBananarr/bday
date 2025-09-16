@@ -286,3 +286,30 @@ body.tag-tag1-sternbild .riddle.solved::after {
   cursor:not-allowed;
   filter: saturate(.7);
 }
+
+
+/* ================== NEU: Button-Reihenfolge & Größenanpassung ================== */
+@media (max-width: 780px) {
+  /* Container der drei Buttons */
+  .riddle-form .btnrow{
+    display: flex;
+    flex-direction: column;     /* alles untereinander */
+    gap: .4rem;
+  }
+
+  /* Standard: volle Breite für die beiden großen Buttons */
+  .riddle-form .btnrow .btn{
+    width: 100%;
+  }
+
+  /* Reihenfolge: 1 = Prüfen (Submit), 2 = Badge, 3 = Hinweis */
+  .riddle-form .btnrow .btn.primary[type="submit"]{ order: 1; }
+  .riddle-form .btnrow #show-badge{ order: 2; }
+  .riddle-form .btnrow #hintBtn{ order: 3; }
+
+  /* Hinweis-Button: nur halb so breit, bleibt eigene Zeile */
+  .riddle-form .btnrow #hintBtn{
+    width: 50% !important;      /* überschreibt die 100%-Regel vom Smartphone-Block */
+    align-self: center;          /* zentriert in der dritten Zeile */
+  }
+}

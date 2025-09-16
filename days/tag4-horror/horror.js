@@ -158,6 +158,10 @@ export function build(host, api) {
       audioCtx: null,
       masterGain: null,
       whisperNode: null,
+      // --- NEU: Pausen-Flags für Lightbox ---
+      pausedByLightbox: false,
+      wasScares: null,
+      wasWhispering: false,
     };
 
     const audioCtxRef = { current: null }; // für WebAudio-Cleanup
@@ -192,6 +196,77 @@ export function build(host, api) {
 
     let completionShown = false;
 
+    // ======= Lightbox-Pause/Resume (NEU) =======
+    function ensureAudio() {
+      if (!state.audioCtx) {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const gain = ctx.createGain();
+        gain.gain.value = 0.8;
+        gain.connect(ctx.destination);
+        state.audioCtx = ctx;
+        state.masterGain = gain;
+        audioCtxRef.current = ctx; // <— für Teardown
+      }
+    }
+
+    function pauseScaresAndSound() {
+      if (state.pausedByLightbox) return;
+      state.pausedByLightbox = true;
+
+      // Jumpscares stoppen / verhindern
+      state.wasScares = state.scares;
+      state.scares = false;
+      if (state.scaryTimer) { clearTimeout(state.scaryTimer); state.scaryTimer = null; }
+
+      // Overlay sofort schließen, falls einer gerade läuft
+      const overlay = $('#screamer');
+      if (overlay) { overlay.classList.remove('visible'); overlay.innerHTML = ''; }
+
+      // Whisper merken & stoppen
+      state.wasWhispering = !!state.whisperNode;
+      if (state.whisperNode) {
+        try { state.whisperNode.stop(); } catch (_) {}
+        try { state.whisperNode.disconnect?.(); } catch (_) {}
+        state.whisperNode = null;
+      }
+
+      // Master stumm schalten (sanft)
+      if (state.audioCtx && state.masterGain) {
+        const now = state.audioCtx.currentTime;
+        try {
+          state.masterGain.gain.cancelScheduledValues(now);
+          state.masterGain.gain.setTargetAtTime(0.0001, now, 0.03);
+        } catch (_) {}
+      }
+    }
+
+    function resumeScaresAndSound() {
+      if (!state.pausedByLightbox) return;
+      state.pausedByLightbox = false;
+
+      // Scares ggf. reaktivieren
+      if (state.wasScares) {
+        state.scares = true;
+        scheduleRandomScare();
+      }
+      state.wasScares = null;
+
+      // Whisper ggf. neu starten
+      if (state.wasWhispering) {
+        state.wasWhispering = false;
+        whisper();
+      }
+
+      // Master wieder hochfahren
+      if (state.audioCtx && state.masterGain) {
+        const now = state.audioCtx.currentTime;
+        try {
+          state.masterGain.gain.cancelScheduledValues(now);
+          state.masterGain.gain.setTargetAtTime(0.8, now, 0.05);
+        } catch (_) {}
+      }
+    }
+
     // ===== Item-Lightbox (mit optionalem Badge-CTA) =====
     function createItemLightbox() {
       const dlg = document.createElement("dialog");
@@ -219,12 +294,14 @@ export function build(host, api) {
         }
       });
 
-      // Beim Schließen: CTA sauber zurücksetzen
+      // Beim Schließen: CTA sauber zurücksetzen + Audio/Scares fortsetzen
       dlg.addEventListener("close", () => {
         const actions = dlg.querySelector(".lb-actions");
         const btn = dlg.querySelector("#lb-badge-btn");
         if (actions) actions.hidden = true;
         if (btn) btn.onclick = null;
+        // === NEU: nach Schließen wieder fortsetzen
+        resumeScaresAndSound();
       });
 
       // API
@@ -253,6 +330,8 @@ export function build(host, api) {
           }
         }
 
+        // === NEU: Beim Öffnen pausieren
+        pauseScaresAndSound();
         if (!dlg.open) dlg.showModal();
       };
 
@@ -407,19 +486,6 @@ export function build(host, api) {
       randomizePlacement();
       foundSet = new Set();
       updateFoundCounter();
-    }
-
-    // Unlock Audio on first user gesture
-    function ensureAudio() {
-      if (!state.audioCtx) {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const gain = ctx.createGain();
-        gain.gain.value = 0.8;
-        gain.connect(ctx.destination);
-        state.audioCtx = ctx;
-        state.masterGain = gain;
-        audioCtxRef.current = ctx; // <— für Teardown
-      }
     }
 
     // ======= AGE GATE =======
@@ -840,6 +906,7 @@ export function build(host, api) {
 
     function eyes() {
       playChord([45, 60], .4);
+      const overlay = $('#screamer');
       overlay.style.background = 'radial-gradient(40% 40% at 50% 50%, rgba(0,0,0,.0), rgba(0,0,0,.97))';
       overlay.classList.add('visible');
       hideOverlay(300);
@@ -963,3 +1030,6 @@ export function build(host, api) {
     _teardown(extra);
   };
 }
+
+
+export default { build };

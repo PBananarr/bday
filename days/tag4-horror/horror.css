@@ -830,6 +830,8 @@ body {
   place-items: center;
 }
 
+.item-lightbox .lb-actions[hidden] { display: none !important; }
+
 .item-lightbox .lb-actions .lb-btn {
   min-width: 180px;
 }

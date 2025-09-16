@@ -1,0 +1,642 @@
+/* =========================================================
+   Survival – Bushcraft Theme
+   Stimmung: Nachtwald · Lagerfeuer · Vollmond · See
+   (Layout-only: keine Funktionen verändert)
+   ========================================================= */
+
+/* ---------- Theme Tokens ---------- */
+body.tag-tag2-survival {
+  /* Nacht + Wald + Mond */
+  --bg:         #0a0f14;        /* Tiefes Nacht-Navy mit Waldtönung */
+  --bg-2:       #060a0e;        /* noch dunkler für Layer */
+  --card:       #0f1713;        /* tiefer Waldgrün-Ton */
+  --card-2:     #0b130f;        /* dunklerer Panelton */
+  --border:     #1e2b23;        /* Kante: Moosgrün */
+  --border-2:   #17231c;
+
+  /* Typo – Vollmondfarben */
+  --text:       #e6f0ff;        /* Mondlicht-weiß mit leichter Blaufärbung */
+  --muted:      #a9b6c6;        /* kühles Mondgrau */
+  --muted-2:    #8ea0af;
+
+  /* Lagerfeuer-Akzente */
+  --accent:     #ff9347;        /* Feuer-Orange */
+  --accent-2:   #ffd08a;        /* Funken-Gold */
+  --spark:      rgba(255, 160, 64, .65);
+
+  --ok:         #22c55e;
+  --warn:       #f59e0b;
+  --err:        #ef4444;
+
+  /* Spacing Scale (8px-Rhythmus) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 28px;
+  --space-8: 32px;
+
+  /* Radius & Elevation */
+  --radius:    14px;
+  --radius-sm: 10px;
+  --shadow-1:  0 6px 18px rgba(0,0,0,.35);
+  --shadow-2:  0 12px 32px rgba(0,0,0,.5);
+}
+
+
+/* ---------- Seitenhintergrund: Nacht + Mond + Feuer-Glow ---------- 
+body.tag-tag2-survival {
+  
+  background:
+    radial-gradient(900px 520px at 50% 115%, rgba(255,120,40,.15), rgba(0,0,0,0) 65%),
+    radial-gradient(600px 360px at 88% -6%, rgba(180,210,255,.10), rgba(0,0,0,0) 65%),
+    var(--bg);
+  color: var(--text);
+  position: relative;
+  overflow-x: hidden;
+}*/
+
+/* Vignette & See-Schimmer (dezent) */
+body.tag-tag2-survival::before {
+  content:"";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(60% 18% at 50% 102%, rgba(160,200,255,.06), rgba(0,0,0,0) 70%), /* See-Schimmer unten */
+    radial-gradient(120% 80% at 50% 0%, rgba(0,0,0,.45), rgba(0,0,0,0) 60%);        /* Vignette oben */
+  mix-blend-mode: screen;
+  z-index: 0;
+}
+
+/* Glühfunken (sehr subtil & performant) */
+@keyframes emberDrift {
+  0%   { background-position: 0 100%, 40px 120%; opacity: .18; }
+  50%  { background-position: 0 40%, 40px 60%; opacity: .25; }
+  100% { background-position: 0 -20%, 40px -10%; opacity: .18; }
+}
+body.tag-tag2-survival::after {
+  content:"";
+  position: fixed;
+  inset: -20% -10% -10% -10%;      /* etwas größer als Viewport */
+  pointer-events: none;
+  z-index: 0;
+  opacity: .2;
+  background-image:
+    radial-gradient(2px 2px at 20% 80%, var(--spark), transparent 55%),
+    radial-gradient(1.5px 1.5px at 65% 90%, var(--spark), transparent 55%),
+    radial-gradient(1.8px 1.8px at 40% 85%, rgba(255,210,140,.6), transparent 55%),
+    radial-gradient(1.2px 1.2px at 75% 92%, rgba(255,150,70,.6), transparent 55%);
+  background-repeat: repeat;
+  background-size: 200px 220px, 220px 260px, 240px 300px, 260px 340px;
+  animation: emberDrift 18s linear infinite;
+  filter: blur(.2px);
+}
+
+/* ---------- Global Surface (Cards) ---------- */
+body.tag-tag2-survival .card{
+  background: linear-gradient(180deg, rgba(15,23,19,.96), rgba(11,18,14,.92));
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: var(--shadow-2);
+  position: relative;
+  z-index: 1; /* über dem Funken-Layer */
+}
+body.tag-tag2-survival .card::before{
+  /* dezent kühler „Mondschimmer“ oben, warmer Feuerschein unten */
+  content:"";
+  position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+  background:
+    radial-gradient(70% 35% at 50% 102%, rgba(255,140,60,.08), transparent 70%),
+    radial-gradient(80% 60% at 80% -10%, rgba(200,220,255,.06), transparent 60%);
+}
+
+/* ---------- Headline ---------- */
+body.tag-tag2-survival h2{
+  text-align:center;
+  font-size:1.6rem;
+  font-weight:800;
+  margin: 0 0 var(--space-7) 0;
+  background: linear-gradient(90deg, #ffb45a, #ff7a33, #ffd38a);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  letter-spacing:.4px;
+}
+
+/* ---------- Base Typography & Rhythm ---------- */
+body.tag-tag2-survival .surv-wrap{ display:grid; gap: var(--space-6); }
+
+body.tag-tag2-survival .step p,
+body.tag-tag2-survival .step .hint{
+  margin: 0 0 var(--space-4) 0;
+  color: var(--muted);
+  line-height: 1.58;
+  font-size: .98rem;
+}
+
+/* Abschnittstitel */
+.step h3{
+  margin: var(--space-2) 0 var(--space-5);
+  font-size: 1.22rem;
+  font-weight: 700;
+  text-align: center;
+  background: linear-gradient(90deg, #ff9a44, #ffd38a);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+
+/* Step-Karte */
+.step{
+  border:1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-5);
+  background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.012));
+  box-shadow: var(--shadow-1);
+}
+
+/* Buttons & Buttonzeilen */
+.step .btnrow{ margin-top: var(--space-4); display:flex; gap: var(--space-3); justify-content:center; }
+body.tag-tag2-survival .btn.primary{
+  background: linear-gradient(180deg,#ff9a44,#ea580c);
+  border-color:#b45309; color:#1a130c;
+  margin-top: var(--space-4);
+}
+body.tag-tag2-survival .btn.ghostbtn{
+  border-color:#36473b; color:#ffb45a;
+  margin-top: var(--space-4);
+}
+
+/* Fortschrittsanzeige (falls verwendet) */
+body.tag-tag2-survival .progress{
+  background: linear-gradient(90deg, #ff9a44, #ffd38a);
+}
+
+/* Feedback einheitlich */
+.feedback{
+  margin-top: var(--space-4);
+  padding: .55rem .8rem;
+  border-radius: var(--radius-sm);
+  border:1px solid transparent;
+}
+.feedback.ok{ border-color:var(--ok); background: rgba(34,197,94,.12); color:#d1fadf; }
+.feedback.err{ border-color:var(--err); background: rgba(239,68,68,.12); color:#fee2e2; }
+
+/* Gesamterfolg */
+#surv-success{ display:none; text-align:center; margin-top: var(--space-5); }
+#surv-success.show{ display:block; }
+#surv-success .badge{
+  display:inline-block;
+  margin: var(--space-1);
+  padding: .4rem .6rem;
+  border-radius: 999px;
+  border:1px solid var(--border);
+  background: #0e1612;
+  font-size: .95rem;
+  color: var(--text);
+}
+
+/* Inputs – Farbe vereinheitlicht */
+input.choice, .choice input, .order-item select{ color:var(--text) }
+.riddle-input::placeholder{ color:var(--muted); opacity:.9 }
+
+/* Erfolgsrahmen-Animation */
+@keyframes popIn { from{ transform:scale(.985); opacity:.0 } to{ transform:scale(1); opacity:1 } }
+.step.done{ box-shadow: 0 0 0 2px var(--ok) inset; animation: popIn .18s ease }
+
+/* ---------- Step A (Rangordnung) ---------- */
+.order-list{ display:grid; gap: var(--space-3); }
+.order-item{
+  display:flex; align-items:center; gap: var(--space-3);
+  background: var(--card-2);
+  border:1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3);
+}
+.order-item select{
+  appearance:none;
+  border:1px solid var(--border);
+  background: var(--card);
+  color:var(--text);
+  padding:.45rem .6rem;
+  border-radius: var(--radius-sm);
+}
+
+/* ---------- Step B (Drag Buckets) ---------- */
+.b-grid{ display:grid; gap: var(--space-4); }
+@media (min-width:680px){ .b-grid{ grid-template-columns: 1fr 1fr; } }
+
+.b-bank, .b-bucket{
+  border:1px dashed var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-4);
+  min-height:84px;
+  background: var(--card);
+}
+.b-bank h4, .b-bucket h4{
+  margin: .2rem 0 .5rem;
+  font-size:.95rem;
+  color: var(--muted);
+}
+
+.b-col{ display:grid; gap: var(--space-4); }
+
+.b-chip{
+  touch-action:none; user-select:none; cursor:grab;
+  display:inline-flex; align-items:center; justify-content:center;
+  padding:.48rem .66rem;
+  border-radius: var(--radius-sm);
+  border:1px solid var(--border);
+  background:#101a15; color:var(--text);
+  min-height:36px; margin:4px; font-size:.95rem;
+}
+.b-chip:active{ cursor:grabbing }
+
+.b-bucket{ position:relative; padding-bottom: 40px; overflow:visible; }
+.b-bucket .b-drop{ display:flex; flex-wrap:wrap; gap:8px; min-height:46px; }
+.b-bucket .b-meta{ position:absolute; right:8px; bottom:8px; font-size:.8rem; color:var(--muted); }
+.b-bucket.ok{ box-shadow:0 0 0 2px var(--ok) inset; border-radius: var(--radius); }
+
+/* Mobile mehr Luft */
+@media (max-width:680px){
+  .b-bank{ margin-bottom: var(--space-3); }
+  .b-bucket{ min-height:130px; }
+}
+
+/* ---------- Step C (Wasser) – Kartenraster ---------- */
+.c-grid{
+  display:grid;
+  gap: var(--space-4);
+  margin-top: var(--space-2);
+  grid-template-columns: 1fr;          /* mobil */
+}
+@media (min-width:720px){ .c-grid{ grid-template-columns: 1fr 1fr; } }
+
+#stepC .c-card{
+  border:1px solid var(--border);
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.012));
+  padding: var(--space-4);
+  box-shadow: var(--shadow-1);
+}
+
+/* Header in Karten */
+.c-head{ display:grid; gap: 4px; margin-bottom: var(--space-3); }
+.c-badge{
+  display:inline-flex; align-items:center; justify-content:center;
+  width:28px; height:28px; border-radius:8px;
+  background:#0f1a13; border:1px solid var(--border);
+  color: var(--muted); font-weight:700; font-size:.9rem;
+}
+.c-head h4{ margin:0;margin-bottom: 0.2rem; font-size:1.02rem; color:var(--accent); }
+c-sub{ margin:0; color:var(--muted); font-size:.92rem; }
+
+/* ----- C1/C4: Antwortchips als gleichmäßiges Grid ----- */
+.c-chiprow{
+  display:grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
+}
+@media (min-width:520px){ .c-chiprow{ grid-template-columns: 1fr 1fr; } }
+@media (min-width:980px){ .c-chiprow{ grid-template-columns: 1fr 1fr 1fr; } }
+
+.c-vis{ position:absolute; opacity:0; width:1px; height:1px; pointer-events:none; }
+
+.c-chip{
+  width:100%;
+  display:inline-flex; justify-content:flex-start; align-items:flex-start;
+  gap:.45rem;
+  border:1px solid var(--border);
+  background: var(--card);
+  padding:.6rem .75rem;
+  border-radius: 12px;
+  color: var(--text);
+  cursor:pointer;
+  transition: transform .06s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
+.c-chip:hover{ transform: translateY(-1px); }
+.c-chip:active{ transform: translateY(0); }
+
+.c-chip__label{
+  display:block; line-height:1.25;
+  white-space:normal; word-break:break-word; overflow-wrap:anywhere;
+}
+.c-chip__label::before{ width:1.1em; display:inline-block; content:""; }
+.c-chip input:checked + .c-chip__label::before{ content:"✓"; }
+
+.c-chip:has(input:checked){
+  border-color: rgba(255,154,68,.55);
+  box-shadow: 0 0 0 2px rgba(255,154,68,.28) inset, 0 6px 16px rgba(0,0,0,.25);
+  background: linear-gradient(180deg, rgba(255,154,68,.08), rgba(255,154,68,.04));
+}
+
+/* ----- C2: Reihenfolge mit stabilen Selects ----- */
+.c-order{ display:grid; gap: var(--space-3); }
+.c-order__row{
+  display:grid; grid-template-columns: 1fr 88px; gap: var(--space-3);
+  align-items:center;
+  background: var(--card-2);
+  border:1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-3);
+}
+.c-order__label{ font-size:.98rem; padding:.1rem 0; }
+.c-order__sel{ position:relative; display:flex; align-items:center; }
+
+.c-select{
+  appearance:none; -webkit-appearance:none; -moz-appearance:none;
+  border:1px solid var(--border); background: var(--card); color:var(--text);
+  padding:.5rem .9rem .5rem .65rem;
+  min-width:88px; height:40px; line-height:1; text-align:center;
+  border-radius: var(--radius-sm);
+}
+.c-order__sel::after{
+  content:""; pointer-events:none; position:absolute; right:10px; top:50%; transform:translateY(-50%);
+  width:14px; height:14px;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23a9b6c6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat:no-repeat; background-size:14px 14px;
+}
+@media (max-width:420px){
+  .c-order__row{ grid-template-columns: 1fr 84px; }
+  .c-select{ min-width:84px; height:38px; }
+}
+
+/* ----- C3: Szenario-Karten ----- */
+.c-cards{ display:grid; gap: var(--space-3); }
+.c-scenario{
+  border:1px solid var(--border); border-radius: var(--radius); padding: var(--space-3);
+  background: var(--card); margin:0;
+}
+.c-scenario__q{ margin:0 0 var(--space-2); color:var(--text); font-weight:700; font-size:.98rem; }
+.c-cardradio{ display:block; margin:.35rem 0 0; cursor:pointer; }
+.c-cardradio__body{
+  display:flex; align-items:center; gap: var(--space-3);
+  border:1px solid var(--border); border-radius: var(--radius-sm);
+  padding:.55rem .7rem; background: var(--card-2);
+  transition: box-shadow .2s ease, transform .06s ease, border-color .2s ease, background .2s ease;
+}
+.c-cardradio__icon{ font-size:1.05rem; opacity:.9; }
+.c-cardradio__label{ font-size:.96rem; }
+.c-cardradio:hover .c-cardradio__body{ transform: translateY(-1px); }
+.c-cardradio:active .c-cardradio__body{ transform: translateY(0); }
+.c-cardradio input:checked ~ .c-cardradio__body{
+  border-color: rgba(255,154,68,.55);
+  box-shadow: 0 0 0 2px rgba(255,154,68,.28) inset, 0 6px 16px rgba(0,0,0,.25);
+  background: linear-gradient(180deg, rgba(255,154,68,.10), rgba(255,154,68,.05));
+}
+
+/* ---------- Step D (Pflanzen) ---------- */
+.plant-bank{
+  display:flex; flex-wrap:wrap; gap: var(--space-3);
+  border:1px dashed var(--border); border-radius: var(--radius);
+  padding: var(--space-3); background: var(--card); margin-bottom: var(--space-3);
+}
+.plant-bank .plant-chip{ width:110px; height:110px; }
+
+.plant-chip{
+  touch-action:none; user-select:none; cursor:grab;
+  border:1px solid var(--border); border-radius: var(--radius-sm);
+  overflow:hidden; background:#0d1410;
+}
+.plant-chip img{ width:100%; height:100%; object-fit:cover; display:block; }
+.plant-chip.dragging{ opacity:.92; box-shadow:0 14px 30px rgba(0,0,0,.4); }
+
+.plant-table{ display:grid; gap: var(--space-3); }
+
+.pt-row{
+  display:grid;
+  grid-template-areas: "pair edible toxic";
+  grid-template-columns: 120px 1fr 1fr;
+  gap: var(--space-3);
+}
+.pt-head{ color:var(--muted); }
+.pt-col{
+  border:1px solid var(--border); border-radius: var(--radius-sm);
+  background: var(--card); padding: var(--space-3);
+}
+.pt-pair{ grid-area:pair; display:flex; align-items:center; justify-content:center; background: var(--card-2); }
+.pt-headcol{ text-align:center; font-weight:700; }
+
+/* Spaltenzuweisung unabhängig vom DOM */
+.pt-row > .pt-col:nth-child(2){ grid-area: edible; }
+.pt-row > .pt-col:nth-child(3){ grid-area: toxic; }
+
+.pt-drop{
+  position:relative; min-height:140px;
+  overflow:hidden; padding: var(--space-2);
+  border-radius: var(--radius-sm); box-sizing:border-box;
+}
+.pt-dropinner{ display:flex; align-items:center; justify-content:center; min-height:110px; }
+.pt-placeholder{ color:var(--muted); opacity:.9; font-size:.9rem; }
+
+.pt-drop .plant-chip{ width:100%; aspect-ratio:1/1; border-radius: var(--radius-sm); }
+.pt-drop .plant-chip img{ width:100%; height:100%; object-fit:cover; display:block; }
+
+.pt-name{
+  margin-top:6px; font-size:.92rem; color:var(--text);
+  line-height:1.25; word-break:break-word; overflow-wrap:anywhere; hyphens:auto;
+}
+
+.pt-drop.ok{ box-shadow:0 0 0 2px var(--ok) inset; }
+.pt-drop.err{ box-shadow:0 0 0 2px var(--err) inset; }
+
+/* Breakpoints für die Tabelle */
+@media (max-width:700px){
+  .pt-row{
+    grid-template-areas:
+      "pair pair"
+      "edible toxic";
+    grid-template-columns: 1fr 1fr;
+  }
+  .pt-pair{ justify-content:flex-start; padding:10px; }
+  .pt-head .pt-pair{ background:transparent; }
+}
+@media (max-width:380px){
+  .pt-row{
+    grid-template-areas:
+      "pair"
+      "edible"
+      "toxic";
+    grid-template-columns: 1fr;
+  }
+  .pt-drop{ min-height:42vw; }
+}
+
+/* ---------- Utilities ---------- */
+*, *::before, *::after{ box-sizing:border-box; }
+
+/* Lightbox (unverändert) */
+.lightbox{ display:none; position:fixed; inset:0; z-index:1000; background:rgba(0,0,0,.85); }
+.lightbox-content{
+  display:block; margin:5% auto; max-width:92%; max-height:85vh;
+  border-radius:10px; box-shadow:0 20px 60px rgba(0,0,0,.6);
+}
+.lightbox .close{
+  position:absolute; top:18px; right:24px; font-size:36px; line-height:1;
+  border:0; background:transparent; color:#fff; cursor:pointer;
+}
+
+/* Erfolgsteaser */
+.campbtn-wrap{ margin-top: var(--space-4); display:flex; justify-content:center; }
+.campcard{
+  display:grid; grid-template-columns: 100px 1fr; gap: var(--space-4); align-items:center;
+  padding: var(--space-3);
+  border:1px solid var(--border); border-radius: var(--radius);
+  background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.012));
+  box-shadow: var(--shadow-1);
+}
+@media (max-width:420px){ .campcard{ grid-template-columns: 1fr; } }
+.campcard-media{ border-radius:10px; overflow:hidden; background:#0b1210; aspect-ratio:16/9; }
+.campcard-media img{ width:100%; height:100%; object-fit:cover; display:block; }
+.campcard-body{ display:grid; gap:6px; }
+.campcard-title{ margin:0; font-weight:800; font-size:1.05rem; color:var(--text); }
+.campcard-sub{ margin:0; color: var(--muted); font-size:.92rem; }
+.campcard-cta{
+  justify-self:start; background: linear-gradient(180deg,#1a2a1f,#121e16); color: var(--text);
+  border:1px solid var(--border); border-radius:10px; padding:.55rem .9rem; font-weight:700;
+  transition: transform .12s ease, box-shadow .2s ease, border-color .2s ease, background .2s ease;
+}
+.campcard-cta:hover{ transform: translateY(-1px); border-color: rgba(255,154,68,.45); box-shadow: 0 0 0 2px rgba(255,154,68,.18), 0 10px 28px rgba(0,0,0,.45); }
+.campcard-cta:focus-visible{ outline: none; box-shadow: 0 0 0 3px rgba(255,154,68,.35); }
+
+/* sanfter einmaliger Fokusring */
+.pulse-once{ animation: campPulse 1.8s ease-out 1; }
+@keyframes campPulse{
+  0%   { box-shadow:0 0 0 0 rgba(255,154,68,0) }
+  35%  { box-shadow:0 0 0 6px rgba(255,154,68,.25) }
+  100% { box-shadow:0 0 0 0 rgba(255,154,68,0) }
+}
+
+/* ---------- Responsive Tweaks (global für Survival) ---------- */
+
+/* Smartphones (bis 480px) */
+@media (max-width:480px){
+  body.tag-tag2-survival .card{ padding: 12px; }
+  body.tag-tag2-survival h2{ font-size: 1.35rem; margin-bottom: var(--space-6); }
+  .step{ padding: var(--space-4); }
+  .step .btnrow .btn{ width:100%; }
+}
+
+/* Tablets (481px – 1024px) */
+@media (min-width:481px) and (max-width:1024px){
+  body.tag-tag2-survival .card{ padding: 14px 18px; }
+  body.tag-tag2-survival h2{ font-size: 1.6rem; }
+  .step{ padding: var(--space-5); }
+}
+
+/* Laptops & Desktops (ab 1025px) */
+@media (min-width:1025px){
+  body.tag-tag2-survival .card{ padding: 18px 20px; }
+  body.tag-tag2-survival h2{ font-size: 1.9rem; }
+}
+
+
+/* =========================================
+   Survival – Selection States
+   Grün für Chips/Checkboxen
+   Blau für Step C3 (Wasser)
+   ========================================= */
+
+/* 1) Native Checkboxes/Radios allgemein -> grün */
+body.tag-tag2-survival input[type="checkbox"],
+body.tag-tag2-survival input[type="radio"]{
+  accent-color: #22c55e; /* Emerald */
+}
+
+/* 2) Chips (Mehrfachauswahl) -> grün */
+body.tag-tag2-survival .c-chip:has(input:checked){
+  border-color: rgba(34,197,94,.55); /* #22c55e */
+  box-shadow:
+    0 0 0 2px rgba(34,197,94,.28) inset,
+    0 6px 16px rgba(0,0,0,.25);
+  background: linear-gradient(180deg,
+              rgba(34,197,94,.10),
+              rgba(34,197,94,.05));
+}
+body.tag-tag2-survival .c-chip input:checked + .c-chip__label::before{
+  content:"✓";
+  color:#22c55e;
+}
+
+/* 3) Card-Radios allgemein -> grün */
+body.tag-tag2-survival .c-cardradio input:checked ~ .c-cardradio__body{
+  border-color: rgba(34,197,94,.55);
+  box-shadow:
+    0 0 0 2px rgba(34,197,94,.28) inset,
+    0 6px 16px rgba(0,0,0,.25);
+  background: linear-gradient(180deg,
+              rgba(34,197,94,.12),
+              rgba(34,197,94,.06));
+}
+
+/* 4) Speziell für Step C3 (Wasser): blau statt grün */
+#stepC .c-cardradio input:checked ~ .c-cardradio__body{
+  border-color: rgba(56,189,248,.65); /* Sky-Blue */
+  box-shadow:
+    0 0 0 2px rgba(56,189,248,.35) inset,
+    0 6px 16px rgba(0,0,0,.25);
+  background: linear-gradient(180deg,
+              rgba(56,189,248,.15),
+              rgba(56,189,248,.07));
+}
+#stepC .c-cardradio__label::before{
+  color: #38bdf8; /* Häkchen blau */
+}
+
+
+/* --- Hint-Popup (Profi – Pflanzenerkennung) --- */
+#plant-hint-modal{
+  border: 1px solid var(--border);
+  background: rgba(10, 15, 20, .95);
+  color: var(--text);
+  border-radius: 16px;
+  padding: 0;
+  width: min(92vw, 460px);
+  box-shadow: 0 24px 80px rgba(0,0,0,.55);
+}
+#plant-hint-modal::backdrop{
+  background: radial-gradient(120vw 120vh at 50% 50%, rgba(0,0,0,.45), rgba(0,0,0,.85));
+  backdrop-filter: blur(2px);
+}
+#plant-hint-modal .ph-card{
+  padding: 14px 16px;
+}
+#plant-hint-modal h4{
+  margin: 0 0 .5rem 0;
+  text-align: center;
+  font-weight: 800;
+  letter-spacing: .02em;
+  background: linear-gradient(90deg, #ffb45a, #ffd38a);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+#plant-hint-modal .ph-line{
+  margin: .35rem 0;
+  color: var(--muted);
+  line-height: 1.55;
+  text-align: center;
+}
+#plant-hint-modal .ph-actions{
+  margin-top: .75rem;
+  display: flex; justify-content: center;
+}
+#plant-hint-modal .btn{
+  background: linear-gradient(180deg,#ff9a44,#ea580c);
+  border-color:#b45309; color:#1a130c;
+}
+
+/* Fallback-Backdrop für Browser ohne <dialog>::backdrop */
+.ph-fallback-backdrop{
+  display:none;
+  position:fixed; inset:0; z-index:1000;
+  background: radial-gradient(120vw 120vh at 50% 50%, rgba(0,0,0,.45), rgba(0,0,0,.85));
+  -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px);
+}
+.ph-fallback-backdrop.show{ display:block; }
+
+/* Sicherstellen, dass der Dialog über der Fallback-Backdrop sitzt */
+#plant-hint-modal[open]{ display:block; z-index:1001; }
+
+@media (max-width:480px){
+  #plant-hint-modal .ph-card{ padding: 12px 12px; }
+  #plant-hint-modal .ph-line{ font-size: .98rem; }
+}

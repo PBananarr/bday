@@ -1,0 +1,315 @@
+/* Tag 1 – Theme: Thai Monstera · Regenwaldnacht · Sternen-Flecken */
+
+/* Aktiv, wenn body die Klasse 'tag-tag1-sternbild' trägt (setzt main.js) */
+body.tag-tag1-sternbild {
+  --bg:        #0b0f1d; /* tiefes Nachtgrün-Blau (Seitenhintergrund) */
+  --card:      linear-gradient(180deg, #0f1a14, #0b1410); /* feuchte Waldtöne */
+  --border:    #1f2e24; /* Moosgrün für Ränder */
+  --text:      #e8f2e9; /* Cremeweiß mit leichtem Grün-Touch (Monstera-Flecken) */
+  --muted:     #9fb6a4; /* Graugrün für Sekundärtexte */
+  --accent:    #9ae6b4; /* helles Blattgrün als Akzent */
+  --ok:        #22c55e;
+  --warn:      #eab308;
+  --err:       #ef4444;
+}
+
+/* Karten-Styling für Tag 1 */
+body.tag-tag1-sternbild .card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow:
+    0 12px 32px rgba(0,0,0,.55),
+    inset 0 0 40px rgba(154, 230, 180, 0.05); /* sanfter „Fleck“-Glow */
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtile „Regenwald“-Textur (optional) */
+body.tag-tag1-sternbild .card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-image: url("../../img/rain-texture.png"); /* kannst du austauschen oder löschen */
+  background-size: cover;
+  opacity: 0.04; /* sehr dezent */
+  pointer-events: none;
+}
+
+/* Überschriften */
+body.tag-tag1-sternbild .card h2 {
+  text-align: center;
+  font-size: 1.3rem;
+  margin-bottom: 0.8rem;
+  color: var(--accent); /* Akzentgrün wie Monstera-Lichtflecken */
+  letter-spacing: 0.5px;
+  font-weight: 700;
+}
+
+/* Standardtext */
+body.tag-tag1-sternbild .card p {
+  color: var(--text);
+  line-height: 1.6;
+}
+
+/* Buttons */
+body.tag-tag1-sternbild .btn.primary {
+  background: linear-gradient(180deg, #9ae6b4, #4ade80);
+  border-color: #3da765;
+  color: #0a0f0c;
+  margin-top: 0.8rem;
+}
+
+body.tag-tag1-sternbild .btn.ghostbtn {
+  border-color: #2f4636;
+  color: var(--accent);
+  margin-top: 0.8rem;
+}
+
+body.tag-tag1-sternbild .progress {
+  background: linear-gradient(90deg, #4ade80, #9ae6b4);
+}
+
+/* Rätselboxen */
+.riddle {
+  /* respektiert \n im HTML → Zeilenumbrüche ohne <br> */
+  white-space: pre-line;
+
+  /* Typografie & Look */
+  line-height: 1.75;
+  font-size: clamp(0.98rem, 0.9rem + 0.6vw, 1.12rem);
+  color: var(--text);
+  text-wrap: balance;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(154,230,180,.05), rgba(0,0,0,0));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.02);
+
+  /* Neu: zentriert & mit spacing */
+  text-align: center;
+  letter-spacing: 0.4px;
+}
+
+/* Schlussfrage hervorheben */
+.riddle em {
+  display: block;
+  margin-top: .9rem;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: .6px;
+  color: var(--accent);
+  text-shadow: 0 1px 0 rgba(0,0,0,.25);
+}
+
+.riddle-form .choice {
+  background: #0f1a13;
+  border-color: var(--border);
+}
+
+input.choice,
+.riddle-form input {
+  color: var(--text);
+  background: #0f1a13;
+  border: 1px solid var(--border);
+}
+
+input.choice::placeholder,
+.riddle-form input::placeholder {
+  color: var(--muted);
+  opacity: 0.8;
+}
+
+/* Wenn Tag 1 gelöst ist: Riddle-Box zeigt ein Bild */
+body.tag-tag1-sternbild .riddle.solved {
+  position: relative;
+  min-height: 220px;
+  border-radius: 12px;
+  background: url("./picSternbild/thaiMonsteraThemeStars.png") center / cover no-repeat;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  transition: background .3s ease, opacity .3s ease;
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+/* Overlay für Tiefe */
+body.tag-tag1-sternbild .riddle.solved::after {
+  content:"";
+  position:absolute;
+  inset:0;
+  background: linear-gradient(180deg, rgba(0,0,0,.15), rgba(0,0,0,.25));
+  pointer-events:none;
+}
+
+/* Ausgabe nach Lösung */
+#out {
+  margin-top: 1rem;
+}
+
+#out.success {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.6rem 0.9rem;
+  border-radius: 10px;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid #10b981;
+  color: #d1fae5;
+  font-weight: 600;
+  font-size: 1rem;
+  text-align: center;
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.25);
+  animation: popIn 0.4s ease;
+}
+
+@keyframes popIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+/* ---------- Responsive Tweaks Thai Monstera ---------- */
+
+/* Smartphones (bis 480px) */
+@media (max-width: 480px) {
+  body.tag-tag1-sternbild .card {
+    padding: 12px;
+  }
+  body.tag-tag1-sternbild .card h2 {
+    font-size: 1.4rem;
+    margin-top: 1.3rem;
+    margin-bottom: 1.3rem;
+  }
+  body.tag-tag1-sternbild .btn {
+    width: 100%;
+    margin-top: 0.9rem;
+    padding: 0.7rem 1rem;
+    font-size: 1rem;
+  }
+  body.tag-tag1-sternbild .riddle {
+    font-size: 0.96rem;
+    line-height: 1.75;
+    padding: 10px 12px;
+    text-wrap: pretty;
+    letter-spacing: 0.35px;
+  }
+}
+
+/* Tablets (481px – 1024px) */
+@media (min-width: 481px) and (max-width: 1024px) {
+  body.tag-tag1-sternbild .card {
+    padding: 14px 18px;
+  }
+  body.tag-tag1-sternbild .card h2 {
+    font-size: 1.25rem;
+  }
+  body.tag-tag1-sternbild .btn {
+    margin-top: 1rem;
+    padding: 0.8rem 1.1rem;
+    font-size: 0.75rem;
+  }
+}
+
+/* Laptops & Desktops (ab 1025px) */
+@media (min-width: 1025px) {
+  body.tag-tag1-sternbild .card {
+    padding: 18px 20px;
+  }
+  body.tag-tag1-sternbild .card h2 {
+    font-size: 1.4rem;
+  }
+  body.tag-tag1-sternbild .btn {
+    margin-top: 1.2rem;
+    padding: 0.9rem 1.2rem;
+    font-size: 1.1rem;
+  }
+}
+
+
+/* ===== Sternbild – Badge Modal ===== */
+#stern-badge-modal {
+  border: 1px solid var(--border);
+  background: rgba(11, 15, 20, .94);
+  color: var(--text);
+  border-radius: 16px;
+  padding: 0;
+  width: min(92vw, 560px);
+  box-shadow: 0 24px 80px rgba(0,0,0,.55);
+}
+#stern-badge-modal::backdrop{
+  background: radial-gradient(120vw 120vh at 50% 50%, rgba(0,0,0,.45), rgba(0,0,0,.85));
+  backdrop-filter: blur(2px);
+}
+
+#stern-badge-modal .badge-card { padding: 14px; }
+
+#stern-badge-modal .badge-frame{
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: #0e1712;
+  overflow: hidden;
+}
+#stern-badge-modal #stern-badge-img{
+  display:block; width:100%; height:auto;
+  filter: contrast(105%) saturate(110%);
+}
+
+#stern-badge-modal .badge-caption{
+  text-align:center;
+  margin-top:.65rem;
+  line-height:1.2;
+}
+#stern-badge-modal .badge-caption .t1{
+  font-weight: 800;
+  letter-spacing:.04em;
+  color: #d9fbe3;
+  text-shadow: 0 2px 12px rgba(13, 40, 24, .35);
+  margin-bottom: 0.5rem;
+}
+#stern-badge-modal .badge-caption .t2{
+  font-weight: 700;
+  color: #9ae6b4;
+  opacity:.95;
+}
+
+#stern-badge-modal .badge-actions{
+  display:flex; justify-content:flex-end; gap:.5rem; margin-top:.6rem;
+}
+#stern-badge-modal #stern-badge-close.btn{
+  background: linear-gradient(180deg, #9ae6b4, #4ade80);
+  border-color: #3da765; color:#0a0f0c;
+}
+
+/* „Dein Badge“-Button: deaktiviert optisch abdunkeln */
+#show-badge:disabled{
+  opacity:.45;
+  cursor:not-allowed;
+  filter: saturate(.7);
+}
+
+
+/* ================== NEU: Button-Reihenfolge & Größenanpassung ================== */
+@media (max-width: 780px) {
+  /* Container der drei Buttons */
+  .riddle-form .btnrow{
+    display: flex;
+    flex-direction: column;     /* alles untereinander */
+    gap: .4rem;
+  }
+
+  /* Standard: volle Breite für die beiden großen Buttons */
+  .riddle-form .btnrow .btn{
+    width: 100%;
+  }
+
+  /* Reihenfolge: 1 = Prüfen (Submit), 2 = Badge, 3 = Hinweis */
+  .riddle-form .btnrow .btn.primary[type="submit"]{ order: 1; }
+  .riddle-form .btnrow #show-badge{ order: 2; }
+  .riddle-form .btnrow #hintBtn{ order: 3; }
+
+  /* Hinweis-Button: nur halb so breit, bleibt eigene Zeile */
+  .riddle-form .btnrow #hintBtn{
+    width: 50% !important;      /* überschreibt die 100%-Regel vom Smartphone-Block */
+    align-self: center;          /* zentriert in der dritten Zeile */
+  }
+}

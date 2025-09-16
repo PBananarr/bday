@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Creepster&family=Inter:wght@300;600&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&display=swap');
 
-/* ========== horror.css ========== */
+/* ========== horror.css (patched) ========== */
 
 /* ========== Base (responsive) ========== */
 :root {
@@ -18,6 +18,7 @@
   --space: clamp(0.75rem, 2.2vw, 1.25rem);
   --radius: clamp(14px, 2.2vw, 22px);
   --switch-h: clamp(38px, 5vw, 44px);
+
 }
 
 * {
@@ -101,7 +102,6 @@ body {
   border: 1px solid #2a2028;
   border-radius: 999px;
   padding: .25rem .35rem .25rem .6rem;
-  position: relative;
   background: linear-gradient(180deg, #1b151e, #0e0b10);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .03);
   cursor: pointer;
@@ -168,7 +168,7 @@ body {
 .btn--red {
   --bg1: #3a0000;
   --bg2: #120203;
-  box-shadow: 0 0 0 1px rgba(225, 6, 0, .25), var(--glow);
+  box-shadow: 0 0 0 1px rgba(225, 6, 0, .25), var(--glow)
 }
 
 .btn--ghost {
@@ -252,10 +252,12 @@ body {
 }
 
 .tile--eyes {
-  background-image: radial-gradient(12px 7px at 25% 40%, #fff, transparent 60%), radial-gradient(12px 7px at 30% 43%, #fff, transparent 60%);
+  background-image:
+    radial-gradient(12px 7px at 25% 40%, #fff, transparent 60%),
+    radial-gradient(12px 7px at 30% 43%, #fff, transparent 60%);
   background-repeat: no-repeat;
-  background-size: auto
 }
+
 
 /* ===== Overlay (age gate) ===== */
 .overlay {
@@ -269,7 +271,6 @@ body {
   padding: env(safe-area-inset-top) var(--space) var(--space);
 }
 
-/* Age-Gate Panel */
 .overlay__panel {
   width: min(880px, 100%);
   display: grid;
@@ -284,18 +285,18 @@ body {
 }
 
 .overlay__panel h1 {
-  margin: 0 0 clamp(0.9rem, 2.2vw, 1.25rem);
+  margin: 0 0 clamp(.9rem, 2.2vw, 1.25rem);
   font: 700 clamp(1.6rem, 4.6vw, 2rem)/1.2 Inter, system-ui;
 }
 
 .overlay__panel p {
   margin: 0;
   color: var(--muted);
-  font-size: clamp(.95rem, 2.8vw, 1rem);
+  font-size: clamp(.95rem, 2.8vw, 1rem)
 }
 
 .overlay__panel p+p {
-  margin-top: .35rem;
+  margin-top: .35rem
 }
 
 .overlay__actions {
@@ -307,21 +308,21 @@ body {
 
 .overlay__actions .btn {
   width: 100%;
-  padding-block: .9rem;
+  padding-block: .9rem
 }
 
 @media (min-width:560px) {
   .overlay__actions {
     grid-template-columns: auto auto;
     justify-content: start;
-    gap: 1rem 0.9rem;
+    gap: 1rem .9rem
   }
+
   .overlay__actions .btn {
     width: auto;
-    min-width: 260px;
+    min-width: 260px
   }
 }
-
 
 /* ===== Screamer Overlay ===== */
 .screamer {
@@ -360,8 +361,13 @@ body {
 }
 
 @keyframes pulse {
-  0% { transform: scale(.2) rotate(-6deg) }
-  100% { transform: scale(1) rotate(0deg) }
+  0% {
+    transform: scale(.2) rotate(-6deg)
+  }
+
+  100% {
+    transform: scale(1) rotate(0)
+  }
 }
 
 .eye {
@@ -371,11 +377,16 @@ body {
   height: 18%;
   background: #fff;
   border-radius: 50%;
-  box-shadow: 0 0 40px 10px rgba(255, 255, 255, .4);
+  box-shadow: 0 0 40px 10px rgba(255, 255, 255, .4)
 }
 
-.eye.left { left: 21% }
-.eye.right { right: 21% }
+.eye.left {
+  left: 21%
+}
+
+.eye.right {
+  right: 21%
+}
 
 .eye::after {
   content: "";
@@ -383,12 +394,17 @@ body {
   inset: 22% 25%;
   background: radial-gradient(70% 70% at 50% 50%, #000, #100 45%, #c00 55%, #000 66%);
   border-radius: 50%;
-  animation: eye .9s ease both;
+  animation: eye .9s ease both
 }
 
 @keyframes eye {
-  from { transform: scale(.2) }
-  to { transform: scale(1) }
+  from {
+    transform: scale(.2)
+  }
+
+  to {
+    transform: scale(1)
+  }
 }
 
 .mouth {
@@ -412,7 +428,7 @@ body {
   position: absolute;
   inset: -10% -10% 40%;
   background: radial-gradient(60% 90% at 50% 50%, rgba(200, 0, 0, .8), transparent 60%);
-  filter: blur(6px);
+  filter: blur(6px)
 }
 
 /* VARIANT B: Shadow Silhouette */
@@ -438,15 +454,27 @@ body {
   height: 8%;
   background: #fff;
   border-radius: 50%;
-  filter: drop-shadow(0 0 12px #fff);
+  filter: drop-shadow(0 0 12px #fff)
 }
 
-.shadow::before { left: 33% }
-.shadow::after  { right: 33% }
+.shadow::before {
+  left: 33%
+}
+
+.shadow::after {
+  right: 33%
+}
 
 @keyframes zoom {
-  0% { transform: scale(.3); filter: blur(6px) }
-  100% { transform: scale(1); filter: none }
+  0% {
+    transform: scale(.3);
+    filter: blur(6px)
+  }
+
+  100% {
+    transform: scale(1);
+    filter: none
+  }
 }
 
 /* VARIANT C: Text Shock */
@@ -462,8 +490,13 @@ body {
 }
 
 @keyframes slam {
-  from { transform: scale(.1) rotate(-15deg) }
-  to { transform: scale(1) rotate(0) }
+  from {
+    transform: scale(.1) rotate(-15deg)
+  }
+
+  to {
+    transform: scale(1) rotate(0)
+  }
 }
 
 /* VARIANT D: TV Static */
@@ -474,7 +507,7 @@ body {
   height: 100dvh;
   max-height: 100%;
   overflow: hidden;
-  background: repeating-linear-gradient(0deg, #111 0 2px, #222 2px 4px);
+  background: repeating-linear-gradient(0deg, #111 0 2px, #222 2px 4px)
 }
 
 .tv::before {
@@ -483,7 +516,7 @@ body {
   inset: 0;
   background: radial-gradient(circle at 50% 50%, #fff1 0%, #000 70%);
   mix-blend-mode: screen;
-  pointer-events: none;
+  pointer-events: none
 }
 
 .noise {
@@ -491,24 +524,36 @@ body {
   inset: -20%;
   background: repeating-conic-gradient(#fff2 0% 0.25%, #0002 0.25% 0.5%);
   animation: noise 120ms steps(6) infinite;
-  opacity: .6;
+  opacity: .6
 }
 
-@keyframes noise { to { transform: translate3d(-10px, 10px, 0) } }
+@keyframes noise {
+  to {
+    transform: translate3d(-10px, 10px, 0)
+  }
+}
 
 .scanlines {
   position: absolute;
   inset: 0;
   background: repeating-linear-gradient(0deg, transparent 0 2px, #000 2px 3px);
   opacity: .2;
-  mix-blend-mode: multiply;
+  mix-blend-mode: multiply
 }
 
 /* Flash / Strobe */
-.flash { animation: flash .5s both }
+.flash {
+  animation: flash .5s both
+}
+
 @keyframes flash {
-  0% { background: #fff; }
-  100% { background: radial-gradient(60% 60% at 50% 50%, rgba(0, 0, 0, .0), rgba(0, 0, 0, .92)); }
+  0% {
+    background: #fff
+  }
+
+  100% {
+    background: radial-gradient(60% 60% at 50% 50%, rgba(0, 0, 0, .0), rgba(0, 0, 0, .92))
+  }
 }
 
 /* Blood canvas */
@@ -517,20 +562,47 @@ body {
   inset: 0;
   pointer-events: none;
   z-index: 20;
-  mix-blend-mode: screen;
+  mix-blend-mode: screen
 }
 
 /* Flicker */
-.flicker * { animation: flicker .08s infinite alternate; }
-@keyframes flicker { from { opacity: .94 } to { opacity: .74 } }
+.flicker * {
+  animation: flicker .08s infinite alternate
+}
 
-/* Body shake when scared */
-.shake { animation: shake .25s linear 4 }
+@keyframes flicker {
+  from {
+    opacity: .94
+  }
+
+  to {
+    opacity: .74
+  }
+}
+
+/* Body shake */
+.shake {
+  animation: shake .25s linear 4
+}
+
 @keyframes shake {
-  0%, 100% { transform: translate(0, 0) }
-  25% { transform: translate(-8px, 2px) }
-  50% { transform: translate(6px, -4px) }
-  75% { transform: translate(-4px, 3px) }
+
+  0%,
+  100% {
+    transform: translate(0, 0)
+  }
+
+  25% {
+    transform: translate(-8px, 2px)
+  }
+
+  50% {
+    transform: translate(6px, -4px)
+  }
+
+  75% {
+    transform: translate(-4px, 3px)
+  }
 }
 
 /* Footer */
@@ -541,49 +613,84 @@ body {
 
 /* Hover spotlight coords */
 .tile:hover,
-.tile:focus-visible { --mx: var(--_mx, 50%); --my: var(--_my, 50%) }
+.tile:focus-visible {
+  --mx: var(--_mx, 50%);
+  --my: var(--_my, 50%)
+}
 
 /* Glitch text */
 .glitch {
   position: relative;
   display: inline-block;
   text-shadow: 1px 0 0 #f00, -1px 0 0 #0ff;
-  animation: glitch-shift 600ms infinite;
+  animation: glitch-shift 600ms infinite
 }
+
 @keyframes glitch-shift {
-  0%, 100% { transform: translate(0) }
-  33% { transform: translate(1px, -1px) }
-  66% { transform: translate(-1px, 1px) }
+
+  0%,
+  100% {
+    transform: translate(0)
+  }
+
+  33% {
+    transform: translate(1px, -1px)
+  }
+
+  66% {
+    transform: translate(-1px, 1px)
+  }
 }
 
 /* ===== Responsive tweaks ===== */
 @media (max-width: 900px) {
-  .top { flex-direction: column; align-items: stretch; }
-  .controls { justify-content: space-between }
+  .top {
+    flex-direction: column;
+    align-items: stretch
+  }
+
+  .controls {
+    justify-content: space-between
+  }
 }
 
 @media (max-width: 560px) {
-  .top { padding: calc(var(--space) * 1.2) var(--space) calc(var(--space) * .6) }
-  .tiles { --min: clamp(150px, 80vw, 1fr) }
+  .top {
+    padding: calc(var(--space) * 1.2) var(--space) calc(var(--space) * .6)
+  }
+
+  .tiles {
+    --min: clamp(150px, 80vw, 1fr)
+  }
 }
 
 /* Reduce motion */
 @media (prefers-reduced-motion: reduce) {
-  .shake, .flicker *, .glitch, .screamer .face, .shadow, .tv .noise { animation: none !important }
+
+  .shake,
+  .flicker *,
+  .glitch,
+  .screamer .face,
+  .shadow,
+  .tv .noise {
+    animation: none !important;
+  }
 }
 
-/* === Hidden Objects (Bilder hinter Kacheln) === */
+/* === Hidden Objects (Flip Cards) === */
 .tile {
   transform-style: preserve-3d;
-  transition: transform 0.9s cubic-bezier(.2, .8, .2, 1);
+  transition: transform 0.9s cubic-bezier(.2, .8, .2, 1)
 }
 
 .tile>*:not(.item-card) {
   backface-visibility: hidden;
-  transform: rotateY(0deg);
+  transform: rotateY(0deg)
 }
 
-.tile--flipped { transform: rotateY(180deg); }
+.tile--flipped {
+  transform: rotateY(180deg)
+}
 
 .item-card {
   position: absolute;
@@ -605,34 +712,33 @@ body {
   height: auto;
   display: block;
   filter: drop-shadow(0 0 12px rgba(255, 255, 255, .15));
-  cursor: pointer;
+  cursor: pointer
 }
 
-.item-card__name { margin-top: .4rem; font-weight: 700; }
+.item-card__name {
+  margin-top: .4rem;
+  font-weight: 700
+}
+
+.item-card__tip {
+  margin-top: .15rem;
+  color: var(--muted);
+  font-size: .95rem
+}
 
 .tile--found {
   outline: 2px dashed rgba(225, 6, 0, .35);
   outline-offset: -4px
 }
 
-/* === Visuelles Feedback während Cooldown === */
-#app.is-locked { cursor: not-allowed; }
-#app.is-locked .tile {
-  opacity: .55;
-  filter: grayscale(.2);
-  pointer-events: none;
-  transition: opacity .2s ease, filter .2s ease;
-}
-
-/* Blut-Switch etwas breiter machen */
+/* ===== HUD: Gefunden-Zähler ===== */
 #toggle-blood {
   min-width: clamp(140px, 22vw, 190px);
   justify-content: space-between;
   padding-left: .8rem;
-  padding-right: .8rem;
+  padding-right: .8rem
 }
 
-/* HUD: Gefunden-Zähler */
 .found-counter {
   display: inline-flex;
   align-items: center;
@@ -645,17 +751,31 @@ body {
   font-weight: 700;
   letter-spacing: .02em;
 }
-.found-label { color: var(--muted); }
+
+.found-label {
+  color: var(--muted)
+}
+
 #found-counter {
   padding: .15rem .5rem;
   background: #0b0a0d;
-  border-radius: 10px;
+  border-radius: 10px
 }
-.controls .found-counter { margin-left:.6rem; }
 
-@media (max-width: 560px) {
-  .controls { gap: .5rem; flex-wrap: wrap; }
-  .found-counter { font-size: .95rem; padding: .35rem .6rem; }
+.controls .found-counter {
+  margin-left: .6rem
+}
+
+@media (max-width:560px) {
+  .controls {
+    gap: .5rem;
+    flex-wrap: wrap
+  }
+
+  .found-counter {
+    font-size: .95rem;
+    padding: .35rem .6rem
+  }
 }
 
 /* Age-Gate Textstyles */
@@ -663,7 +783,7 @@ body {
   font-style: italic;
   line-height: 1.6;
   color: #f0d6d6;
-  text-shadow: 0 0 6px rgba(255,0,0,0.4);
+  text-shadow: 0 0 6px rgba(255, 0, 0, .4);
   text-align: center;
 }
 
@@ -673,7 +793,7 @@ body {
   text-align: center;
   color: #ff4d4d;
   letter-spacing: 1px;
-  text-shadow: 0 0 8px rgba(255, 0, 0, 0.6), 0 0 18px rgba(150, 0, 0, 0.7);
+  text-shadow: 0 0 8px rgba(255, 0, 0, .6), 0 0 18px rgba(150, 0, 0, .7);
   margin-bottom: 1rem;
   position: relative;
 }
@@ -685,27 +805,38 @@ body {
   height: 16px;
   background: #b30000;
   border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-  margin: 0.3rem auto 0;
-  box-shadow: 0 8px 0 -2px #660000, 0 14px 0 -4px rgba(80,0,0,0.7);
+  margin: .3rem auto 0;
+  box-shadow: 0 8px 0 -2px #660000, 0 14px 0 -4px rgba(80, 0, 0, .7);
   animation: drip 2.4s infinite ease-in-out;
 }
 
 @keyframes drip {
-  0%   { transform: translateY(0) scaleY(1); opacity: 1; }
-  70%  { transform: translateY(8px) scaleY(1.2); opacity: 0.8; }
-  100% { transform: translateY(14px) scaleY(0.8); opacity: 0; }
+  0% {
+    transform: translateY(0) scaleY(1);
+    opacity: 1
+  }
+
+  70% {
+    transform: translateY(8px) scaleY(1.2);
+    opacity: .8
+  }
+
+  100% {
+    transform: translateY(14px) scaleY(.8);
+    opacity: 0
+  }
 }
 
-/* ===== Badge Modal (Horror) ===== */
+/* ===== Badge Modal ===== */
 .badge-modal::backdrop {
-  background: rgba(4,4,8,.85);
-  backdrop-filter: blur(6px);
+  background: rgba(4, 4, 8, .85);
+  backdrop-filter: blur(6px)
 }
 
 .badge-modal {
   border: 0;
   padding: 0;
-  background: transparent;
+  background: transparent
 }
 
 .badge-card {
@@ -715,7 +846,7 @@ body {
   border-radius: 24px;
   border: 1px solid #2a2028;
   background: linear-gradient(180deg, #0c0a0e, #09080b);
-  box-shadow: 0 20px 60px rgba(0,0,0,.7), var(--glow);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, .7), var(--glow);
   display: grid;
   grid-template-rows: auto auto auto;
   gap: clamp(.7rem, 2vw, 1rem);
@@ -729,9 +860,8 @@ body {
   padding: clamp(.5rem, 1.6vw, .9rem);
   border-radius: 16px;
   background:
-    radial-gradient(90% 120% at 50% 10%, rgba(225,6,0,.22), transparent 60%),
-    linear-gradient(180deg, #121016, #17131d);
-  border: 1px solid #241b24;
+    radial-gradient(90% 120% at 50% 10%, rgba(225, 6, 0, .22), transparent 60%), linear-gradient(180deg, #121016, #17131d);
+  border: 1px solid #241b24
 }
 
 .badge-frame img {
@@ -740,7 +870,7 @@ body {
   height: auto;
   width: auto;
   display: block;
-  filter: drop-shadow(0 12px 28px rgba(0,0,0,.6));
+  filter: drop-shadow(0 12px 28px rgba(0, 0, 0, .6))
 }
 
 .badge-caption .t1 {
@@ -748,39 +878,56 @@ body {
   font-weight: 700;
   letter-spacing: .5px;
   color: #ff4d4d;
-  text-shadow: 0 0 8px rgba(255,0,0,.35);
+  text-shadow: 0 0 8px rgba(255, 0, 0, .35);
   font-size: clamp(1.1rem, 3.8vw, 1.4rem);
-  line-height: 1.2;
+  line-height: 1.2
 }
 
 .badge-caption .t2 {
   margin-top: .25rem;
   color: var(--ink);
   font-weight: 700;
-  font-size: clamp(1rem, 3.4vw, 1.2rem);
+  font-size: clamp(1rem, 3.4vw, 1.2rem)
 }
 
 .badge-actions {
   margin-top: .2rem;
   display: grid;
-  place-items: center;
+  place-items: center
 }
 
-.badge-actions .btn.btn--red { min-width: 180px; }
+.badge-actions .btn.btn--red {
+  min-width: 180px
+}
 
-@keyframes badge-pop { from { transform: scale(.96); opacity: .0 } to { transform: scale(1); opacity: 1 } }
-@media (prefers-reduced-motion: reduce) { .badge-card { animation: none } }
+@keyframes badge-pop {
+  from {
+    transform: scale(.96);
+    opacity: 0
+  }
 
-/* ===== Item Lightbox (für gefundene Objekte) ===== */
+  to {
+    transform: scale(1);
+    opacity: 1
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .badge-card {
+    animation: none
+  }
+}
+
+/* ===== Item Lightbox ===== */
 .item-lightbox::backdrop {
-  background: rgba(0,0,0,.85);
-  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, .85);
+  backdrop-filter: blur(4px)
 }
 
 .item-lightbox {
   border: 0;
   padding: 0;
-  background: transparent;
+  background: transparent
 }
 
 .item-lightbox .lb-content {
@@ -792,7 +939,7 @@ body {
   display: grid;
   gap: .8rem;
   text-align: center;
-  box-shadow: 0 16px 50px rgba(0,0,0,.6), var(--glow);
+  box-shadow: 0 16px 50px rgba(0, 0, 0, .6), var(--glow);
   width: min(520px, 92vw);
   animation: badge-pop .18s ease-out both;
 }
@@ -803,12 +950,12 @@ body {
   height: auto;
   display: block;
   margin: 0 auto;
-  filter: drop-shadow(0 12px 28px rgba(0,0,0,.6));
+  filter: drop-shadow(0 12px 28px rgba(0, 0, 0, .6))
 }
 
 .item-lightbox .lb-caption {
   font-weight: 700;
-  color: var(--ink);
+  color: var(--ink)
 }
 
 .item-lightbox .lb-close {
@@ -821,17 +968,350 @@ body {
   font-size: 1.6rem;
   cursor: pointer;
   line-height: 1;
-  text-shadow: 0 0 6px rgba(0,0,0,.7);
+  text-shadow: 0 0 6px rgba(0, 0, 0, .7)
 }
 
 .item-lightbox .lb-actions {
   margin-top: .2rem;
   display: grid;
-  place-items: center;
+  place-items: center
 }
 
-.item-lightbox .lb-actions[hidden] { display: none !important; }
+.item-lightbox .lb-actions[hidden] {
+  display: none !important
+}
 
 .item-lightbox .lb-actions .lb-btn {
-  min-width: 180px;
+  min-width: 180px
 }
+
+/* ===================================================== */
+/* ============ HALLE DER PRÜFUNG (NEU) =============== */
+/* ===================================================== */
+
+.trial-hall::backdrop {
+  background: radial-gradient(120% 120% at 50% 20%, rgba(10, 10, 16, .92), rgba(0, 0, 0, .92));
+  backdrop-filter: blur(4px);
+}
+
+.trial-hall {
+  border: 0;
+  padding: 0;
+  background: transparent;
+}
+
+.trial-wrap {
+  position: relative;
+  width: min(900px, 96vw);
+  height: min(620px, 84vh);
+  margin: auto;
+}
+
+.trial-wrap .fog {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  filter: blur(10px) contrast(1.05) saturate(.9);
+  opacity: .8;
+  pointer-events: none;
+}
+
+.trial-card {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  background: linear-gradient(180deg, #0c0a0e, #09080b);
+  border: 1px solid #2a2028;
+  border-radius: 20px;
+  box-shadow: 0 22px 60px rgba(0, 0, 0, .75), var(--glow);
+  overflow: hidden;
+}
+
+/* Header */
+.trial-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .6rem;
+  padding: .9rem 1rem;
+  border-bottom: 1px solid #241b24;
+  background:
+    radial-gradient(80% 180% at 110% -40%, rgba(225, 6, 0, .20), transparent 60%),
+    linear-gradient(180deg, #141018, #0b0a10);
+}
+
+.trial-title {
+  font-family: "Cinzel Decorative", serif;
+  letter-spacing: .4px;
+  font-weight: 700;
+  color: #ff4d4d;
+  text-shadow: 0 0 10px rgba(225, 6, 0, .35);
+}
+
+.trial-close {
+  border: none;
+  background: transparent;
+  color: #fff;
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+  text-shadow: 0 0 8px rgba(0, 0, 0, .7)
+}
+
+/* Intro (Erklärung + Start) */
+.trial-intro {
+  display: grid;
+  gap: .9rem;
+  align-content: start;
+  padding: 1rem 1rem .6rem 1rem;
+  color: var(--ink);
+}
+
+.trial-intro .trial-instructions {
+  color: #f0d6d6;
+  text-shadow: 0 0 6px rgba(255, 0, 0, .25);
+}
+
+.trial-start {
+  justify-self: center;
+  margin-top: .2rem;
+  min-width: 220px;
+}
+
+/* Challenge Area */
+.trial-area {
+  padding: 1rem;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 1rem;
+}
+
+.trial-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .8rem;
+  padding: .75rem 1rem;
+  border-top: 1px solid #241b24;
+  background: linear-gradient(180deg, #0b0a10, #09080b);
+}
+
+.trial-timer {
+  min-width: 64px;
+  text-align: center;
+  font-weight: 700;
+  letter-spacing: .02em;
+  padding: .25rem .6rem;
+  border-radius: 10px;
+  background: #0b0a0d;
+  border: 1px solid #2a2028;
+}
+
+/* === Tarot – Runen (Simon) === */
+.runes-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(72px, 26vw));
+  gap: .6rem;
+  justify-items: center;
+}
+
+.rune {
+  width: min(90px, 28vw);
+  height: min(90px, 28vw);
+  border-radius: 16px;
+  border: 1px solid #2a2028;
+  background: linear-gradient(180deg, #121016, #17131d);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, .5);
+  font-size: clamp(1.5rem, 8vw, 2rem);
+  color: #fff;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: transform .08s ease, box-shadow .15s ease, filter .15s ease;
+}
+
+.rune.on {
+  box-shadow: 0 0 0 1px rgba(225, 6, 0, .35), 0 6px 24px rgba(225, 6, 0, .25);
+  filter: saturate(1.2);
+}
+
+.rune.press {
+  transform: translateY(1px)
+}
+
+/* === Affenpfote – Beat Tap === */
+.bigtap {
+  font-size: clamp(1.2rem, 5vw, 1.6rem);
+  padding: 1rem 1.4rem;
+  border-radius: 18px;
+  min-width: 220px;
+}
+
+.bigtap.pulse {
+  animation: tap-pulse .18s ease
+}
+
+@keyframes tap-pulse {
+  from {
+    transform: scale(.98)
+  }
+
+  to {
+    transform: scale(1)
+  }
+}
+
+/* === Kruzifix – Echo Slider === */
+.echo-bar {
+  position: relative;
+  width: min(560px, 90vw);
+  height: 16px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #0e0b10, #141018);
+  border: 1px solid #241b24;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .03), 0 8px 18px rgba(0, 0, 0, .5);
+}
+
+.echo-marker {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: radial-gradient(50% 80% at 50% 30%, #ff655a, #a30000);
+  box-shadow: var(--glow), 0 6px 18px rgba(0, 0, 0, .5);
+}
+
+.echo-target {
+  display: none
+}
+
+/* unsichtbar */
+
+.trial-note {
+  color: var(--muted)
+}
+
+/* === Spieluhr – Siegel === */
+.seals {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(70px, 28vw));
+  gap: .7rem;
+}
+
+.seal {
+  width: min(94px, 30vw);
+  height: min(94px, 30vw);
+  border-radius: 16px;
+  border: 1px solid #2a2028;
+  background: linear-gradient(180deg, #121016, #17131d);
+  color: #fff;
+  font-size: clamp(1.2rem, 8vw, 1.8rem);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, .5);
+}
+
+.seal.on {
+  box-shadow: 0 0 0 1px rgba(225, 6, 0, .35), 0 6px 24px rgba(225, 6, 0, .25);
+  filter: saturate(1.1);
+}
+
+/* ===== Finale (Schwarzblende) ===== */
+.finale-black {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  z-index: 120;
+  animation: finale-fade .25s ease-out both;
+}
+
+@keyframes finale-fade {
+  from {
+    opacity: 0
+  }
+
+  to {
+    opacity: 1
+  }
+}
+
+/* === Tarot – sichtbare Nutzereingabe === */
+.runes-input{
+  display:flex; gap:.4rem; min-height:2.2rem;
+  align-items:center; justify-content:center;
+}
+
+.ri{
+  width:2rem; height:2rem; border-radius:10px;
+  border:1px solid #2a2028;
+  background: linear-gradient(180deg,#121016,#17131d);
+  display:grid; place-items:center; font-weight:700; color:#fff;
+  box-shadow: 0 6px 16px rgba(0,0,0,.45);
+}
+
+.ri--ok{
+  /* „richtig“ – leicht grünlicher Glow bei dunklem Theme */
+  box-shadow: 0 0 0 1px rgba(120,255,170,.35), 0 6px 18px rgba(120,255,170,.25);
+}
+
+.ri--err{
+  /* „falsch“ – rötlicher Glow passend zum Horror-Farbschema */
+  box-shadow: 0 0 0 1px rgba(225,6,0,.55), 0 6px 18px rgba(225,6,0,.35);
+}
+
+/* kurzer User-Glow am Button selbst */
+.rune.user{
+  box-shadow: 0 0 0 1px rgba(255,255,255,.22), 0 6px 20px rgba(255,255,255,.12);
+}
+
+/* bestehender Press-State etwas sichtbarer machen */
+.rune.press{ transform: translateY(1px); filter: brightness(1.08) }
+
+/* === Affenpfote – Bannmeter (Press & Hold) === */
+.meter {
+  position: relative;
+  width: min(560px, 90vw);
+  height: 16px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #0e0b10, #141018);
+  border: 1px solid #241b24;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.03), 0 8px 18px rgba(0,0,0,.5);
+}
+.meter__fill {
+  position: absolute;
+  inset: 0;
+  width: 0%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #3c0c10, #a30000);
+  box-shadow: var(--glow);
+}
+.meter__mark {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  height: 26px;
+  width: 3px;
+  background: #ff4d4d;
+  box-shadow: 0 0 14px #ff4d4d88;
+  border-radius: 2px;
+}
+
+/* Falls du in JS die Klasse "bigbtn" verwendest, gib ihr ein Puls-Feedback: */
+.bigbtn { 
+  font-size: clamp(1.1rem, 5vw, 1.4rem);
+  padding: 1rem 1.4rem;
+  border-radius: 18px;
+  min-width: 220px;
+}
+.bigbtn.pulse { animation: tap-pulse .18s ease; }
+@keyframes tap-pulse { from { transform: scale(.98) } to { transform: scale(1) } }
+
+/* Sicherheitsnetz: 'hidden' soll immer wirklich verstecken */
+[hidden] { display: none !important; }
+

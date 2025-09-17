@@ -174,7 +174,6 @@
   filter:contrast(112%) saturate(112%);
 }
 .fx-blood.show{ opacity:1; transform:scale(1); }
-/* (kein ::after – der „rote Strich“ ist entfernt) */
 
 /* ===================== SCARE (Bild-Pop ersetzt) ===================== */
 .fx-scare-img{ display:none !important; }
@@ -456,3 +455,158 @@
   background: linear-gradient(180deg,#2a5fff,#1e40af);
   border-color: #284b92;
 }
+
+/* ===== Intro Modal (Einleitung) ===== */
+#escape-intro-modal {
+  border: 1px solid var(--edge);
+  background: rgba(7, 9, 15, .94);
+  color: var(--text);
+  border-radius: 16px;
+  padding: 0;
+  width: min(92vw, 640px);
+  box-shadow: 0 28px 90px rgba(0,0,0,.6);
+}
+#escape-intro-modal::backdrop{
+  background: radial-gradient(120vw 120vh at 50% 50%, rgba(0,0,0,.5), rgba(0,0,0,.88));
+  backdrop-filter: blur(2px);
+}
+
+.intro-card{ padding:16px 16px 12px; }
+
+.intro-head{
+  display:flex;
+  align-items:center;
+  gap:.75rem;
+  margin-bottom:.35rem;
+  padding-bottom:.35rem;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.intro-icon{
+  width:38px; height:38px;
+  display:inline-grid; place-items:center;
+  background: radial-gradient(120% 120% at 30% 20%, rgba(225,29,72,.35), rgba(225,29,72,.08));
+  border:1px solid #392036;
+  border-radius:10px;
+  box-shadow: inset 0 0 12px rgba(225,29,72,.18), 0 6px 18px rgba(0,0,0,.35);
+}
+.intro-icon svg{
+  width:22px; height:22px;
+  fill: currentColor;
+  color: var(--text);
+  opacity:.9;
+}
+.intro-title{
+  font-size: clamp(1.05rem, .98rem + .6vw, 1.3rem);
+  font-weight: 800;
+  letter-spacing:.03em;
+  color:#e9ecff;
+  text-shadow: 0 1px 0 rgba(0,0,0,.35);
+}
+
+.intro-body{
+  margin:.55rem 0 .2rem;
+  line-height:1.7;
+  color: rgba(230,236,255,.94);
+}
+.intro-body p{ margin:.6rem 0; }
+
+.intro-actions{
+  display:flex;
+  justify-content:flex-end;
+  margin-top:.6rem;
+  gap:.5rem;
+}
+#escape-intro-close.btn{
+  background: linear-gradient(180deg, #0c1220, #0a101c);
+  color: var(--text);
+  border:1px solid #233257;
+  border-radius:12px;
+  padding:.7rem 1rem;
+  font-weight:700;
+  box-shadow: 0 10px 26px rgba(0,0,0,.4);
+}
+#escape-intro-close.btn:hover{ border-color:#2b3d6a; }
+
+
+
+/* ========= Mobile-Optimierungen für Todes-Szenen (d1–d24) ========= */
+/* Erkennung: Death-Screens haben genau 1 Choice (↻ Noch einmal versuchen) */
+@media (max-width: 560px) {
+  .escape-card:has(.choice-list .choice:only-child) {
+    padding: 20px 16px;                /* etwas mehr Luft innen */
+  }
+
+  .escape-card:has(.choice-list .choice:only-child) h2 {
+    margin: .2rem 0 .7rem;             /* mehr Abstand unterm Titel */
+    font-size: clamp(1.15rem, 1.02rem + 1.8vw, 1.5rem);
+    letter-spacing: .02em;
+  }
+
+  .escape-card:has(.choice-list .choice:only-child) p {
+    margin: .85rem 0 1rem;             /* größere Absatzabstände */
+    line-height: 1.9;                   /* luftigere Zeilenhöhe */
+    text-wrap: pretty;                  /* schönere Zeilenumbrüche (PE) */
+    hyphens: auto;                      /* Silbentrennung, wo unterstützt */
+    overflow-wrap: anywhere;            /* Notfall-Umbruch bei langen Wörtern */
+  }
+
+  .escape-card:has(.choice-list .choice:only-child) p + p {
+    margin-top: .9rem;                  /* extra Abstand zwischen Absätzen */
+  }
+
+  .escape-card:has(.choice-list .choice:only-child) .choice {
+    margin-top: .2rem;                  /* Button näher an den Text, aber nicht kleben */
+    padding: 1rem;                      /* besser zu treffen auf Touch */
+    font-size: clamp(1.02rem, .98rem + .8vw, 1.15rem);
+  }
+}
+
+/* (Optional) dezente Kontrastanhebung NUR für Death-Texte auf Mobile.
+   Wenn dir die aktuelle Farbe schon passt, lass diesen Block einfach weg. */
+@media (max-width: 560px) {
+  .escape-card:has(.choice-list .choice:only-child) p {
+    color: rgba(232, 237, 255, .98);   /* minimal heller, bleibt im Stil */
+  }
+}
+
+/* ===== iPhone/Phone-Optimierung: Death-Screens (d1–d24) =====
+   Greift auf iPhone 16 Pro (und anderen Phones): kleiner Screen + Touch */
+@media (max-width: 430px) and (hover: none) and (pointer: coarse) {
+  /* Death-Seite erkennen: Text-<p> ist das vorletzte direkte Kind */
+  .escape-card > p:nth-last-child(2) {
+    margin: 0.95rem 0 1.15rem;   /* größere Abstände */
+    line-height: 1.95;           /* luftigere Zeilenhöhe */
+    text-wrap: pretty;           /* hübschere Umbrüche (wo unterstützt) */
+    hyphens: auto;               /* Silbentrennung */
+    overflow-wrap: anywhere;     /* Notfall-Umbruch */
+    max-width: 64ch;             /* angenehme Zeilenlänge */
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Mehr Luft unter dem Titel der Death-Card */
+  .escape-card > h2 + p:nth-last-child(2) {
+    margin-top: 0.8rem;
+  }
+
+  /* Restart-Button auf Death-Seite: besseres Tap-Target */
+  .escape-card > .choice-list > .choice:only-child {
+    margin-top: 0.3rem;
+    padding: 1rem 1.05rem;
+    font-size: clamp(1.04rem, .98rem + .9vw, 1.16rem);
+  }
+
+  /* Sanft für ALLE Karten: etwas höhere Grundzeilenhöhe mobil */
+  .escape-card p {
+    line-height: 1.82;
+  }
+}
+
+/* (Optional) minimal heller NUR für Death-Text auf kleinen Phones.
+   Wenn dir die aktuelle Farbe passt, lass diesen Block weg. */
+@media (max-width: 430px) and (hover: none) and (pointer: coarse) {
+  .escape-card > p:nth-last-child(2) {
+    color: rgba(232, 237, 255, .98);
+  }
+}
+

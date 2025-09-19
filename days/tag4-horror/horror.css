@@ -1,7 +1,7 @@
+/* ========== horror.css========== */
+
 @import url('https://fonts.googleapis.com/css2?family=Creepster&family=Inter:wght@300;600&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&display=swap');
-
-/* ========== horror.css (patched) ========== */
 
 /* ========== Base (responsive) ========== */
 :root {
@@ -1314,4 +1314,23 @@ body {
 
 /* Sicherheitsnetz: 'hidden' soll immer wirklich verstecken */
 [hidden] { display: none !important; }
+
+
+/* Stapelt Blut-Schalter + Badge-Button untereinander */
+.controls-stack {
+  display: flex;
+  flex-direction: column;
+  gap: .45rem;
+  align-items: stretch;
+}
+
+/* Badge-Button gleiche Mindestbreite wie der Blut-Schalter */
+.controls-stack .btn {
+  min-width: clamp(140px, 22vw, 190px);
+}
+
+/* "hidden" sorgt sicher für echtes Verstecken */
+#show-badge.hidden {
+  display: none !important;
+}
 

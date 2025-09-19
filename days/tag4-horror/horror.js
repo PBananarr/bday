@@ -1,3 +1,5 @@
+/*=====================horror.js=====================*/
+
 import { HORROR_CONFIG as CFG } from "./horror_data.js";
 
 // --- LIFECYCLE/TEARDOWN-UTILS ----------------------------------------------
@@ -75,16 +77,22 @@ export function build(host, api) {
       </div>
 
       <div class="controls">
-        <button id="toggle-blood" class="switch" aria-pressed="false" title="Blutregen umschalten">
-          <span class="switch__label">Blut</span>
-          <span class="switch__thumb" data-on="AN" data-off="AUS">AUS</span>
-        </button>
+        <div class="controls-stack">
+          <button id="toggle-blood" class="switch" aria-pressed="false" title="Blutregen umschalten">
+            <span class="switch__label">Blut</span>
+            <span class="switch__thumb" data-on="AN" data-off="AUS">AUS</span>
+          </button>
+
+          <!-- NEU: zunächst versteckt, erscheint nach Abschluss -->
+          <button id="show-badge" class="btn small btn--red hidden" type="button">🏅Dein Badge</button>
+        </div>
 
         <div class="found-counter" aria-live="polite" aria-atomic="true">
           <span class="found-label" aria-hidden="true">FINDE&nbsp;UNS:</span>
           <span id="found-counter">0/4</span>
         </div>
       </div>
+
     </header>
 
     <section class="tiles" aria-label="Rituale & Spielereien">
@@ -365,12 +373,27 @@ export function build(host, api) {
       return { dialog: dlg, open };
     }
 
+    // 1) Gemeinsame Quelle für das Badge-Bild (vor der Nutzung definieren!)
+    const BADGE_IMG_SRC = CFG.withV(CFG.IMG_BASE + 'gefunden.png');
+
+    // 2) Badge-Modal erzeugen
     const badgeModal = createBadgeModalHorror();
 
-    function showCompletionPopup() {
-      const imgSrc = CFG.withV(CFG.IMG_BASE + 'gefunden.png');
-      badgeModal.open(imgSrc);
+    // 3) Reopen-Button mit dem Badge-Modal verknüpfen
+    const btnShowBadge = document.getElementById('show-badge');
+    if (btnShowBadge) {
+      btnShowBadge.addEventListener('click', () => {
+        badgeModal.open(BADGE_IMG_SRC);
+      });
     }
+
+    // 4) Abschluss-Popup öffnen UND den Button dauerhaft einblenden
+    function showCompletionPopup() {
+      badgeModal.open(BADGE_IMG_SRC);
+      const btn = document.getElementById('show-badge');
+      if (btn) btn.classList.remove('hidden');
+    }
+
 
     function finaleSequenceThenBadge() {
       if (completionShown) return;
@@ -1109,7 +1132,7 @@ export function build(host, api) {
       scheduleRandomScare();
     }
 
-    const EXIT_URL = CFG.AGE_EXIT_URL ?? 'https://pbananarr.github.io/bday/';
+    const EXIT_URL = CFG.AGE_EXIT_URL ?? 'https://pbananarr.github.io/countdown/';
 
     function leaveGate(e) {
       e?.preventDefault?.();

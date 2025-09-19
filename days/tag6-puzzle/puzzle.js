@@ -1,3 +1,5 @@
+/* ===== puzzle.js ===== */
+
 import { PUZZLE_CONFIG } from "./puzzle_data.js";
 
 /* ===== Timer/Cleanup Utilities ===== */
@@ -20,6 +22,7 @@ export function build(host, api) {
           <div class="btnbar" role="toolbar" aria-label="Puzzle-Aktionen">
             <button id="startBtn"   class="btn tool primary"><span class="ic">▶️</span><span>Puzzle starten</span></button>
             <button id="shuffleBtn" class="btn tool"><span class="ic">🔀</span><span>Mischen</span></button>
+            <button id="badgeBtn" class="btn tool" hidden><span class="ic">🏅</span><span>Dein Badge</span></button>
           </div>
         </header>
 
@@ -52,6 +55,9 @@ export function build(host, api) {
 
         <!-- Abschluss -->
         <dialog id="badge-modal" aria-labelledby="badge-title">
+          <!-- VORDERER Regen-Layer im Dialog-Top-Layer -->
+          <div id="rain-front" aria-hidden="true"></div>
+
           <div class="badge-wrap">
             <div class="badge-hero">
               <img id="badge-img" src="" alt="Badge Bild" />
@@ -67,6 +73,7 @@ export function build(host, api) {
           <small>Zieh die Teile aufs Brett. Tipp & Zieh auf dem Handy.</small>
         </footer>
       </div>
+      <!-- HINTERER Regen-Layer unterhalb vom Dialog -->
       <div id="rain-global" aria-hidden="true"></div>
     </div>`;
 
@@ -78,6 +85,7 @@ export function build(host, api) {
 
   const startBtn   = $('#startBtn');
   const shuffleBtn = $('#shuffleBtn');
+  const badgeBtn   = $('#badgeBtn');
 
   // Hinweis-Dialog
   const hintDlg        = $('#puzzle-hint');
@@ -89,8 +97,9 @@ export function build(host, api) {
   const badgeImg   = $('#badge-img');
   const badgeClose = $('#badge-close');
 
-  // Globaler Regen-Layer
-  const rainGlobal = $('#rain-global');
+  // Regen-Layer
+  const rainGlobal = $('#rain-global'); // hinter dem Dialog (Seiten-Hintergrund)
+  const rainFront  = $('#rain-front');  // VOR dem Dialog (im Top-Layer)
 
   // Bild vorbereiten
   let img = new Image();
@@ -106,10 +115,18 @@ export function build(host, api) {
   let placedCount = 0;
   let isPointerCoarse = matchMedia('(pointer:coarse)').matches;
   let isAutoSolving = false;
+  let hasWon = false;
+
+  // Sicherheitsnetz: Button initial hart verstecken
+  if (badgeBtn) badgeBtn.hidden = true;
 
   /* ===== Init ===== */
   function init() {
     if (cfg.bottleSrc) { const pre = new Image(); pre.src = cfg.bottleSrc; }
+
+    // bei jedem Neuaufbau: Status zurücksetzen & Button verstecken
+    hasWon = false;
+    if (badgeBtn) badgeBtn.hidden = true;
 
     stage.style.aspectRatio = `${img.width}/${img.height}`;
     buildPuzzle(COLS, ROWS);
@@ -122,7 +139,21 @@ export function build(host, api) {
   function bindUI() {
     startBtn?.addEventListener('click', enterPuzzleMode);
     shuffleBtn?.addEventListener('click', () => shuffleVisible());
-    badgeClose?.addEventListener('click', () => badgeDlg?.close());
+    badgeBtn?.addEventListener('click', openBadgeModal);
+
+    // Badge schließen: erst AB HIER den Button zeigen
+    badgeClose?.addEventListener('click', () => {
+      badgeDlg?.close();
+      if (hasWon && badgeBtn) badgeBtn.hidden = false;
+    });
+    // Schließen via ESC / Klick auf den Backdrop ebenfalls abfangen
+    badgeDlg?.addEventListener('close', () => {
+      if (hasWon && badgeBtn) badgeBtn.hidden = false;
+    });
+    badgeDlg?.addEventListener('cancel', (e) => {
+      e.preventDefault();
+      try { badgeDlg.close(); } catch {}
+    });
 
     // Hinweis-Dialog steuern
     hintCloseBtn?.addEventListener('click', () => {
@@ -141,7 +172,6 @@ export function build(host, api) {
       const dismissed = localStorage.getItem(HINT_KEY) === "1";
       if (!dismissed && hintDlg && !hintDlg.open) hintDlg.showModal();
     } catch {
-      // Fallback: wenn localStorage nicht verfügbar ist
       if (hintDlg && !hintDlg.open) hintDlg.showModal();
     }
   }
@@ -283,7 +313,7 @@ export function build(host, api) {
       el.style.zIndex = Date.now().toString();
       el.classList.remove('outline');
 
-      startX = e.clientX; startY = e.clientY;
+    startX = e.clientX; startY = e.clientY;
       const p = getPosition(el); originX = p.x; originY = p.y;
     });
 
@@ -323,19 +353,26 @@ export function build(host, api) {
     el.style.transform = `translate(${x}px, ${y}px)`;
   }
 
-
   /* ===== Gewinn: Badge + Regen ===== */
   function maybeWin() {
     if (placedCount !== pieces.length) return;
 
+    hasWon = true;           // Puzzle ist gelöst – Button aber noch nicht zeigen
     openBadgeModal();
+
     try { api && api.solved && api.solved(); } catch (_) {}
 
-    // sobald die Abschlussanimation getriggert wird, die Topbar/Foot wieder zeigen
+    // Header/Footer ab jetzt wieder sichtbar (wenn Modal erscheint)
     exitPuzzleMode();
 
     // Mini-Delay, damit der Dialog sichtbar ist, bevor Regen startet
-    setT(() => { rainBottles(cfg.bottleCount || 40); }, 150);
+    setT(() => {
+      const count = cfg.bottleCount || 40;
+      // HINTER dem Modal (Seitenhintergrund)
+      rainBottles(count, rainGlobal);
+      // VOR dem Modal (im Dialog-Top-Layer)
+      if (rainFront) rainBottles(Math.round(count * 0.8), rainFront);
+    }, 150);
   }
 
   function openBadgeModal() {
@@ -346,10 +383,10 @@ export function build(host, api) {
     if (badgeDlg && !badgeDlg.open) badgeDlg.showModal();
   }
 
-  /* ===== Flaschenregen (globaler Layer) ===== */
-  function rainBottles(count) {
+  /* ===== Flaschenregen ===== */
+  function rainBottles(count, container) {
     const durMin = 5, durMax = 9;
-    const container = rainGlobal || document.body;
+    const target = container || rainGlobal || document.body;
 
     for (let i = 0; i < count; i++) {
       const el = document.createElement('img');
@@ -385,7 +422,7 @@ export function build(host, api) {
         el.src = `data:image/svg+xml;charset=utf-8,${svg}`;
       }
 
-      container.appendChild(el);
+      target.appendChild(el);
       const total = parseFloat(getComputedStyle(el).animationDuration) * 1000 + 3000;
       setT(() => el.remove(), total);
     }

@@ -1,4 +1,4 @@
-/* ===== Tag 6 – Puzzle (scoped) ===== */
+/* ===== puzzle.css ===== */
 
 .day-puzzle {
   --bg: #0b0b0b;
@@ -238,3 +238,31 @@
   .day-puzzle .btn.tool { height: 48px; }
   .day-puzzle .piece { border-radius: 12px; }
 }
+
+/* Respektiere das HTML-Attribut `hidden` innerhalb des Puzzle-Bereichs strikt */
+.day-puzzle [hidden] {
+  display: none !important;
+}
+
+/* (optional, explizit für den Badge-Button) */
+.day-puzzle #badgeBtn[hidden] {
+  display: none !important;
+}
+
+/* Vorderer Regen-Layer innerhalb des Dialog-Top-Layers */
+.day-puzzle #badge-modal #rain-front {
+  position: fixed;
+  inset: 0;
+  z-index: 2;            /* über der Badge-Karte */
+  pointer-events: none;
+}
+
+/* Badge-Karte selbst leicht darunter halten */
+.day-puzzle .badge-wrap {
+  position: relative;     /* eigenen Stacking-Context anlegen */
+  z-index: 1;
+}
+
+/* Sicherheit: hidden strikt respektieren */
+.day-puzzle [hidden] { display: none !important; }
+
